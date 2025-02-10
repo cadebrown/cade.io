@@ -132,7 +132,7 @@ Also, with more customization and sometimes lower quality:
 
 ### Hosting on GitHub Pages
 
-TODO: actually host on github pages
+To deploy to GitHub Pages, we can follow the [Official Astro Guide](https://docs.astro.build/en/guides/deploy/github/). Specifically, I used `cade.io` and set up [a custom domain for GitHub Pages](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site).
 
 ### Updating the Favicon
 

@@ -41,12 +41,12 @@ import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
 import { pluginColorChips } from 'expressive-code-color-chips'
 
 // extra configuration, constants, and definitions
-import { SITE_CANON, katexConfig, vscodeThemes } from './src/common.ts'
+import { katexConfig, vscodeThemes } from './src/common.ts'
 
 // the actual configuration object, which is a JSON tree of settings
 // NOTE: https://astro.build/config
 export default defineConfig({
-	site: SITE_CANON,
+	site: 'https://cade.io',
 	trailingSlash: 'never',
 	scopedStyleStrategy: 'where',
 	compressHTML: true,
