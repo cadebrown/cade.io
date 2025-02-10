@@ -35,12 +35,13 @@ export const SITE_TEXTS = {
     
 }
 
-// export const ASSETS = import.meta.glob([
-//     // import all blog assets
-//     '../public/assets/**',
-// ], {
-
-// })
+// a dirty dirty hack for importing all possible images in the /assets directory
+export const ASSETS = import.meta.glob([
+    // import all blog assets
+    '../public/assets/**.{png,jpg,jpeg,webp}',
+], {
+    import: 'default' 
+})
 
 // attempt to import and asset and return a local handle, if it exists within /public. otherwise, it will return 'undefined' (which signals the caller should treat it like an arbitrary URL to an external resource)
 // NOTE: 'src' should start with a leading slash, but not a '/public' prefix (since '/public' disappears at runtime)

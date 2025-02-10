@@ -1,18 +1,23 @@
 ---
 // NOTE: https://vkbansal.me/blog/resolving-images-astro-md-2
 
-const { src, alt, style, class: className, href, ...rest  } = Astro.props
+const { src, alt, style, class: className, href, ...rest } = Astro.props
 
 // attempt to statically import the asset
 // NOTE: https://vkbansal.me/blog/resolving-images-astro-md-2
-// import { getAsset } from '@common'
-// import { Image as AstroImage } from 'astro:assets'
-// const srcAsset = await getAsset(src)
 
-const srcURL = src.src || src
+import { getAsset } from '@common'
+import { Image as AstroImage } from 'astro:assets'
 
+console.log('Image.astro: src', src)
+
+const srcAsset = (src.src && src) || (await getAsset(src))
+
+console.log('Image.astro: srcAsset', srcAsset)
+
+//const srcURL = src.src || src
 ---
 
-<!-- TODO: use actual Astro image component? or both, if its available? -->
-<!-- {(srcAsset && <AstroImage src={srcAsset} alt={alt || ''} style={style} class={className} />) || <img src={src} alt={alt || ''} style={style} class={className} />} -->
-<img src={srcURL} alt={alt || ''} style={style} class:list={[className]} {...rest}/>
+<!-- TODO: use actual Astro image component? or both, if its available? -->{(srcAsset && <AstroImage src={srcAsset} alt={alt || ''} style={style} class={className} />) || <img src={src} alt={alt || ''} style={style} class={className} />}
+
+<!-- <img src={srcURL} alt={alt || ''} style={style} class:list={[className]} {...rest}/> -->
