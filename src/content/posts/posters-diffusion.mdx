@@ -1,0 +1,24 @@
+---
+dated: '2023-04-20'
+title: 'Diffusion Wallpapers and Posters'
+blurb: 'These are wallpapers and posters made by playing around with Stable Diffusion.'
+image: '/assets/diffusion-posters/diffusion-posters.webp'
+---
+
+I just made a bunch of images with [Stable Diffusion](https://stability.ai/), which is available for free (kinda cool)! I made them for displaying on my phone, desktop, and physical wall. Enjoy!
+
+import Gallery from "@components/Gallery.astro"
+
+# Phone Wallpapers
+
+<Gallery images={['0', '1', '2', '3', '4', '5', '6', '7'].map(key => `/assets/diffusion-posters/phone-${key}.webp`)} />
+
+# Desktop Wallpapers
+
+<Gallery images={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'].map(key => `/assets/diffusion-posters/vision-${key}.webp`)} />
+
+# Wall Posters (36x24)
+
+<Gallery
+  images={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'].map(key => `/assets/diffusion-posters/poster-36x24-${key}.webp`)}
+/>

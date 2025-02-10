@@ -1,0 +1,40 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [
+    ".astro/types.d.ts",
+    "**/*"
+, "content/posts/paper-magma.mdx"  ],
+  "exclude": [
+    "dist"
+  ],
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@layouts/*": [
+        "src/layouts/*"
+      ],
+      "@styles/*": [
+        "src/styles/*"
+      ],
+      "@public/*": [
+        "public/*"
+      ],
+      "@assets/*": [
+        "public/assets/*"
+      ],
+      "@common": [
+        "src/common.ts"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "@astrojs/ts-plugin"
+      }
+    ]
+  }
+}

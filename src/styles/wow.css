@@ -1,0 +1,897 @@
+/* wow.css - a CSS styling regime that is opinionated yet extensible: https://cade.io/ */
+
+:root {
+
+    --wow-text: #eee;
+    --wow-link: #5af;
+    --wow-link-visited: #a5f;
+
+    --wow-high: #888;
+
+    --wow-back: #333;
+    --wow-back-alt: #222;
+    --wow-back-ult: #111;
+    --wow-back-max: #000;
+
+    --wow-border: #666;
+    --wow-shadow: #333;
+
+    --wow-header: #111;
+    --wow-footer: #111;
+
+}
+
+/* Defining Themes */
+
+html[data-theme="blackboard"] {
+    /* values are in ':root' */
+}
+
+html[data-theme="whiteboard"] {
+    --wow-text: #000;
+    --wow-link: #5af;
+    --wow-link-visited: #a5f;
+
+    --wow-high: #ccc;
+
+    --wow-back: #fff;
+    --wow-back-alt: #eee;
+    --wow-back-ult: #ddd;
+    --wow-back-max: #ccc;
+
+    --wow-border: #666;
+    --wow-shadow: #333;
+
+    --wow-header: #ddd;
+    --wow-footer: #ddd;
+}
+
+/* Reasonable Defaults and General Corrections */
+
+*,
+::before,
+::after {
+    /* account for border and padding when calculating element sizes */
+    box-sizing: border-box;
+    /* don't repeat backgrounds by default (i.e. no tiling images) */
+    background-repeat: no-repeat;
+    /* no extra margin or padding, by default */
+    margin: 0;
+    padding: 0;
+}
+
+::before,
+::after {
+    /* inherit text decoration from parent */
+    text-decoration: inherit;
+    /* inherit vertical alignment from parent */
+    vertical-align: inherit;
+}
+
+/* Text Styling */
+
+:where(small) {
+    /* make small text small, works recursively */
+    font-size: 0.9em;
+}
+
+:where(pre) {
+    /* make preformatted text use monospace font */
+    font-family: var(--wow-font-mono, monospace, monospace);
+    background: var(--wow-back-alt);
+    border: 1px solid var(--wow-border);
+    border-radius: 0.5em;
+}
+
+:where(code) {
+    /* use monospace text for code snippets */
+    font-family: var(--wow-font-mono, monospace, monospace);
+    /* use the same size as normal text */
+
+    background: var(--wow-back-alt);
+    border: 1px solid var(--wow-border);
+    font-size: 1em;
+    padding: 0.08em 0.16em;
+    border-radius: 0.25em;
+}
+
+:where(kbd) {
+    /* use monospace text for keyboard input */
+    font-family: var(--wow-font-mono, monospace, monospace);
+    /* use the same size as normal text */
+    font-size: 1em;
+}
+
+:where(samp) {
+    /* use monospace text for sample output */
+    font-family: var(--wow-font-mono, monospace, monospace);
+    /* use the same size as normal text */
+    font-size: 1em;
+}
+
+
+:where(a) {
+    /* remove underline by default */
+    text-decoration: none;
+    /* default link color from theme */
+    color: var(--wow-link);
+}
+
+:where(a:visited) {
+    /* special color for visited links */
+    color: var(--wow-link-visited);
+}
+
+:where(a:hover) {
+    /* on hover, add back underline */
+    text-decoration: underline;
+}
+
+:where(a:focus) {
+    /* on focus, add back underline */
+    text-decoration: underline;
+}
+
+:where(a:active) {
+    /* on click, add back underline */
+    text-decoration: underline;
+}
+
+:where(h1, h2, h3, h4, h5, h6) {
+    /* all headers have a bit of margin on top and bottom */
+    margin: 0.5em 0 0.25em 0;
+    /* since headers are bigger, reduce their relative line height */
+    line-height: 1.1;
+    /* all headers should be bold */
+    font-weight: bold;
+}
+
+:where(h1) {
+    /* for titles (h1), reduce top margin */
+    margin: 0.25em 0 0.25em 0;
+}
+
+:where(h1) {
+    font-size: 2.3em;
+}
+
+:where(h2) {
+    font-size: 1.7em;
+}
+
+:where(h3) {
+    font-size: 1.5em;
+}
+
+:where(h4) {
+    font-size: 1.3em;
+}
+
+:where(h5) {
+    font-size: 1.1em;
+}
+
+:where(h6) {
+    font-size: 1.0em;
+}
+
+@media (max-width: 800px) {
+    :where(h1) {
+        /* on small screens, make h1 a bit smaller */
+        font-size: 1.8em;
+    }
+}
+
+:where(p) {
+    /* add a small margin between paragraphs */
+    margin: 1em 0;
+}
+
+:where(blockquote) {
+    /* use relative positioning for the extra quote */
+    position: relative;
+    /* space around a blockquote, but extra on the left for an indent */
+    margin: 1em 2em;
+    /* have a small line on the left making it clear it is quoted */
+    border-left: 1px solid var(--wow-border);
+    /* space away from the line */
+    padding-left: 1em;
+    /* make the text a bit larger to draw attention */
+    font-size: 1.2em;
+    /* typically, quotes are italic */
+    font-style: italic;
+}
+
+/* fixes nested blockquotes, which will get bigger and bigger and bigger (X^depth) */
+:where(blockquote blockquote) {
+    /* instead of growing, recursive blockquotes start shrinking modestly */
+    font-size: 0.9em;
+}
+
+/* adds a nice open quote glyph to the left of the blockquote */
+:where(blockquote)::before {
+    /* the open quote glyph */
+    content: "\201C";
+
+    /* use absolute positioning to place the quote relative to the parent */
+    position: absolute;
+    /* NOTE: this may need to be adjusted for different fonts */
+    left: -0.7em;
+    top: -0.3em;
+
+    /* make the quote way bigger, since its more of an icon than actual text */
+    /* NOTE: this may need to be adjusted for different fonts */
+    font-size: 3em;
+}
+
+/* Asset Styling */
+
+:where(audio, canvas, iframe, img, video) {
+    /* align media elements in the middle */
+    display: block;
+    margin: 0 auto;
+}
+
+:where(svg) {
+    /* by default, SVGs should be the same color (i.e. for icons) */
+    fill: currentColor;
+    stroke: currentColor;
+}
+
+/* for inline SVGs, this helps with alignment */
+/* TODO: should this be enabled? */
+/* :where(p svg),
+:where(span svg),
+:where(h1 svg),
+:where(h2 svg),
+:where(h3 svg),
+:where(h4 svg),
+:where(h5 svg),
+:where(h6 svg) {
+    vertical-align: text-bottom;
+    display: inline;
+} */
+
+:where(img) {
+    display: block;
+    /* make sure the image fits its container */
+    object-fit: contain;
+
+    /* center in the middle */
+    margin: 0 auto;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    /* width should always be in this range */
+    /* TODO: standardize these variables? */
+    /* min-width: 35%; */
+    /* max-width: 100%; */
+
+    /* height should always be in this range (for very-tall images) */
+    /* min-height: 35vh; */
+    /* max-height: 60vh; */
+
+    /* this sometimes fixes image quality... */
+    overflow-clip-margin: unset;
+
+    /* fixes bug in chrome with poor image scaling */
+    /* image-rendering: -webkit-optimize-contrast; */
+    /* image-rendering: smooth; */
+    /* image-rendering: smooth; */
+    /* image-rendering: optimizeQuality; */
+    /* background-color: green; */
+
+}
+
+:where(main img) {
+    /* any main content should look pretty by default */
+    border-radius: 0.5em;
+    border: 1px solid var(--wow-border);
+}
+
+:where(figure) {
+    /* and just try to fit its content with the minimum width */
+    /* width: max-content; */
+
+    /* center within parent */
+    /* margin: 1em auto; */
+    /* and ensure it isn't crowded */
+    margin: 0.5em;
+
+    /* align children in the middle */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+:where(figcaption) {
+    /* figure caption should be centered */
+    text-align: center;
+}
+
+:where(video) {
+    display: block;
+    max-width: 100%;
+    /* max-height: 60vh; */
+    margin: 1em auto;
+    border-radius: 0.25em;
+}
+
+:where(canvas) {
+    /* TODO: is there a good way to style canvas elements? or does this need JavaScript for resizing/etc */
+}
+
+:where(iframe) {
+    /* no border on iframe, so display directly element */
+    border: 1px solid var(--wow-border);
+    /* center within parent */
+    margin: 1em auto;
+    /* display: block; */
+    /* make iframe as big as possible, within parent */
+    width: 100%;
+}
+
+
+:where(ul, ol) {
+    /* fixes floating images and overhang issues */
+    /* BUT, this introduces scrollbar (hence the padding) */
+    /* overflow: auto; */
+    /* overflow: visible; */
+
+    /* need left pad for indent, top and bottom to fix scrollbar */
+    padding: 0.25em 0 0.25em 2em;
+    /* padding: 0.25em 0 0.25em 1.5em; */
+    /* padding: 0 0 0 2em; */
+    margin: 0;
+}
+
+:where(menu) {
+    /* disable default list styling, since it is for interation not display (typically) */
+    list-style-type: none;
+}
+
+:where(li) {
+    /* TODO: any other default list item styles? */
+    /* transform: translateX(2.0em); */
+    /* margin-right: 2.0em; */
+}
+
+:where(dl) {
+    /* description lists should have a bit of spacing */
+    margin: 1em 0;
+}
+
+:where(dt) {
+    /* terms in a description list should be bold */
+    font-weight: bold;
+}
+
+:where(dd) {
+    /* descriptions in a description list should be indented, quite a bit */
+    margin-left: 1.5em;
+}
+
+
+/* Table Styling */
+
+/* TODO: how should 'flipped' tables be styled? (i.e. transposed) */
+/* TODO: what about extra summary rows at bottom? */
+
+:where(table) {
+    /* center within parent */
+    margin: 1em auto;
+    /* remove text indentation in table cells */
+    text-indent: 0;
+    /* combine borders, so there aren't cell gaps or double borders */
+    border-collapse: collapse;
+    /* by default, inherit existing border color */
+    border-color: inherit;
+    /* make the background stand out above other content */
+    background: var(--wow-back-alt);
+
+    /* TODO: this sizes the table to the headings, but that might clip things... */
+    /* table-layout: fixed; */
+}
+
+:where(table > caption) {
+    /* center the caption */
+    text-align: center;
+    /* add a bit of space */
+    margin: 0.5em;
+}
+
+:where(thead th) {
+    /* table header row should be bold */
+    font-weight: bold;
+    /* make the background a bit darker */
+    background-color: var(--wow-back-max);
+}
+
+:where(tfoot td) {
+    /* table footer row should be bold */
+    font-weight: bold;
+    /* make the background a bit darker */
+    background-color: var(--wow-back-max);
+}
+
+:where(th),
+:where(td) {
+    padding: 0.25em 0.5em;
+    /* by default, center align text for even-ness */
+    text-align: center;
+    /* make border very thin (but, joined) */
+    border: 1px solid var(--wow-border);
+}
+
+:where(tr:nth-child(odd)) {
+    /* make odd rows a bit lighter */
+}
+
+:where(tr:nth-child(even)) {
+    /* make even rows a bit darker */
+    background-color: var(--wow-back-ult);
+}
+
+/* Form Styling */
+
+:where(button) {
+    /* use parent's font, instead of a UI font */
+    font-family: inherit;
+    /* by default, all buttons should be bold */
+    font-weight: bold;
+}
+
+:where(fieldset) {
+    /* fix inconsistent appearance across browsers */
+    border: 1px solid var(--wow-border);
+}
+
+:where(progress) {
+    /* add correct veritcal alignment across browsers (Chrome, Edge, Firefox) */
+    vertical-align: baseline;
+}
+
+:where(textarea) {
+    /* make textareas resize vertically (Firefox, Safari) */
+    resize: vertical;
+}
+
+:where(dialog) {
+    /* add correct styles to be consistent (Safari) */
+    background-color: var(--wow-high);
+    border: solid;
+    color: var(--wow-text);
+    height: -moz-fit-content;
+    height: fit-content;
+    left: 0;
+    margin: auto;
+    padding: 1em;
+    position: absolute;
+    right: 0;
+    width: -moz-fit-content;
+    width: fit-content;
+}
+
+:where(dialog:not([open])) {
+    /* fix for Safari */
+    display: none;
+}
+
+:where(details > summary:first-of-type) {
+    /* fix for Safari */
+    display: list-item;
+}
+
+/* Primary Structural Styling */
+
+:where(body) {
+    /* make the entire document a column of content */
+    display: flex;
+    flex-direction: column;
+
+    /* no extra spacing */
+    margin: 0 auto;
+    padding: 0;
+
+    /* as big as possible */
+    width: 100%;
+    /* max-width: 2000px; */
+    max-width: 2400 px;
+
+    /* max-width: 100%; */
+
+    min-height: 100vh;
+
+    /* take colors from `--wow-` theme variables */
+    color: var(--wow-text);
+    background: var(--wow-back, #000);
+
+    /* default text is a bit larger, and more spacious */
+    line-height: 1.4;
+    font-size: 20px;
+
+    /* break words instead of letting them overflow the container */
+    overflow-wrap: break-word;
+    /* use the platform default cursor icon */
+    cursor: default;
+
+    /* use a 4 space tab in all browsers for consistency */
+    tab-size: 4;
+    -moz-tab-size: 4;
+
+    /* prefer the most readable text rendering preset */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+
+    /* remove gray highlight on iOS/webkit links */
+    -webkit-tap-highlight-color: transparent;
+
+    /* fixes adjustments of font size due to orientation changes in iOS/webkit */
+    -webkit-text-size-adjust: 100%;
+}
+
+:where(header) {
+    /* bigger text in header */
+    /* font-size: 1.1em; */
+    /* default styling */
+    background: var(--wow-header);
+    border-bottom: 1px solid var(--wow-border);
+}
+
+:where(footer) {
+    /* bigger text in footer */
+    /* font-size: 1.1em; */
+
+    /* ensure footer is not tiny */
+    min-height: 4em;
+
+    /* add a bit of space */
+    padding: 2em 1em;
+
+    /* default styling */
+    border-top: 1px solid var(--wow-border);
+    background: var(--wow-footer);
+}
+
+:where(aside) {}
+
+:where(nav) {}
+
+:where(center) {
+    /* make as wide as possible */
+    width: 100%;
+    /* ensure centered content */
+    margin: 0 auto;
+}
+
+:where(main) {
+    /* the main content should grow to fill the space */
+    flex-grow: 1;
+    width: 100%;
+    /* max-width: 2000px; */
+    padding: 1em;
+    margin: 0 auto;
+
+    background: var(--wow-main);
+}
+
+@media (max-width: 800px) {
+    :where(main) {
+        /* smaller spacing on mobile */
+        padding: 0.5em;
+    }
+}
+
+:where(article) {
+    width: 100%;
+}
+
+:where(section) {
+    /* TODO: is this needed? */
+    width: 100%;
+}
+
+:where(hr) {
+    /* take up full width */
+    width: 100%;
+    /* add a bit of spacing */
+    margin: 0.25em 0;
+    padding: 0;
+    /* make a thin line as the only visible part, same as text color */
+    border: 1px solid var(--wow-text);
+}
+
+/* Special Named Classes (WOW) */
+
+@media (min-width: 801px) {
+    /* on large screens, float images to the right or left with these classes */
+
+    .wow-fr {
+        /* float right for images, content, etc... */
+        float: right;
+        max-width: 35%;
+        margin-left: 1.0em;
+    }
+
+    .wow-fl {
+        /* float left for images, content, etc... */
+        float: left;
+        max-width: 35%;
+        margin-right: 1.0em;
+    }
+}
+
+
+@media (max-width: 800px) {
+    .wow-hide-mobile {
+        display: none;
+    }
+}
+
+/* Accessibility Fixes (ARIA) */
+
+:where([aria-busy="true" i]) {
+    /* match busy cursor design across browsers */
+    cursor: progress;
+}
+
+:where([aria-controls]) {
+    /* match pointer cursor design across browsers */
+    cursor: pointer;
+}
+
+:where([aria-disabled="true" i], [disabled]) {
+    /* match disabled cursor design across browsers */
+    cursor: not-allowed;
+}
+
+:where([aria-hidden="false" i][hidden]) {
+    /* match hidden element design across browsers */
+    display: initial;
+}
+
+:where([aria-hidden="false" i][hidden]:not(:focus)) {
+    /* match hidden element design across browsers */
+    clip: rect(0, 0, 0, 0);
+    position: absolute;
+}
+
+/* Browser Fixes (WebKit, Chrome, Firefox) */
+
+:where(button, [type="button" i], [type="reset" i], [type="submit" i]) {
+    /* on iOS/Safari, make buttons look like buttons */
+    -webkit-appearance: button;
+}
+
+:where([type="search" i]) {
+    /* make search inputs look like text inputs (Chrome, Edge, Safari) */
+    -webkit-appearance: textfield;
+    /* correct outline offset in Safari */
+    outline-offset: -2px;
+}
+
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+    /* correct the cursor style of increment and decrement buttons in Safari */
+    height: auto;
+}
+
+::-webkit-input-placeholder {
+    /* correct the text style of placeholders in Chrome, Edge, Safari */
+    color: inherit;
+    opacity: 0.54;
+}
+
+
+::-webkit-search-decoration {
+    /* correct the style of search input decoration in Chrome, Edge, Safari */
+    -webkit-appearance: none;
+}
+
+
+::-webkit-file-upload-button {
+    /* correct the style of file upload buttons in Chrome, Edge, Safari */
+    -webkit-appearance: button;
+    /* make the button look like a button */
+    font: inherit;
+}
+
+/****/
+
+/* KaTeX Styling (math equations) */
+
+.katex-display {
+    /* scrollbar issue: https://github.com/KaTeX/KaTeX/issues/327 */
+    overflow-x: auto;
+    /* this is required to remove extra scrollbars... */
+    /* TODO: does this break anywhere? */
+    padding: 0.6em 0;
+    /* change the default margin, since we add new padding */
+    margin: 0 0;
+
+    /* make display equations bigger */
+    font-size: 1.2em;
+}
+
+.katex-display>.katex {
+    /* TODO: should this even be styled? it matters for multiplying font-size */
+    font-size: 1.2em;
+}
+
+/* inline equations, which are NOT within a katex-display */
+:not(.katex-display)>.katex {
+    /* match our line height, so equations fit in with text */
+    /* NOTE: if you use a smaller line-height, you may want a larger one for equations */
+    /* NOTE: this rule also applies to katex-display typically */
+    /* TODO: should we style differently if equations are within tables, lists, etc? */
+    /* line-height: 1.5; */
+    font-size: 1.1em;
+    line-height: 1;
+}
+
+/* on mobile, make equations sizing different */
+@media (max-width: 800px) {
+
+    .katex-display>.katex {
+        font-size: 1.0em;
+    }
+
+    :not(.katex-display)>.katex {
+        font-size: 1.1em;
+    }
+}
+
+/* Expressive Code Styling (code snippets) */
+
+@media (max-width: 800px) {
+
+    .expressive-code .ec-line .gutter {
+        /* on mobile, hide line numbers */
+        display: none;
+    }
+
+    .expressive-code .ec-line .code {
+        /* on mobile, hide line numbers */
+        border-inline-start: none !important;
+    }
+}
+
+/****/
+
+/* Autolink Headings (markdown extensions) */
+
+a.autolink-headings-link {
+    /* hidden by default */
+    display: none;
+    /* display: inline; */
+
+    /* center in parent */
+    /* justify-content: center; */
+    /* align-items: center; */
+    /* vertical-align: text-bottom; */
+
+    /* fine tune position and spacing */
+    position: relative;
+    /* bottom: 0.08em; */
+    margin: 0 0.2em;
+
+    /* bold, but no underline */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+h1:hover a.autolink-headings-link,
+h2:hover a.autolink-headings-link,
+h3:hover a.autolink-headings-link,
+h4:hover a.autolink-headings-link,
+h5:hover a.autolink-headings-link,
+h6:hover a.autolink-headings-link {
+    /* when hovering over heading, show the link */
+    display: inline;
+}
+
+
+svg.autolink-headings-icon {
+    /* fine tune size */
+    width: 0.8em;
+    height: 0.8em;
+}
+
+
+/****/
+
+/* Footnote Styling (markdown extensions) */
+
+a[data-footnote-backref] {
+    /* don't underline the backref */
+    text-decoration: none;
+    /* but do make it bold */
+    font-weight: bold;
+}
+
+a[data-footnote-ref] {
+    /* don't underline the ref */
+    text-decoration: none;
+    /* but do make it bold */
+    font-weight: bold;
+}
+
+a[data-footnote-ref]::before {
+    content: "[";
+}
+
+a[data-footnote-ref]::after {
+    content: "]";
+}
+
+/* style the list of footnotes in the (autogenerated) document section */
+section[data-footnotes] ol {
+    counter-reset: data-footnotes-counter;
+    margin: 1em;
+}
+
+section[data-footnotes] ol>li {
+    /* each list item needs to count up */
+    counter-increment: data-footnotes-counter;
+    /* and, give space between references */
+    /* margin: 2em 0; */
+    margin-bottom: 2em;
+    /* and, let's use hanging indentation, just on the first line */
+    text-indent: -1.5em;
+    padding-left: 1.5em;
+
+}
+
+section[data-footnotes] ol>li::marker {
+    /* just replace the default content with a bracketed counter */
+    content: "[" counter(data-footnotes-counter) "] ";
+    /* make it bold */
+    font-weight: bold;
+
+}
+
+a[data-footnote-backref]:first-of-type:before {
+    color: black;
+}
+
+a.data-footnote-backref:first-of-type {
+    color: black;
+}
+
+a.data-footnote-backref:first-of-type:before {
+    /* break to a newline before each backref */
+    content: "\A";
+    white-space: pre;
+}
+
+/****/
+
+/* give headers a markdown feel */
+/* TODO: should these be other symbols? should it go all the way to h6? should it be removed? */
+/* :where(h1)::before {
+    content: "# ";
+}
+
+:where(h2)::before {
+    content: "## ";
+}
+
+:where(h3)::before {
+    content: "### ";
+}
+
+:where(h4)::before {
+    content: "#### ";
+}
+
+:where(h5)::before {
+    content: "##### ";
+}
+
+:where(h6)::before {
+    content: "###### ";
+} */

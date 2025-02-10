@@ -1,0 +1,117 @@
+---
+dated: '2016-03-12'
+title: 'My First OEIS Entry: A267263'
+blurb: 'An introduction to the sequence A267263, and how it relates to the primorial number system.'
+image: '/assets/sequence-a267263/sequence-a267263.webp'
+---
+
+I submitted the sequence [A267263](https://oeis.org/A267263) to the [Online Encyclopedia of Integer Sequences (OEIS)](https://oeis.org/). 
+
+It's defined as the 'number of nonzero digits in representation of n in primorial base'.
+
+But... what does that mean? Let's break it down:
+
+[Primorial](https://en.wikipedia.org/wiki/Primorial)
+
+: The product of the first $k$ prime numbers: $ 2 \times 3 \times 5 \times \cdots \times p_k $.
+
+: Defined in the OEIS as sequence [A002110](https://oeis.org/A002110).
+
+[Primorial number system](https://en.wikipedia.org/wiki/Mixed_radix#Primorial_number_system)
+
+: A mixed radix representation using the primes as the place values, instead of the usual base-10.
+
+: For example, thirteen is: $ 13_{10} = 201_\# = 2 \times (3\#) + 0 \times (2\#) + 1 = \brack{\mat{2&0&1}} \cdot \brack{\mat{6&2&1}} $.
+
+So, this is basically another way of writing numbers down, or representing them and assigning them to 'strings' of digits. The way we usually do is with base-10, also called [decimal](https://en.wikipedia.org/wiki/Decimal). Since successive place values in base-10 is multiplied by $10$, thus the value of $1\underbrace{0 \cdots 0}_\text{k zeros}$ is $10^k$ in decimal.
+
+However, in the primorial number system, the place values are the products of the first $k$ prime numbers. So, the value of $1\underbrace{0 \cdots 0}_\text{k zeros}$ is $2 \times 3 \times 5 \times \cdots \times p_k$ in primorial.
+
+In effect, this sequence describes how many 'imperfect matches' a number has when reducing modulo subsequent primes. It is analogous to the [Hamming weight](https://en.wikipedia.org/wiki/Hamming_weight) of a binary number, but in a different base.
+
+![A chart of sequence A267263 (via the OEIS)](/assets/sequence-a267263/sequence-a267263.webp)
+
+## No, Really, What Does It Mean?
+
+Well, it's sort of a curiosity. It came up when I was studying algorithms for searching for [prime generating polynomials](https://en.wikipedia.org/wiki/Formula_for_primes#Prime_formulas_and_polynomial_functions). In the same way that the [computational complexity](https://en.wikipedia.org/wiki/Computational_complexity) of [modular exponentiation](https://en.wikipedia.org/wiki/Exponentiation_by_squaring) is determined by the Hamming weight of the exponent, the A267263 sequence appears in the computational complexity of algorithms based on [recursive wheel factorization](https://en.wikipedia.org/wiki/Wheel_factorization).
+
+I realize that this just introduced more questions than it answered. I plan on writing more about these topics, but for now, I just wanted to share this interesting sequence. For now, I'll leave you with a table of the first few values of the sequence, and a way to generate these values in Python.
+
+## Calculating the Sequence
+
+Here's a table of the first few values of the sequence, along with their primorial string representation:
+
+
+|              $n$ |   0 |     1 |      2 |      3 |      4 |      5 |       6 |           7 |       8 |       9 |      10 |      11 |      12 |          13 |      14 |      15 |
+|-----------------:|----:|------:|-------:|-------:|-------:|-------:|--------:|------------:|--------:|--------:|--------:|--------:|--------:|------------:|--------:|--------:|
+|     $A267263(n)$ |   0 |     1 |      1 |      2 |      1 |      2 |       1 |           2 |       2 |       3 |       2 |       3 |       1 |           2 |       2 |       3 |
+| Primorial String |   0 | **1** | **1**0 | **11** | **2**0 | **21** | **1**00 | **1**0**1** | **11**0 | **111** | **12**0 | **121** | **2**00 | **2**0**1** | **21**0 | **211** |
+
+Hence, the sequence A267263 is defined as the number of bolded digits in the primorial string representation of $n$.
+
+To generate the information in this blog, I use the following Python code:
+
+```python title='A267263.py' collapse={1-11, 35-42, 48-52}
+# A267263.py - exploration of an integer sequence: https://oeis.org/A267263
+# NOTE: read a full post at: https://cade.io/a267263
+
+# we use a lazy prime generator from SymPy
+from sympy import sieve
+
+# pandas is just used for conversion to a markdown table
+import pandas
+
+# digits used for string conversion
+DIGITS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+def A267263(n: int) -> int:
+    ''' Number of nonzero digits in representation of n in primorial base. '''
+    return sum(1 for n in primorial_residues(n) if n != 0)
+
+def primorial_residues(num: int) -> list:
+    ''' Calculates successive residues in the primorial radix system. '''
+    res = []
+
+    # at each step, maintain the current 'digit' and what's left
+    div, mod = num, 0
+    for prime in sieve:
+        
+        # quit once we have enough residues to represent the number
+        if div == 0: break
+
+        # otherwise, continue to extract the next residue
+        div, mod = divmod(div, prime)
+        res.append(mod)
+
+    # and so, we will have place values for: [2#, 3#, 5#, ...]
+    return res
+
+def primorial_string(num: int) -> str:
+    ''' Converts a number to its primorial representation '''
+    # NOTE: this won't work for very large numbers that exceed (37#)
+    return ''.join(DIGITS[n] for n in primorial_residues(num)[::-1]) or '0'
+
+def bold_nonzeros(s: str) -> str:
+    ''' Bolds all non-zero digits in a string '''
+    return '0'.join(f'**{ss}**' if ss else '' for ss in s.split('0'))
+
+# generate a table of values and useful information to display
+rows = [(n, A267263(n), bold_nonzeros(primorial_string(n))) for n in range(16)]
+df = pandas.DataFrame(rows, columns=['$n$', '$A267263(n)$', 'Primorial String'])
+
+# transpose the dataframe, to change orientation
+df = df.transpose()
+df.columns = df.iloc[0]
+df = df[1:]
+df.index.name = '$n$'
+
+# print the transposed table as markdown
+print(df.to_markdown(index=True, stralign='right'))
+
+```
+
+This requires a few dependencies, which you can install with:
+
+```sh
+pip install sympy pandas tabulate
+```

@@ -1,0 +1,49 @@
+---
+import Social from './Social.astro'
+
+type Props = {
+	socials: { [social: string]: string }
+	extra?: boolean
+}
+
+const { socials, extra = false } = Astro.props
+---
+
+<ul>
+	{
+		Object.entries(socials).map(([social, tag]) => (
+			<li>
+				<Social social={social} tag={tag} extra={extra} />
+			</li>
+		))
+	}
+</ul>
+
+<style>
+	ul {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		list-style: none;
+
+		/* margin: 1em 2em; */
+		padding: 0;
+		gap: 0.5em;
+		/* gap: 0.5em 1em; */
+
+		/* max-width: 800px; */
+		/* font-size: 1.1em; */
+	}
+
+	li {
+		/* margin: 0.5em; */
+		font-size: 1.2em;
+	}
+
+	li > a {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+	}
+</style>

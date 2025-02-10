@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content'
+
+import Page from '@layouts/Page.astro'
+
+import CardListPosts from '@components/CardListPosts.astro'
+
+import { SITE_TITLE as title, SITE_BLURB as blurb } from '@common'
+import SlabList from '@components/SlabList.astro'
+import Slab from '@components/Slab.astro'
+import Names from '@components/Names.astro'
+import Dated from '@components/Dated.astro'
+import SlabListPosts from '@components/SlabListPosts.astro'
+
+// fetch all the blog posts, sorted by date
+const posts = (await getCollection('posts', ({ data }) => {
+	if (import.meta.env.PROD) {
+		// in production, only show published posts (i.e. not drafts)
+		return data.draft !== true;
+	} else {
+		// in development, show all posts including drafts
+		return true;
+	}
+})).sort((a, b) => b.data.dated.valueOf() - a.data.dated.valueOf())
+---
+
+<Page title={title} blurb={blurb}>
+	<SlabListPosts posts={posts} />
+</Page>
+
+<!-- <Page title={title} blurb={blurb}>
+	<SlabList items={posts}>
+		{
+			({ id, data: { dated, title, blurb, image, names } }: CollectionEntry<'posts'>) => (
+				<>
+				<hr/>
+				<Slab href={`/posts/${id}`} image={image} title={title} blurb={blurb}>
+				<span slot='subtitle'>
+					on <Dated dated={dated} /> by <names names={names.map((name) => name.id)} />
+				</span>
+				</Slab>
+				</>
+			)
+		}
+	</SlabList>
+</Page> -->
+<!-- 
+<SlabList items={posts}>
+	{
+		({ id, data: { dated, title, blurb, image, names } }: CollectionEntry<'posts'>) => (
+			<Slab href={`/posts/${id}`} image={image} title={title} blurb={blurb}>
+				<span slot='subtitle'>
+					by <names names={names.map((name) => name.id)} /> on <Dated dated={dated} />
+				</span>
+			</Slab>
+		)
+	}
+</SlabList> -->
+
+<!-- 
+<Page title={title} blurb={blurb}>
+	<center>
+		<h2>Recent Posts</h2>
+		<CardListPosts posts={posts} />
+	</center>
+</Page>
+ -->

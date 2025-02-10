@@ -1,0 +1,71 @@
+---
+type Props = {
+	text?: string
+	class?: string
+}
+
+const { text, class: className, ...rest } = Astro.props
+---
+
+<span class='hover-blurb'>
+	{text && text}
+	<slot name='text' />
+
+	<span class:list={['hover-popup', className]} {...rest}>
+		<slot />
+	</span>
+
+	<!-- <span class="hover-basic">
+		<slot name="text" />
+	</span>
+	<span class="hover-popup">
+		{image && <Image src={image} alt={'alt text'} />}
+		<span class="hover-slots">
+			<slot />
+		</span>
+	</span> -->
+</span>
+
+<style>
+	span.hover-blurb {
+		/* needed for the popup to position correctly */
+		position: relative;
+		z-index: 1;
+	}
+
+	span.hover-popup {
+		/* we position it relative to parent (kinda backwards...) */
+		position: absolute;
+
+		/* we position it to be below the parent, centered */
+		top: 90%;
+		left: 50%;
+		transform: translateX(-50%);
+
+		/* TODO: are these reasonable? */
+		width: 24em;
+		height: 8em;
+		/* width: 24em; */
+		/* min-height: 8em; */
+
+		border: 1px solid var(--wow-border);
+		border-radius: 0.5em;
+		background: var(--wow-back-alt);
+
+		/* ensure we don't overflow */
+		text-overflow: ellipsis;
+		overflow: hidden;
+		/* text-align: left; */
+
+		/* by default, it should be hidden */
+		display: none;
+		/* display: inline-flex; */
+	}
+
+	span.hover-blurb:hover span.hover-popup {
+		/* when hovered, display it */
+		display: inline-flex;
+		/* TODO: figure out how to animate the popup? */
+		/* transition: opacity 0.5s; */
+	}
+</style>

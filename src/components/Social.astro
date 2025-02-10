@@ -1,0 +1,102 @@
+---
+import { Icon } from 'astro-icon/components'
+
+type Props = {
+	social: string
+	tag: string
+	extra?: boolean
+}
+
+const { social, tag, extra = false } = Astro.props
+
+const urlfor = (social: string, tag: string) => {
+	if (social === 'email') {
+		return `mailto:${tag}`
+	} else if (social === 'youtube') {
+		return `https://youtube.com/@${tag}`
+	} else if (social == 'twitch') {
+		return `https://twitch.tv/${tag}`
+	} else if (social === 'facebook') {
+		return `https://www.facebook.com/${tag}`
+	} else if (social === 'linkedin') {
+		return `https://www.linkedin.com/in/${tag}`
+	} else if (social === 'twitter') {
+		return `https://twitter.com/${tag}`
+	} else if (social === 'instagram') {
+		return `https://instagram.com/${tag}`
+	} else if (social === 'github') {
+		return `https://github.com/${tag}`
+	} else if (social === 'website') {
+		return `https://${tag}`
+	} else {
+		throw new Error(`Unknown social: ${social}`)
+		return 'unknown'
+	}
+}
+
+// TODO: allow passing in?
+const url = urlfor(social, tag)
+---
+
+<a href={url} target='_blank' rel='noopener noreferrer' class:list={['social', `social-${social}`]}>
+	<Icon name={`cadeio-icons/socials/${social}`} />{extra && `${tag}`}
+</a>
+
+<style>
+	a.social,
+	a.social:hover {
+
+		/* make sure children are centered (like icons) */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		/* should be bold with normal color */
+		text-decoration: none;
+		font-weight: bold;
+		/* TODO: what should color be on hover? */
+		/* color: inherit; */
+	}
+
+	a.social svg {
+		margin: 0 0.2em;
+	}
+
+	/* Social Colors */
+
+	a.social-website {
+		color: #666;
+	}
+
+	a.social-email {
+		color: hsl(26, 88%, 41%);
+	}
+
+	a.social-github {
+		color: #7409a6;
+	}
+
+	a.social-facebook {
+		color: #0765ff;
+	}
+
+	a.social-linkedin {
+		color: #0b65c2;
+	}
+
+	a.social-twitter {
+		color: #179cf0;
+	}
+
+	a.social-instagram {
+		color: #f76a03;
+	}
+
+	a.social-youtube {
+		color: #ff0032;
+	}
+
+	a.social-twitch {
+		color: #a96fff;
+	}
+</style>

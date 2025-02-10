@@ -1,0 +1,49 @@
+---
+import type { ImageMetadata, MarkdownLayoutProps } from 'astro'
+
+import Base from '@layouts/Base.astro'
+import type { CollectionEntry } from 'astro:content'
+import Dated from '@components/Dated.astro'
+import Names from '@components/Names.astro'
+import Image from '@components/Image.astro'
+
+type Props = MarkdownLayoutProps<{
+	title: string
+	blurb: string
+	names?: (string | CollectionEntry<'names'>)[]
+	dated?: Date
+	image?: ImageMetadata | string
+}>
+
+const { title, blurb, image, names, dated, ...rest } = Astro.props.frontmatter || Astro.props
+---
+
+<Base title={title} blurb={blurb} image={image} names={names} dated={dated} {...rest}>
+	<!-- <section> -->
+		<slot />
+	<!-- </section> -->
+
+	<!-- forward the rest of slots (a bit ugly...) -->
+	<!-- <slot slot={Astro.slots.has('header-after') && 'header-after'} name='header-after' /> -->
+</Base>
+
+<!-- <style>
+	.intro {
+	}
+	.intro img {
+		display: block;
+		object-fit: cover;
+		/* height: 50vh; */
+		height: 25vh;
+		width: 100%;
+	}
+
+	.intro h1 {
+		/* font-size: 2.4em; */
+	}
+
+	.intro p {
+		/* font-size: 1.25em; */
+		/* margin: 0; */
+	}
+</style> -->

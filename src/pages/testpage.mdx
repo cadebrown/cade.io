@@ -1,0 +1,295 @@
+---
+layout: '@layouts/Page.astro'
+title: 'Markdown Test Page'
+blurb: 'A page to test markdown syntax and display features.'
+---
+
+[^1]: [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/), a quick reference and guide to Markdown syntax
+
+[^2]: [Definition Lists](https://www.markdownguide.org/extended-syntax/#definition-lists), a very cool HTML feature that is sorely missing from common markdown. I use the [remark-definition-list](https://www.npmjs.com/package/remark-definition-list) plugin to implement support.
+
+[^3]: [LaTeX Equations](https://en.wikipedia.org/wiki/LaTeX), a typesetting system commonly used for mathematical notation. I use the [rehype-katex](https://www.npmjs.com/package/rehype-katex) plugin to render LaTeX equations in HTML.
+
+[^4]: [Markdown Tables](https://www.markdownguide.org/extended-syntax/#tables) - even though it doesn't support things like a column of headers, or sums at the end, having nice styles on tabular data makes data science easy!
+
+This page is a reference for markdown syntax and display, to sanity check that everything is working as expected, and appears properly when converted to HTML. It also tests features that might not be available in default configurations[^1], definition lists[^2], mathematical notation[^3], and tables[^4].
+
+To see what it should look like, you can see it in action at: [cade.io/testpage](https://cade.io/testpage)
+
+Internal link test: [link to code block](#code-snippets)
+
+## Text
+
+Basic text in markdown is just plain text, which is rendered as-is. You can **bold**, *italicize*, <u>underline</u>, <s>strikethrough</s>, or `preformat` text by using special syntaces:
+
+* **bold text** is surrounded by `**` characters, as in: `**bold text**`
+* *italic text* is surrounded by `*` characters, as in: `*italic text*`
+* <u>underlined text</u> is surrounded by `<u>` tags, as in: `<u>underlined text</u>` (note: this is not standard markdown)
+* <s>strikethrough text</s> is surrounded by `<s>` tags, as in: `<s>strikethrough text</s>` (note: this is not standard markdown)
+* `preformatted text` is surrounded by backticks, as in: `` `preformatted text` ``
+
+Furthermore, multiple styles of text can be combined, like ***bold italic text***, by combining the syntaces: `***bold italic text***`. Or, you can create really wild combinations like <u><s>***`bold italic underlined strikethrough preformatted text`***</s></u>. (though, your readers may not appreciate it).
+
+
+
+You can also add footnotes[^1] like this.
+
+[^1]: This is a footnote.
+
+[^2]: This is another footnote.
+
+[^3]: This is a third footnote.
+
+
+
+### Block Quotes
+
+Block quotes are denoted by prefixing lines with the `>` character, 
+
+```markdown
+> This is a block quote.
+>
+> It can span multiple lines, and contain other markdown syntax.
+```
+
+A somewhat uncommon feature of block quotes is that they can be nested, for example when a quote contains another quote:
+
+> > You miss 100% of the shots you don't take.
+> >
+> > -- Wayne Gretzky
+>
+> -- Michael Scott
+
+Further, in some cases there can be multiple levels of nesting, which is a good test for ensuring display styles are properly cascading:
+
+> I met a traveller from an antique land
+>
+> Who said: 
+>
+> > Two vast and trunkless legs of stone 
+> >
+> > Stand in the desart. Near them, on the sand,
+> >
+> > Half sunk, a shattered visage lies whose frown, 
+> >
+> > And wrinkled lip, and sneer of cold command,
+> >
+> > Tell that its sculptor well those passions read
+> >
+> > Which yet survive, stamped on these lifeless things,
+> >
+> > The hand that mocked them and the heart that fed:
+> >
+> > And on the pedestal these words appear:
+> >
+> > > My name is Ozymandias, King of Kings:
+> > >
+> > > Look on my works, ye Mighty, and despair!
+> >
+> > No thing beside remains. Round the decay
+> >
+> > Of that colossal wreck, boundless and bare
+> >
+> > The lone and level sands stretch far away.
+>
+> -- Percy Bysshe Shelley, "Ozymandias"
+
+And, we can also just use straightforward block quotes, without any nesting:
+
+> We can easily forgive a child who is afraid of the dark;
+>
+> the real tragedy of life is when men are afraid of the light.
+>
+> -- Plato
+
+> No man has the right to be an amateur in the matter of physical training. 
+>
+> It is a shame for a man to grow old without seeing the beauty and strength of which his body is capable
+>
+> -- Socrates
+
+
+### Sample Text
+
+Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur?
+
+At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. et harum quidem rerum facilis est et expedita distinctio. nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
+
+### Code Snippets
+
+
+### Unicode Symbols
+
+#### Box Drawing Characters
+
+Unicode provides a set of special characters called [box-drawing characters](https://en.wikipedia.org/wiki/Box-drawing_characters), which allows writing tables, diagrams, and other structures directly with text. Here is a table of the most common ones:
+
+| Range  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F |
+|--------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| U+250x | ─ | ━ | │ | ┃ | ┄ | ┅ | ┆ | ┇ | ┈ | ┉ | ┊ | ┋ | ┌ | ┍ | ┎ | ┏ |
+| U+251x | ┐ | ┑ | ┒ | ┓ | └ | ┕ | ┖ | ┗ | ┘ | ┙ | ┚ | ┛ | ├ | ┝ | ┞ | ┟ |
+| U+252x | ┠ | ┡ | ┢ | ┣ | ┤ | ┥ | ┦ | ┧ | ┨ | ┩ | ┪ | ┫ | ┬ | ┭ | ┮ | ┯ |
+| U+253x | ┰ | ┱ | ┲ | ┳ | ┴ | ┵ | ┶ | ┷ | ┸ | ┹ | ┺ | ┻ | ┼ | ┽ | ┾ | ┿ |
+| U+254x | ╀ | ╁ | ╂ | ╃ | ╄ | ╅ | ╆ | ╇ | ╈ | ╉ | ╊ | ╋ | ╌ | ╍ | ╎ | ╏ |
+| U+255x | ═ | ║ | ╒ | ╓ | ╔ | ╕ | ╖ | ╗ | ╘ | ╙ | ╚ | ╛ | ╜ | ╝ | ╞ | ╟ |
+| U+256x | ╠ | ╡ | ╢ | ╣ | ╤ | ╥ | ╦ | ╧ | ╨ | ╩ | ╪ | ╫ | ╬ | ╭ | ╮ | ╯ |
+| U+257x | ╰ | ╱ | ╲ | ╳ | ╴ | ╵ | ╶ | ╷ | ╸ | ╹ | ╺ | ╻ | ╼ | ╽ | ╾ | ╿ |
+| U+258x | ▀ | ▁ | ▂ | ▃ | ▄ | ▅ | ▆ | ▇ | █ | ▉ | ▊ | ▋ | ▌ | ▍ | ▎ | ▏ |
+| U+259x | ▐ | ░ | ▒ | ▓ | ▔ | ▕ | ▖ | ▗ | ▘ | ▙ | ▚ | ▛ | ▜ | ▝ | ▞ | ▟ |
+
+#### Mathematical Symbols
+
+Unicode provides a set of [mathematical operators and symbols](https://en.wikipedia.org/wiki/Mathematical_operators_and_symbols_in_Unicode), which allows writing mathematical notation and equations directly with text. Here is a table of the most common ones:
+
+| Range  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F |
+|--------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| U+220x | ∀ | ∁ | ∂ | ∃ | ∄ | ∅ | ∆ | ∇ | ∈ | ∉ | ∊ | ∋ | ∌ | ∍ | ∎ | ∏ |
+| U+221x | ∐ | ∑ | − | ∓ | ∔ | ∕ | ∖ | ∗ | ∘ | ∙ | √ | ∛ | ∜ | ∝ | ∞ | ∟ |
+| U+222x | ∠ | ∡ | ∢ | ∣ | ∤ | ∥ | ∦ | ∧ | ∨ | ∩ | ∪ | ∫ | ∬ | ∭ | ∮ | ∯ |
+| U+223x | ∰ | ∱ | ∲ | ∳ | ∴ | ∵ | ∶ | ∷ | ∸ | ∹ | ∺ | ∻ | ∼ | ∽ | ∾ | ∿ |
+| U+224x | ≀ | ≁ | ≂ | ≃ | ≄ | ≅ | ≆ | ≇ | ≈ | ≉ | ≊ | ≋ | ≌ | ≍ | ≎ | ≏ |
+| U+225x | ≐ | ≑ | ≒ | ≓ | ≔ | ≕ | ≖ | ≗ | ≘ | ≙ | ≚ | ≛ | ≜ | ≝ | ≞ | ≟ |
+| U+226x | ≠ | ≡ | ≢ | ≣ | ≤ | ≥ | ≦ | ≧ | ≨ | ≩ | ≪ | ≫ | ≬ | ≭ | ≮ | ≯ |
+| U+227x | ≰ | ≱ | ≲ | ≳ | ≴ | ≵ | ≶ | ≷ | ≸ | ≹ | ≺ | ≻ | ≼ | ≽ | ≾ | ≿ |
+| U+228x | ⊀ | ⊁ | ⊂ | ⊃ | ⊄ | ⊅ | ⊆ | ⊇ | ⊈ | ⊉ | ⊊ | ⊋ | ⊌ | ⊍ | ⊎ | ⊏ |
+| U+229x | ⊐ | ⊑ | ⊒ | ⊓ | ⊔ | ⊕ | ⊖ | ⊗ | ⊘ | ⊙ | ⊚ | ⊛ | ⊜ | ⊝ | ⊞ | ⊟ |
+| U+22Ax | ⊠ | ⊡ | ⊢ | ⊣ | ⊤ | ⊥ | ⊦ | ⊧ | ⊨ | ⊩ | ⊪ | ⊫ | ⊬ | ⊭ | ⊮ | ⊯ |
+| U+22Bx | ⊰ | ⊱ | ⊲ | ⊳ | ⊴ | ⊵ | ⊶ | ⊷ | ⊸ | ⊹ | ⊺ | ⊻ | ⊼ | ⊽ | ⊾ | ⊿ |
+| U+22Cx | ⋀ | ⋁ | ⋂ | ⋃ | ⋄ | ⋅ | ⋆ | ⋇ | ⋈ | ⋉ | ⋊ | ⋋ | ⋌ | ⋍ | ⋎ | ⋏ |
+| U+22Dx | ⋐ | ⋑ | ⋒ | ⋓ | ⋔ | ⋕ | ⋖ | ⋗ | ⋘ | ⋙ | ⋚ | ⋛ | ⋜ | ⋝ | ⋞ | ⋟ |
+| U+22Ex | ⋠ | ⋡ | ⋢ | ⋣ | ⋤ | ⋥ | ⋦ | ⋧ | ⋨ | ⋩ | ⋪ | ⋫ | ⋬ | ⋭ | ⋮ | ⋯ |
+| U+22Fx | ⋰ | ⋱ | ⋲ | ⋳ | ⋴ | ⋵ | ⋶ | ⋷ | ⋸ | ⋹ | ⋺ | ⋻ | ⋼ | ⋽ | ⋾ | ⋿ |
+
+$$
+\phi(t)=\frac{1}{\sqrt{2\pi}}\int^t_0 e^{-x^2/2} dx
+$$
+
+$$
+\prod_{j\geq 0}\left(\sum_{k\geq 0}a_{jk} z^k\right) = \sum_{k\geq 0} z^n\left( \sum_{{k_0,k_1,\ldots\geq 0}\atop{k_0+k_1+\ldots=n}}a{_0k_0}a_{1k_1}\ldots  \right)
+$$
+
+$$
+\pi(n) = \sum_{m=2}^{n}\left\lfloor \left(\sum_{k=1}^{m-1}\lfloor(m/k)/\lceil m/k\rceil \rfloor \right)^{-1}\right\rfloor
+$$
+
+$$
+\{\underbrace{\overbrace{\mathstrut a,\ldots,a}^{k\ a's},\overbrace{\mathstrut b,\ldots,b}^{l\ b's}}_{k+1\ \mathrm{elements}}\}
+$$
+
+## Lists
+
+### Unordered Lists
+
+Here's an example of an unordered list:
+
+* Item 1
+* Item 2
+* Item 3
+
+And here's another example that also nests other lists:
+
+* Item 1
+* Item 2
+  * Item 2.1
+  * Item 2.2
+* Item 3
+  * Item 3.1
+    * Item 3.1.1
+    * Item 3.1.2
+  * Item 3.2
+    * Item 3.2.1
+      * Item 3.2.1.1
+* Item 4
+
+
+### Ordered Lists
+
+Here's an example of an ordered list:
+
+1. Item 1
+2. Item 2
+3. Item 3
+
+And here's another example that also nests other lists:
+
+1. Item 1
+2. Item 2
+3. Item 3
+   1. Item 3.1
+   2. Item 3.2
+   3. Item 3.3
+4. Item 4
+    1. Item 4.1
+        1. Item 4.1.1
+        2. Item 4.1.2
+    2. Item 4.2
+        1. Item 4.2.1
+        2. Item 4.2.2
+5. Item 5
+
+### Definition Lists
+
+Here's an example of a definition list, which is not standard markdown, but is supported by some markdown processors:
+
+Term 1
+: Definition 1
+
+Term 2
+: Definition 2
+: And it can have multiple definitions
+
+Term 3
+: Definition 3
+: And it can have *fancy* **text** too
+
+
+### Tables
+
+Here's an example of a table of the largest cities in the world (from [Wikipedia](https://en.wikipedia.org/wiki/List_of_largest_cities)):
+
+| Rank | City              | Population   | Country                      | Year |
+|------|-------------------|--------------|------------------------------|------|
+|   1  | Shanghai          | 21,909,814   | China                        | 2020 |
+|   2  | Delhi             | 21,359,000   | India                        | 2023 |
+|   3  | Karachi           | 20,382,881   | Pakistan                     | 2023 |
+|   4  | Beijing           | 18,960,744   | China                        | 2020 |
+|   5  | Shenzhen          | 17,444,609   | China                        | 2020 |
+|   6  | Kinshasa          | 16,316,000   | Democratic Republic of Congo | 2023 |
+|   7  | Guangzhou         | 16,096,724   | China                        | 2020 |
+|   8  | Lagos             | 15,946,000   | Nigeria                      | 2023 |
+|   9  | İstanbul          | 15,907,951   | Turkey                       | 2022 |
+
+Here's another which represents the [Figurate Number Sequences](https://en.wikipedia.org/wiki/Figurate_number#Triangular_numbers_and_their_analogs_in_higher_dimensions) (i.e. triangular numbers, tetrahedral numbers, and so on):
+
+| $ n $ | $ T_n $ | $ S_n $ | $ P_n $ |
+|---|---------|---------|---------|
+| 1 | 1       | 1       | 1       |
+| 2 | 3       | 4       | 5       |
+| 3 | 6       | 10      | 15      |
+| 4 | 10      | 20      | 35      |
+| 5 | 15      | 35      | 70      |
+| 6 | 21      | 56      | 126     |
+| 7 | 28      | 84      | 210     |
+| 8 | 36      | 120     | 330     |
+| 9 | 45      | 165     | 495     |
+
+
+And those column labels are:
+
+ * `$ T_n $`, the triangular numbers are given by: $ T_n = \frac{n(n+1)}{2} $
+ * `$ S_n $`, the square pyramidal numbers are given by: $ S_n = \frac{n(n+1)(2n+1)}{6} $
+ * `$ P_n $`, the pentagonal numbers are given by: $ P_n = \frac{n(3n-1)}{2} $
+
+
+## Assets
+
+### Images
+
+Here's an example of an image:
+
+![asdf](/assets/favicon-512-blue.png)
+
+$$
+\N\C
+$$
+

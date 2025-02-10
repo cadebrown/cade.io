@@ -1,0 +1,37 @@
+---
+import Image from './Image.astro'
+
+// NOTE: https://vkbansal.me/blog/resolving-images-astro-md-2
+
+type Props = {
+  src: string
+  alt?: string
+  caption?: string
+  style?: string
+  class?: string
+  href?: string
+  imgStyle?: string
+  imgClass?: string
+}
+
+
+const {
+  src,
+  alt,
+  caption = alt,
+  style,
+  class: className,
+  href,
+  imgStyle,
+  imgClass,
+  ...rest
+} = Astro.props
+
+
+---
+
+<figure class:list={[className]} style={style} {...rest}>
+    <slot />
+    <Image src={src} alt={alt} style={imgStyle} class={imgClass} />
+    {caption && <figcaption>{caption}</figcaption>}
+</figure>

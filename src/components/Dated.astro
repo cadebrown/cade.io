@@ -1,0 +1,17 @@
+---
+import { formatDate } from '@common'
+
+type Props = {
+	dated: Date
+}
+
+const { dated } = Astro.props
+---
+
+<time datetime={dated.toISOString()}>{formatDate(dated)}</time>
+
+<style>
+	time {
+		font-weight: bold;
+	}
+</style>

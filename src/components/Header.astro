@@ -1,0 +1,83 @@
+---
+import Image from './Image.astro'
+---
+
+<header>
+	<nav>
+		<ul class='header-links'>
+			<li>
+				<a href='/'>
+					<Image class='header-links-icon' src='/assets/favicon.dev.svg' />
+				</a>
+				<!-- <a href='/'>Home</a> -->
+			</li>
+
+			<li class='header-hidden-mobile'>
+				<a href='/'>cade.io</a>
+			</li>
+
+			<li>
+				<a href='/posts'>/posts</a>
+			</li>
+			<li>
+				<a href='/links'>/links</a>
+			</li>
+		</ul>
+		<search></search>
+	</nav>
+</header>
+
+<style>
+	header {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5em;
+		font-size: 1.2em;
+		font-family: var(--wow-font-mono, monospace);
+	}
+
+	.header-links {
+		/* lists in header/footer should just be content (semantic) */
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		/* justify-content: center; */
+		/* align-items: center; */
+		list-style-type: none;
+
+		/* no builtin list spacing, but add between elements*/
+		margin: 0;
+		padding: 0;
+		gap: 0.25em;
+	}
+
+	.header-links li {
+		display: inline-flex;
+		flex-direction: row;
+	}
+
+	.header-links a {
+		/* make sure children are centered (like icons) */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		/* should be bold with normal color */
+		font-weight: bold;
+		color: inherit;
+	}
+
+	.header-links-icon {
+		/* make it fit the text, inline  */
+		height: 1.8em;
+		width: 1.8em;
+		margin: 0.25em;
+	}
+
+	@media (max-width: 800px) {
+		.header-hidden-mobile {
+			/* hide on mobile / small screens */
+			display: none !important;
+		}
+	}
+</style>

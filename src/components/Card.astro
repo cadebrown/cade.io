@@ -1,0 +1,180 @@
+---
+import Image from './Image.astro'
+
+type Props = {
+    href: string
+    image: string
+    title: string
+    blurb: string
+}
+
+const { href, image, title, blurb } = Astro.props
+---
+
+<li class='card'>
+    <slot name='image'>
+        <Image class='card-image' src={image} alt={title} />
+    </slot>
+    <slot name='title'>
+        <span class='card-title'>
+            <a href={href}>{title}</a>
+        </span>
+    </slot>
+
+    <slot name='subtitle' />
+
+    <span class='card-blurb'>
+        <slot name='blurb'>
+            {blurb}
+        </slot>
+    </span>
+    <span class='card-links'>
+        <slot name='links'>
+            <a href={href}>View More</a>
+        </slot>
+    </span>
+</li>
+
+<style>
+    /* each post is a card/box list item */
+    li.card {
+        /* make it a flex column with centered content */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+
+        /* make all children the same width, autocalculated */
+        width: 100%;
+        max-width: 24em;
+        min-height: 32em;
+        max-height: 32em;
+
+        /* padding: 1em; */
+        border: 1px solid var(--wow-border);
+        border-radius: 0.5em;
+
+        /* background: blue; */
+    }
+
+    li.card img.card-image {
+        display: block;
+        height: 16em;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 0.5em 0.5em 0 0;
+        border-bottom: 1px solid var(--wow-border);
+        margin-bottom: 0.5em;
+        /* border-radius: 0.5em; */
+    }
+
+    li.card span.card-title {
+        font-size: 1.4em;
+        font-weight: bold;
+        text-decoration: none;
+        margin: 0 0.5em;
+    }
+
+    li.card span.card-title a {
+        color: inherit;
+    }
+
+    li.card span.card-blurb {
+        /* needs relative positioning for the fade */
+        position: relative;
+
+        /* take up the rest of the space */
+        flex-grow: 1;
+        width: 100%;
+
+        font-size: 1em;
+        padding: 0.5em;
+
+        /* static size, but may be too small or large... */
+        max-height: 10em;
+        /* height: 8em; */
+        /* min-height: 8em; */
+        /* max-height: 12em; */
+    
+        /* if it gets too large, hide and shorten */
+        overflow: hidden;
+
+        /* fade out the end of text */
+        mask-image: linear-gradient(180deg, #000 50%, rgba(0,0,0,0) 100%);
+    }
+
+    li.card span.card-links {
+        /* list of buttons that stretch the width */
+        display: flex;
+        justify-content: center;
+        /* make children as wide as possible */
+        gap: 0.5em;
+        padding: 0.25em;
+
+        width: 100%;
+        /* stay at the bottom */
+        margin-top: auto;
+        /* add divider */
+        border-top: 1px solid var(--wow-border);
+    }
+
+    li.card span.card-links a {
+        /* make it a button */
+        display: block;
+        text-align: center;
+
+        text-decoration: none;
+        font-weight: bold;
+
+        padding: 0.5em 1em;
+        border-radius: 0.5em;
+
+        font-size: 1.1em;
+
+        /* color: white; */
+        /* inherit color */
+        /* background: #333; */
+    }
+    li.card span.card-links:hover {
+        /* background: blue; */
+    }
+</style>
+<!-- 
+    span.cards-names {
+        font-size: 1.1em;
+    }
+
+    span.card-links {
+        /* list of buttons that stretch the width */
+        display: flex;
+        justify-content: center;
+        /* make children as wide as possible */
+        gap: 1em;
+        padding: 0.5em;
+
+        width: 100%;
+        /* stay at the bottom */
+        margin-top: auto;
+        /* add divider */
+        border-top: 1px solid black;
+    }
+
+    span.card-links a {
+        /* make it a button */
+        display: block;
+        text-align: center;
+
+        text-decoration: none;
+        font-weight: bold;
+
+        padding: 0.5em 1em;
+        border-radius: 0.5em;
+
+        /* color: white; */
+        /* inherit color */
+        /* background: #333; */
+    }
+    /* span.card-links a.cards-actions-open {
+        background: blue;
+        background: var(--wow-back-alt1);
+    } */ -->

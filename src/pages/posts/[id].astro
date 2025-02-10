@@ -1,0 +1,35 @@
+---
+import Names from '@components/Names.astro'
+import Dated from '@components/Dated.astro'
+import Page from '@layouts/Page.astro'
+import Image from '@components/Image.astro'
+import Socials from '@components/Socials.astro'
+import { type CollectionEntry, getCollection, getEntries } from 'astro:content'
+import { render } from 'astro:content'
+import Post from '@layouts/Post.astro'
+
+// define which paths are valid for this page
+export async function getStaticPaths() {
+	const posts = await getCollection('posts')
+	return posts.map((post) => ({
+		params: { id: post.id },
+		props: { post: post },
+	}))
+}
+
+type Props = {
+	post: CollectionEntry<'posts'>
+}
+
+const { post } = Astro.props
+const {
+	data: { dated, title, blurb, image, names, ...rest },
+} = post
+
+// and render the post content itself
+const { Content } = await render(post)
+---
+
+<Post title={title} blurb={blurb} image={image} names={names.map((name) => name.id)} dated={dated} {...rest}>
+	<Content />
+</Post>

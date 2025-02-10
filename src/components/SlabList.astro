@@ -1,0 +1,31 @@
+---
+// SlabList.astro - a list of slabs, which are very wide items that take up full width, and go down the page
+type Props = {
+    items: any[]
+}
+
+const { items } = Astro.props
+
+const itemsRendered = await Promise.all(items.map(async (item) => await Astro.slots.render('default', [item])))
+---
+
+<ol class='slablist'>
+    {itemsRendered}
+</ol>
+
+<style>
+    ol.slablist {
+        /* don't actually display as list */
+        list-style: none;
+
+        /* make it flex rows with very wide children, 1 per row */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        /* no extra space, just between children */
+        margin: 0;
+        padding: 0;
+        /* gap: 0.5em; */
+    }
+</style>

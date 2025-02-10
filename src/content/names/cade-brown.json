@@ -1,0 +1,16 @@
+{
+    "name": "Cade Brown",
+    "blurb": "Cade is a software developer at NVIDIA working on the cuFFT library, and hobbyist research mathematician in his free time.",
+    "image": "./cade-brown.webp",
+    "socials": {
+        "email": "cade@cade.io",
+        "//website": "cade.io",
+        "github": "cadebrown",
+        "//linkedin": "cade-brown",
+        "//facebook": "cade.brown.313",
+        "twitter": "dev_ceb",
+        "instagram": "dev_ceb",
+        "youtube": "dev_ceb",
+        "twitch": "dev_ceb"
+    }
+}

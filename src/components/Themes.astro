@@ -1,0 +1,91 @@
+---
+// Themes.astro - a theme toggle component that uses localStorage to persist the theme and apply
+
+// left/right side brackets for the themes
+const [lhs, rhs] = ['[', ']']
+---
+
+<div>
+    <span>themes: {lhs}</span>
+    <button title="set theme: 'blackboard'" aria-label="set theme: 'blackboard'" class='themes themes-blackboard' data-theme='blackboard'></button>
+    <button title="set theme: 'whiteboard'" aria-label="set theme: 'whiteboard'" class='themes themes-whiteboard' data-theme='whiteboard'></button>
+    <button title="set theme: 'debugboard'" aria-label="set theme: 'debugboard'" class='themes themes-debugboard' data-theme='debugboard'></button>
+    <span>{rhs}</span>
+</div>
+
+<style>
+    div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+
+        /*font-weight: bold;*/
+    }
+
+    .themes {
+        width: 2.5em;
+        height: 2.5em;
+        border-radius: 0.5em;
+
+        cursor: pointer;
+    }
+
+    /* preview buttons are a gradient square */
+    .themes-blackboard {
+        background-image: linear-gradient(135deg, #999 49%, #111 51%);
+    }
+    .themes-whiteboard {
+        background-image: linear-gradient(135deg, #eee 49%, #999 51%);
+    }
+    .themes-debugboard {
+        background-image: linear-gradient(135deg, #2d2 49%, #111 51%);
+    }
+</style>
+
+<script>
+    // the theme key in local storage
+    const theme_key = 'theme'
+
+    // the default theme, if none is set
+    const theme_default = 'blackboard'
+
+    // set the theme to the given name (or, sets to default if given ""/undefined/null)
+    function set_theme(theme: string) {
+        // if not given, load default from local storage or the side-wide default
+        if (!theme || theme == '') theme = localStorage.getItem(theme_key) || theme_default
+
+        // debug this action
+        //console.log("set_theme(", theme, ")");
+
+        // set 'data-theme' on the root element, see 'src/styles/global.css' for more info
+        document.documentElement.setAttribute('data-theme', theme)
+
+        // save the theme to local storage
+        localStorage.setItem(theme_key, theme)
+    }
+
+    // now, iterate over all buttons that set the theme and add a click event listener
+    // NOTE: using 'querySelectorAll' is fine even with multiple components, since the script is bundled and only ran once, not per component
+    document.querySelectorAll('.themes').forEach((button) => {
+        button.addEventListener('click', () => {
+            // actually set the theme based on 'data-theme' attribute on the button
+            set_theme(button.getAttribute('data-theme')!)
+        })
+    })
+
+    // on load, set the theme to default
+    // NOTE: we actually do this in Head.astro, check out that script there
+    //set_theme('')
+
+
+</script>
+
+<!-- NOTE: this goes in Head.astro
+<script is:inline>
+    // NOTE: see Themes.astro for the actual theme switcher
+    const theme_init = localStorage.getItem('theme') || 'blackboard'
+
+    // now, set the attribute of the root document element to the theme
+    document.documentElement.setAttribute('data-theme', theme_init)
+</script> -->

@@ -1,0 +1,156 @@
+---
+draft: true
+dated: '2025-01-01'
+title: 'My Writing Environment'
+blurb: 'How I use markdown and other tools to write my blog posts with Astro.'
+image: '/assets/test.png'
+---
+
+[^browsers]: I try to use a variety of browsers, including Firefox, Chrome, and Safari, to ensure that my site is accessible and usable across a variety of platforms.
+
+I love using markdown to write [my blog posts](/blog). Really, the plainest-text possible is my aim. However, most default markdown processors and workflows just aren't expressive enough for me, and become difficult to maintain complex structures (*cough* [Jekyll](https://jekyllrb.com/) *cough*). 
+
+My solution? The [Astro Framework](https://astro.build/)! Astro is a static site generator (with dynamic capabilities) that allows me to write markdown, but also use components, scripts, and metaprogramming to remove most of the headaches of working directly with HTML/JS/CSS. But, the thing I love most about Astro is that you can build your own workflow from various tools, instead of forcing you to 'drink the koolaid' of a single ecosystem (*cough* [React](https://reactjs.org/) *cough*).
+
+## Writing Posts
+
+So... all these technologies and buzzwords are great, but how do I *actually* sit down and write a blog post? 
+
+What is the process I follow? 
+
+Well, I typically take daily notes in my digital journal. Therein lies the graveyard of half-baked ideas, hastily written observations, and the occasional gem of insight.
+
+When a topic starts to take shape, such as an integer sequence I've been studying, or an idea for a new program, I'll collect my lists and links from that messy journal and directly paste into a new markdown file (for example, as `blog/my-new-idea.mdx`). I typically copy the metadata from my last post, but changing the date, title, and so on to match. For example, here's the metadata for this post:
+
+```yaml
+---
+dated: '2025-01-01'
+title: 'My Writing Environment'
+blurb: 'How I use markdown and other tools to write my blog posts'
+image: '/assets/writing.webp'
+---
+```
+
+Then, I run the Astro development server (`npm run dev`), and edit the source code in my [Visual Studio Code](https://code.visualstudio.com/) window, while previewing the changes in my web browser [^browsers] on my other screen. Astro listens to changes, and whenever a file is saved, it automatically rebuild and reloads the page in my browser. In effect, unless I need to scroll or interact with the page, I can just write my markdown and automatically see the results, without even using my mouse!
+
+I firmly believe that minimizing the duration of the iterative feedback loop is the key to maximizing productivity.
+
+### Including Assets (Images, Videos, etc.)
+
+Plain text is great, but people also like pictures. And thankfully, markdown makes it easy to include images with `[alt text](/path/to/image.jpg)` syntax. This works well and creates a corresponding HTML `<img>` tag in the rendered output.
+
+However, Astro has a really neat [Astro Images], and they have a corresponding [guide to including images](https://docs.astro.build/en/guides/images/).
+
+
+But, I've found that I often want to include a caption, or a link to the image source, or even a description of the image for accessibility purposes.
+
+
+### Equations and Formulae
+
+Many of my posts focus on mathematics, or otherwise adjacent topics. So, I end up needing to write a lot of equations. For very simple equations, normal text is adequate. But, for more complex equations, it quickly becomes unwieldy to write them and remain legible.
+
+Wouldn't it be nice if we could use [$\LaTeX$](https://en.wikipedia.org/wiki/LaTeX), the de-facto standard typesetting language? You might have seen [Overleaf](https://www.overleaf.com/), which is an amazing platform for writing papers online. But, even that is too cumbersome to integrate with a website.
+
+The solution is [$\KaTeX$](https://katex.org/docs/browser), which is a (limited) implementation of $\LaTeX$ that can be rendered in isolated equations, and then embedded into HTML. For example, writing `$a^3+b^3 \neq c^3$` will render as $a^3+b^3\neq c^3$ (I hope this works in your browser 😅). And, $\KaTeX$ allows 'display mode' equations, which will take up the entire width of the screen, which is required for big and tall formulae with lots of nesting such as:
+
+```markdown
+$$
+\zeta (s)={\frac {1}{1-2^{1-s}}}\sum _{n=0}^{\infty }{\frac {1}{2^{n+1}}}\sum _{k=0}^{n}{\binom {n}{k}}{\frac {(-1)^{k}}{(k+1)^{s}}}
+$$
+```
+
+$$
+\zeta (s)={\frac {1}{1-2^{1-s}}}\sum _{n=0}^{\infty }{\frac {1}{2^{n+1}}}\sum _{k=0}^{n}{\binom {n}{k}}{\frac {(-1)^{k}}{(k+1)^{s}}}
+$$
+
+In order for this to work, I had to use the [remark-math](https://github.com/remarkjs/remark-math) and the [rehype-katex](https://github.com/remarkjs/remark-math/tree/main/packages/rehype-katex) packages, which enable parsing and converting these equations into proper HTML. I also use the [copy-tex](https://github.com/KaTeX/KaTeX/tree/main/contrib/copy-tex) extension which allows me to copy the $\LaTeX$ source of an equation. (try it out! just select the above equation and `CTRL+C`/`CTRL+V` it) 
+
+$\KaTeX$ includes a few macros that are super useful by default:
+
+`\def\macroname#1#2#3{\frac{#1}{#2+#3}}`
+
+: Creates a macro (within an equation) used like `\macroname{a}{b}{c}`: $\def\macroname#1#2#3{\frac{#1}{#2+#3}}\macroname{a}{b}{c}$
+
+`\gdef\namedmacro#1#2#3{\sum_{#1}^{#2}{#3}}`
+
+: Creates reusable macro used like `\namedmacro{d}{e}{f}`: $\gdef\namedmacro#1#2#3{\sum_{#1}^{#2}{#3}}$ $\namedmacro{d}{e}{f}$
+
+And, we also have the ability to [create custom macros](https://katex.org/docs/supported#macros) in $\KaTeX$ that every page will have access to:
+
+```ts title="astro.config.ts"
+// additional KaTeX macro definitions. there are also some useful ones included:
+const katexMacros = {
+	// parentheses and brackets wrapping
+	'\\paren': '\\left(#1\\right)',
+	'\\brack': '\\left[#1\\right]',
+
+	// handy matrix shorthand
+	'\\mat': '\\begin{matrix}#1\\end{matrix}',
+
+	// commonly used math symbols
+	'\\N': '\\mathbb{N}',
+	'\\Z': '\\mathbb{Z}',
+	'\\Q': '\\mathbb{Q}',
+	'\\R': '\\mathbb{R}',
+	'\\C': '\\mathbb{C}',
+	'\\H': '\\mathbb{H}',
+}
+```
+
+Finally, we arrive at the global $\KaTeX$ [configuration options](https://katex.org/docs/options):
+
+```ts title="astro.config.ts"
+// our full KaTeX configuration object
+const katexConfig = {
+
+	// we want to see warnings, but still allow non-strict syntax
+	strict: 'warn',
+
+	// we can probably enable trust, since it is static at build time...
+	trust: true,
+
+	// WARN: if just HTML output is enabled, then the copy-tex extension doesn't work!
+	//output: 'html',
+	output: 'htmlAndMathml',
+
+	// custom default macros I use across the site
+	macros: katexMacros,
+}
+```
+
+The neat thing about how $\KaTeX$ works with Astro is that, although it is a JavaScript library, it is only used at build time. This means that the final shipped equation HTML is completely static content, so no HTML layout changes, screen jittering, or compatibility worries! Equally important is that this saves the size of `katex.min.js` from being loaded at runtime, which is 270KB (as of v0.16.21).
+
+### Code Samples
+
+TODO: expressive code here...
+
+
+## Rendering HTML
+
+Of course, markdown is great for writing content, but readers typically want to view it in a web browser on different devices. So, we'll need to output the posts as HTML. As mentioned before, I use Astro to handle this, but in this section I'll break down the tweaking I've done to the default configuration, as well as things like CSS styling needed to make the posts look good.
+
+### Styling with Less/CSS
+
+```shell
+npm install less
+```
+
+
+
+
+## Future Improvements
+
+This is my current workflow, but I'm constantly looking to improve it. So, I will periodically update this post with new tools, techniques, and ideas that I've found useful. 
+
+For now, here's a list of things I'm actively looking into:
+
+* Modifying [copy-tex](https://github.com/KaTeX/KaTeX/tree/main/contrib/copy-tex) so that **only** the $\LaTeX$ source is copied, and not the stray characters as well
+* Rrewriting a plugin to replace [rehype-figure](https://github.com/Microflash/rehype-figure) that allows for separating an alt text and image caption separately, instead of duplicating it
+
+
+
+* [awesome-remark](https://github.com/remarkjs/awesome-remark) - resources for remark plugins (markdown processing)
+    * [remark-math](https://github.com/remarkjs/remark-math/tree/main) - contains helpers for math/HTML rendering
+* [awesome-rehype](https://github.com/rehypejs/awesome-rehype) - resources for rehype plugins (HTML processing)
+
+

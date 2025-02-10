@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content'
+
+import Page from '@layouts/Page.astro'
+
+import Image from '@components/Image.astro'
+
+import CardListNames from '@components/CardListNames.astro'
+
+// fetch all the names
+// TODO: sort by something?
+const names = await getCollection('names')
+
+const title = 'All names'
+const blurb = 'A list of all the names on the site.'
+---
+
+<Page title={title} blurb={blurb}>
+	<center>
+		<CardListNames names={names} />
+	</center>
+</Page>

@@ -1,0 +1,28 @@
+---
+type Props = {
+    items: any[]
+}
+
+const { items } = Astro.props
+
+const itemsRendered = await Promise.all(items.map(async (item) => await Astro.slots.render('default', [item])))
+---
+
+<ol class='cardlist'>
+    {itemsRendered}
+</ol>
+
+<style>
+    ol.cardlist {
+        /* don't actually display as list */
+        list-style: none;
+
+        /* make it an autoresizing grid */
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1em;
+        margin: 0;
+        padding: 0;
+    }
+</style>

@@ -1,0 +1,37 @@
+---
+import type { CollectionEntry } from 'astro:content'
+
+import CardList from '@components/CardList.astro'
+import Card from '@components/Card.astro'
+import Socials from '@components/Socials.astro'
+
+type Props = {
+    names: CollectionEntry<'names'>[]
+}
+
+const { names } = Astro.props
+---
+
+<CardList items={names}>
+    {
+        ({ id, data: { name, blurb, image, socials } }) => {
+            const href = `/names/${id}`
+            return (
+                <Card href={href} image={image} title={name} blurb={blurb}>
+                    <span slot='title' class='cardlist-names-title'>
+                        <a href={href}>{name}</a>
+                        <Socials socials={socials} />
+                    </span>
+                </Card>
+            )
+        }
+    }
+</CardList>
+
+<style>
+    span.cardlist-names-title a {
+        color: inherit;
+        font-weight: bold;
+        font-size: 1.6em;
+    }
+</style>

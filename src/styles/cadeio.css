@@ -1,0 +1,126 @@
+/* cadeio.css - a CSS styling sheet for cade.io, my personal website */
+
+:root {
+	--accent: #2337ff;
+	--accent-dark: #000d8a;
+	--black: 15, 18, 25;
+	--gray: 96, 115, 159;
+	--gray-light: 229, 233, 240;
+	--gray-dark: 34, 41, 57;
+	--gray-gradient: rgba(var(--gray-light), 50%), #fff;
+	--box-shadow: 0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
+		0 16px 32px rgba(var(--gray), 33%);
+
+
+		/* --wow-font-text: 'Ubuntu', sans-serif, sans-serif; */
+		/* --wow-font-mono: 'Ubuntu Mono', monospace, monospace; */
+
+		--wow-font-text: monospace, monospace;
+		--wow-font-mono: monospace, monospace;
+
+		/* --wow-font-text: 'Ubuntu Mono', monospace, monospace; */
+		/* --wow-font-mono: 'Ubuntu Mono', monospace, monospace; */
+
+		/* --wow-font-text: "Doto", sans-serif, sans-serif; */
+	/* --wow-font-mono: "Doto", monospace, monospace; */
+
+	--wow-text-color: #000;
+}
+
+
+/* Font Family: Ubuntu */
+
+@font-face {
+	font-family: 'Ubuntu';
+	font-style: normal;
+	font-weight: normal;
+	src: url('/fonts/Ubuntu-Regular.woff2') format('woff2'), local('Ubuntu');
+}
+
+@font-face {
+	font-family: 'Ubuntu';
+	font-style: italic;
+	font-weight: normal;
+	src: url('/fonts/Ubuntu-Italic.woff2') format('woff2'), local('Ubuntu');
+}
+
+
+@font-face {
+	font-family: 'Ubuntu';
+	font-style: normal;
+	font-weight: bold;
+	src: url('/fonts/Ubuntu-Bold.woff2') format('woff2'), local('Ubuntu');
+}
+
+@font-face {
+	font-family: 'Ubuntu';
+	font-style: italic;
+	font-weight: bold;
+	src: url('/fonts/Ubuntu-BoldItalic.woff2') format('woff2'), local('Ubuntu')
+}
+
+
+@font-face {
+	font-family: 'Ubuntu';
+	font-style: normal;
+	font-weight: 300;
+	src: url('/fonts/Ubuntu-Light.woff2') format('woff2'), local('Ubuntu');
+}
+
+@font-face {
+	font-family: 'Ubuntu';
+	font-style: italic;
+	font-weight: 300;
+	src: url('/fonts/Ubuntu-LightItalic.woff2') format('woff2'), local('Ubuntu');
+}
+
+
+@font-face {
+	font-family: 'Ubuntu';
+	font-style: normal;
+	font-weight: 500;
+	src: url('/fonts/Ubuntu-Medium.woff2') format('woff2'), local('Ubuntu');
+}
+
+@font-face {
+	font-family: 'Ubuntu';
+	font-style: italic;
+	font-weight: 500;
+	src: url('/fonts/Ubuntu-MediumItalic.woff2') format('woff2'), local('Ubuntu');
+}
+
+
+/* Font Family: Ubuntu Mono */
+
+@font-face {
+	font-family: 'Ubuntu Mono';
+	font-style: normal;
+	font-weight: normal;
+	src: url('/fonts/UbuntuMono-Regular.woff2') format('woff2'), local('Ubuntu Mono');
+}
+
+@font-face {
+	font-family: 'Ubuntu Mono';
+	font-style: italic;
+	font-weight: normal;
+	src: url('/fonts/UbuntuMono-Italic.woff2') format('woff2'), local('Ubuntu Mono');
+}
+
+@font-face {
+	font-family: 'Ubuntu Mono';
+	font-style: normal;
+	font-weight: bold;
+	src: url('/fonts/UbuntuMono-Bold.woff2') format('woff2'), local('Ubuntu Mono');
+}
+
+@font-face {
+	font-family: 'Ubuntu Mono';
+	font-style: italic;
+	font-weight: bold;
+	src: url('/fonts/UbuntuMono-BoldItalic.woff2') format('woff2'), local('Ubuntu Mono');
+}
+
+html {
+	font-size: 20px;
+	font-family: var(--wow-font-text, sans-serif, sans-serif);
+}
