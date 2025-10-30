@@ -4,7 +4,7 @@
 import { Icon } from 'astro-icon/components'
 import Image from './Image.astro'
 import Dated from './Dated.astro'
-import Names from './Names.astro'
+import Authors from './Authors.astro'
 
 type Props = {
     href: string
@@ -12,10 +12,10 @@ type Props = {
     title: string
     blurb: string
     dated: Date
-    names: string[]
+    authors: string[]
 }
 
-const { href, image, title, blurb, dated, names } = Astro.props
+const { href, image, title, blurb, dated, authors } = Astro.props
 ---
 
 <li class='slab'>
@@ -36,7 +36,7 @@ const { href, image, title, blurb, dated, names } = Astro.props
 
         <slot name='subtitle'>
             <span class='slab-subtitle'>
-                on <Dated dated={dated} /> by <Names names={names} />
+                on <Dated dated={dated} /> by <Authors authors={authors} />
             </span>
         </slot>
 

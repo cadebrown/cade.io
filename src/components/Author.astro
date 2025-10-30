@@ -1,5 +1,5 @@
 ---
-// Name.astro - a component for a plain-text name entry with a link to their page, and a popup infobox that displays when you hover over the name's name.
+// Author.astro - a component for a plain-text author entry with a link to their page, and a popup infobox that displays when you hover over the author's name.
 import { type CollectionEntry } from 'astro:content'
 import { Icon } from 'astro-icon/components'
 import Hover from './Hover.astro'
@@ -10,31 +10,31 @@ import { getEntry } from 'astro:content'
 // TODO: add mail icon
 
 type Props = {
-	name: CollectionEntry<'names'> | string
+	name: CollectionEntry<'authors'> | string
 }
 
 // extract, but it may be a string or an object...
-const { name: name_ } = Astro.props
+const { author: author_ } = Astro.props
 
 // so, detect and fetch the entry if needed
-const name = name_ && name_.data ? name_ : await getEntry('names', name_.id || name_)
+const author = author_ && author_.data ? author_ : await getEntry('authors', author_.id || author_)
 
 // generate the URL for the name
-const href = `/names/${name.id}`
+const href = `/authors/${author.id}`
 ---
 
-<a class='author-name' href={href}>{name.data.name}</a>
+<a class='author-name' href={href}>{author.data.name}</a>
 
 <!-- <Hover class='name-hover'>
-	<a slot='text' href={href} class='name-name'>{name.data.name}</a>
+	<a slot='text' href={href} class='name-name'>{author.data.name}</a>
 	<Image src={name.data.image} alt={'alt text'} />
 	<span class='name-hover-info'>
 		<span class='name-hover-socials'>
-			{Object.entries(name.data.socials).map(([social, tag]) => <Social social={social} tag={tag} />)}
+			{Object.entries(author.data.socials).map(([social, tag]) => <Social social={social} tag={tag} />)}
 		</span>
 
 		<span class='name-hover-blurb'>
-			{name.data.blurb}
+			{author.data.blurb}
 		</span>
 	</span>
 </Hover> -->
@@ -47,18 +47,18 @@ const href = `/names/${name.id}`
 </style>
 
 <!-- <style>
-	a.name-name {
+	a.author-name {
 		font-weight: bold;
 		color: inherit;
 	}
 
-	.name-hover > span {
+	.author-hover > span {
 		/* padding: 0.25em; */
 		font-size: 0.9em;
 		display: inline-flex;
 		flex-direction: column;
 	}
-	.name-hover span.name-hover-info {
+	.author-hover span.author-hover-info {
 		height: 100%;
 		padding: 0.5em;
 		/* center the text */
@@ -66,7 +66,7 @@ const href = `/names/${name.id}`
 		align-items: center;
 	}
 
-	.name-hover span.name-hover-socials {
+	.author-hover span.author-hover-socials {
 		font-size: 1.1em;
 		/* margin-top: 0.25em; */
 		/* center icons */
@@ -77,7 +77,7 @@ const href = `/names/${name.id}`
 		width: 100%;
 	}
 
-	span.name-hover-blurb {
+	span.author-hover-blurb {
 		width: 100%;
 		/* margin: 0 0.5em; */
 	}

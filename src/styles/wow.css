@@ -510,7 +510,7 @@ html[data-theme="whiteboard"] {
 
     /* default text is a bit larger, and more spacious */
     line-height: 1.4;
-    font-size: 20px;
+    font-size: 18px;
 
     /* break words instead of letting them overflow the container */
     overflow-wrap: break-word;

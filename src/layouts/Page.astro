@@ -4,21 +4,21 @@ import type { ImageMetadata, MarkdownLayoutProps } from 'astro'
 import Base from '@layouts/Base.astro'
 import type { CollectionEntry } from 'astro:content'
 import Dated from '@components/Dated.astro'
-import Names from '@components/Names.astro'
+import Authors from '@components/Authors.astro'
 import Image from '@components/Image.astro'
 
 type Props = MarkdownLayoutProps<{
 	title: string
 	blurb: string
-	names?: (string | CollectionEntry<'names'>)[]
+	authors?: (string | CollectionEntry<'authors'>)[]
 	dated?: Date
 	image?: ImageMetadata | string
 }>
 
-const { title, blurb, image, names, dated, ...rest } = Astro.props.frontmatter || Astro.props
+const { title, blurb, image, authors, dated, ...rest } = Astro.props.frontmatter || Astro.props
 ---
 
-<Base title={title} blurb={blurb} image={image} names={names} dated={dated} {...rest}>
+<Base title={title} blurb={blurb} image={image} authors={authors} dated={dated} {...rest}>
 	<!-- <section> -->
 		<slot />
 	<!-- </section> -->

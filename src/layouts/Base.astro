@@ -8,19 +8,19 @@ import Footer from '@components/Footer.astro'
 
 import Image from '@components/Image.astro'
 import Dated from '@components/Dated.astro'
-import Names from '@components/Names.astro'
+import Authors from '@components/Authors.astro'
 import type { CollectionEntry } from 'astro:content'
 
 type Props = MarkdownLayoutProps<{
 	title: string
 	blurb: string
 	dated?: Date
-	names?: (string | CollectionEntry<'names'>)[]
+	authors?: (string | CollectionEntry<'authors'>)[]
 	image?: ImageMetadata | string
 }>
 
 // destructure the props so it works from MDX fronmatter or props directly
-const { dated, title, blurb, image, names, ...rest } = Astro.props.frontmatter || Astro.props
+const { dated, title, blurb, image, authors, ...rest } = Astro.props.frontmatter || Astro.props
 ---
 
 <!doctype html>
@@ -47,9 +47,9 @@ const { dated, title, blurb, image, names, ...rest } = Astro.props.frontmatter |
 								)
 							}
 							{
-								names && (
+								authors && (
 									<>
-										by <Names names={names} />
+										by <Authors authors={authors} />
 									</>
 								)
 							}

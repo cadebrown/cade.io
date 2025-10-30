@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content'
 
 import CardList from '@components/CardList.astro'
 import Card from '@components/Card.astro'
-import Names from '@components/Names.astro'
+import Authors from '@components/Authors.astro'
 import Dated from '@components/Dated.astro'
 
 type Props = {
@@ -15,10 +15,10 @@ const { posts } = Astro.props
 
 <CardList items={posts}>
     {
-        ({ id, data: { dated, title, blurb, image, names } }: CollectionEntry<'posts'>) => (
+        ({ id, data: { dated, title, blurb, image, authors } }: CollectionEntry<'posts'>) => (
             <Card href={`/posts/${id}`} image={image} title={title} blurb={blurb}>
                 <span slot='subtitle'>
-                    by <Names names={names.map((name) => name.id)} /> on <Dated dated={dated} />
+                    by <Authors authors={authors.map((author) => author.id)} /> on <Dated dated={dated} />
                 </span>
             </Card>
         )

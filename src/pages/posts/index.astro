@@ -31,12 +31,12 @@ const posts = (await getCollection('posts', ({ data }) => {
 <!-- <Page title={title} blurb={blurb}>
 	<SlabList items={posts}>
 		{
-			({ id, data: { dated, title, blurb, image, names } }: CollectionEntry<'posts'>) => (
+			({ id, data: { dated, title, blurb, image, authors } }: CollectionEntry<'posts'>) => (
 				<>
 				<hr/>
 				<Slab href={`/posts/${id}`} image={image} title={title} blurb={blurb}>
 				<span slot='subtitle'>
-					on <Dated dated={dated} /> by <names names={names.map((name) => name.id)} />
+					on <Dated dated={dated} /> by <authors authors={authors.map((author) => author.id)} />
 				</span>
 				</Slab>
 				</>
@@ -50,7 +50,7 @@ const posts = (await getCollection('posts', ({ data }) => {
 		({ id, data: { dated, title, blurb, image, names } }: CollectionEntry<'posts'>) => (
 			<Slab href={`/posts/${id}`} image={image} title={title} blurb={blurb}>
 				<span slot='subtitle'>
-					by <names names={names.map((name) => name.id)} /> on <Dated dated={dated} />
+					by <authors authors={authors.map((author) => author.id)} /> on <Dated dated={dated} />
 				</span>
 			</Slab>
 		)

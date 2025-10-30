@@ -7,25 +7,29 @@ import CardListPosts from '@components/CardListPosts.astro'
 
 // define which paths are valid for this page
 export async function getStaticPaths() {
-	const names = await getCollection('names')
-	return names.map((name) => ({
-		params: { id: name.id },
-		props: { name: name },
+	const authors = await getCollection('authors')
+	return authors.map((author) => ({
+		params: { id: author.id },
+		props: { author: author },
 	}))
 }
 
 type Props = {
-	name: CollectionEntry<'names'>
+	author: CollectionEntry<'authors'>
 }
 
-const { name: name_ } = Astro.props
-const { name, blurb, image, socials } = name_.data
+const { author: author_ } = Astro.props
+const { name, blurb, image, socials } = author_.data
 
 // get posts by this name, sorted by most recent
 const posts = (
 	await getCollection('posts', (post) => {
-		for (const other of post.data.names) {
-			if (other.id === name_.id) {
+		if (import.meta.env.PROD && post.data.draft) {
+			// in production, only show published posts (i.e. not drafts)
+			return false;
+		}
+		for (const other of post.data.authors) {
+			if (other.id === author_.id) {
 				return true
 			}
 		}

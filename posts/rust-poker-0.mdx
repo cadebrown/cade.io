@@ -1,0 +1,136 @@
+---
+draft: true
+dated: '2025-09-22'
+title: 'Rust Poker #0: Rules, Cards, and Hands'
+blurb: "Let's play some poker, with Rust! Introduction, setup, and a basic implementation."
+image: '/assets/rust-poker-0/rust-poker-0.webp'
+---
+
+Recently, I've been picking up Rust and really enjoying it. I'm finally at the point where building a prototype or reusable utility means I reach for Rust first, even over Python (for convenience) and C++ (for performance). My personal interests recently have been game theory, and specifically applications in various poker games (Texas Holdem, Omaha, etc).
+
+So, let's combine them! This blog series will be following my development of [dealrs (GitHub)](https://github.com/cadebrown/dealrs), a Rust library for dealing cards, ranking hands, and simulating agentic strategies. It is also published as a public crate you can use, here: [dealrs (crates.io)](https://crates.io/crates/dealrs). So, you can build your own games with it!
+
+If you're totally unfamiliar with poker and playing cards, I would recommend reading the following resources:
+
+* [Standard 52-card deck](https://en.wikipedia.org/wiki/Standard_52-card_deck): we'll be using these as our standard deck of cards
+  * No jokers! Each card has a suit (Hearts, Spades, Diamonds, or Clubs) and a rank (2-10, Jack, Queen, King, Ace)
+  * Thus, we have 52 cards in our deck (4 suits * 13 ranks). A bit per card fits well into a `u64`, which is a mystery tool that will help us later...
+* [List of poker hands](https://en.wikipedia.org/wiki/List_of_poker_hands): we'll be considering these as the possible hands we can make
+
+For this first post, we'll just be focusing on the datatypes and their operations we'll need. In later posts, we'll be implementing simulations, automated agents, and more!
+
+## Okay. Where do we start?
+
+Well, I figure a good place to start is with the datatypes we'll be using the most: cards.
+
+Each card is comprised of a rank and a suit. We can represent these with Rust's `enum` type. A straightforward definition would look like this:
+
+```rust
+
+/// All possible ranks (total of 13) of the standard 52-card deck
+pub enum Rank {
+    Two,
+    Three,
+    Four,
+    Five,
+    Six,
+    Seven,
+    Eight,
+    Nine,
+    Ten,
+    Jack,
+    Queen,
+    King,
+    Ace,
+}
+
+/// All possible suits (total of 4) of the standard 52-card deck
+pub enum Suit {
+    Spades,
+    Hearts,
+    Clubs,
+    Diamonds,
+}
+
+/// A card is comprised of a rank and a suit, which are the two pieces of information we need to uniquely identify a card
+pub struct Card(Rank, Suit);
+
+```
+
+And this would work perfectly well! But, for reasons that will become clear later (like indexing, bitmasking, and lookup tables), it's preferable to have a "packed" representation of the card that encodes each combination as a unique integer.
+
+While we could use `#[repr(u8)]`, and assign each card a unique integer, it won't work for `Card` so well. Instead, we'll include a Rust macro to help us out, and automagically generate these types while keeping it readable.
+
+
+```rust
+
+// a helper that counts the number of items in a sequence of macro arguments
+macro_rules! count_items {
+    () => { 0 };
+    ($head:ident $(, $tail:ident)*) => { 1 + count_items!($($tail),*) };
+}
+
+// a macro that defines a 'kind', which is a packed enumeration of items with associated data per each
+macro_rules! make_kind {
+    (
+        $name:ident {
+            $( $variant:ident => (value = $value:expr, text = $text:expr ) ),* $(,)?
+        }
+    ) => {
+        #[repr(u8)]
+        #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash, Ord, PartialOrd)]
+        pub enum $name {
+            $( $variant = $value , )*
+        }
+
+        impl $name {
+            pub const NUM: usize = count_items!($( $variant ),*);
+            pub const ALL: [Self; Self::NUM] = [ $( Self::$variant , )* ];
+
+            pub const fn from_index(index: u8) -> Self {
+                Self::ALL[index as usize]
+            }
+
+            pub const fn to_index(self) -> u8 {
+                self as u8
+            }
+
+            pub const fn text(self) -> &'static str {
+                match self {
+                    $( Self::$variant => $text , )*
+                }
+            }
+        }
+        
+        impl FromStr for $name {
+            type Err = &'static str;
+            fn from_str(s: &str) -> Result<Self, Self::Err> {
+                // attempt to match each variant
+                for variant in Self::ALL {
+                    if variant.text() == s {
+                        return Ok(variant);
+                    }
+                }
+                Err("invalid variant")
+            }
+        }
+
+        impl fmt::Display for $name {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+                write!(f, "{}", self.text())
+            }
+        }
+    };
+}
+
+make_kind! {
+    Suit -> SuitData {
+        Spades   -> ( value =  0, text = "s" ),
+        Hearts   -> ( value =  1, text = "h" ),
+        Clubs    -> ( value =  2, text = "c" ),
+        Diamonds -> ( value =  3, text = "d" ),
+    }
+}
+
+```
+

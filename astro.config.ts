@@ -50,6 +50,9 @@ export default defineConfig({
 	trailingSlash: 'never',
 	scopedStyleStrategy: 'where',
 	compressHTML: true,
+	server: {
+		host: true,
+	},
 	experimental: {
 		// for content collections
 		contentIntellisense: true,

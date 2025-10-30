@@ -4,7 +4,7 @@ import type { ImageMetadata, MarkdownLayoutProps } from 'astro'
 import Base from '@layouts/Base.astro'
 import type { CollectionEntry } from 'astro:content'
 import Dated from '@components/Dated.astro'
-import Names from '@components/Names.astro'
+import Authors from '@components/Authors.astro'
 import Image from '@components/Image.astro'
 import Page from './Page.astro'
 import { SITE_BLURB, SITE_TITLE } from '@common'
@@ -12,12 +12,12 @@ import { SITE_BLURB, SITE_TITLE } from '@common'
 type Props = MarkdownLayoutProps<{
 	title: string
 	blurb: string
-	names?: (string | CollectionEntry<'names'>)[]
+	authors?: (string | CollectionEntry<'authors'>)[]
 	dated?: Date
 	image?: ImageMetadata | string
 }>
 
-const { title, blurb, image, names, dated, ...rest } = Astro.props.frontmatter || Astro.props
+const { title, blurb, image, authors, dated, ...rest } = Astro.props.frontmatter || Astro.props
 ---
 
 <Page title={SITE_TITLE} blurb={SITE_BLURB}>

@@ -23,13 +23,13 @@ type Props = {
 
 const { post } = Astro.props
 const {
-	data: { dated, title, blurb, image, names, ...rest },
+	data: { dated, title, blurb, image, authors, ...rest },
 } = post
 
 // and render the post content itself
 const { Content } = await render(post)
 ---
 
-<Post title={title} blurb={blurb} image={image} names={names.map((name) => name.id)} dated={dated} {...rest}>
+<Post title={title} blurb={blurb} image={image} authors={authors.map((author) => author.id)} dated={dated} {...rest}>
 	<Content />
 </Post>

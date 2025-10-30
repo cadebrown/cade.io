@@ -6,19 +6,19 @@ import Card from '@components/Card.astro'
 import Socials from '@components/Socials.astro'
 
 type Props = {
-    names: CollectionEntry<'names'>[]
+    authors: CollectionEntry<'authors'>[]
 }
 
-const { names } = Astro.props
+const { authors } = Astro.props
 ---
 
-<CardList items={names}>
+<CardList items={authors}>
     {
         ({ id, data: { name, blurb, image, socials } }) => {
-            const href = `/names/${id}`
+            const href = `/authors/${id}`
             return (
                 <Card href={href} image={image} title={name} blurb={blurb}>
-                    <span slot='title' class='cardlist-names-title'>
+                    <span slot='title' class='cardlist-authors-title'>
                         <a href={href}>{name}</a>
                         <Socials socials={socials} />
                     </span>
@@ -29,7 +29,7 @@ const { names } = Astro.props
 </CardList>
 
 <style>
-    span.cardlist-names-title a {
+    span.cardlist-authors-title a {
         color: inherit;
         font-weight: bold;
         font-size: 1.6em;

@@ -3,13 +3,13 @@ import { getEntry } from 'astro:content'
 import Social from './Social.astro'
 import Themes from './Themes.astro'
 
-const name = await getEntry('names', 'cade-brown')!
+const author = await getEntry('authors', 'cade-brown')!
 ---
 
 <footer>
 	<ul class='footer-socials'>
 		{
-			Object.entries(name.data.socials).map(([social, tag]) => (
+			Object.entries(author.data.socials).map(([social, tag]) => (
 				<li>
 					<Social social={social} tag={tag} extra={true} />
 				</li>
@@ -48,7 +48,7 @@ const name = await getEntry('names', 'cade-brown')!
 		padding: 0;
 
 		/* make pretty big */
-		font-size: 1.2em;
+		font-size: 1.1em;
 	}
 
 	.footer-notice {

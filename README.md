@@ -60,6 +60,9 @@ This project mainly follows the official [Astro project structure guide](https:/
 └── tsconfig.json          # TypeScript configuration
 ```
 
+To add a new blog post, add a new file in the `./src/content/posts` directory (just copy from an existing one).
+
+
 ## Utilities
 
 ### Visual Studio Code: Editor and IDE
