@@ -24,10 +24,13 @@ const { name, blurb, image, socials } = author_.data
 // get posts by this name, sorted by most recent
 const posts = (
 	await getCollection('posts', (post) => {
-		if (import.meta.env.PROD && post.data.draft) {
+		if (import.meta.env.PROD) {
 			// in production, only show published posts (i.e. not drafts)
-			return false;
+			if (post.data.draft) {
+				return false;
+			}
 		}
+
 		for (const other of post.data.authors) {
 			if (other.id === author_.id) {
 				return true

@@ -26,6 +26,14 @@ import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeFigure from "@microflash/rehype-figure"
 
+// ApexCharts for charts and plots
+import { rehypeApexcharts } from './src/rehype-plugins-cade/rehype-apexcharts'
+
+// Mermaid for diagram rendering
+// import rehypeMermaid from 'rehype-mermaid';
+import mermaid from 'astro-mermaid';
+
+
 // Astro Icon: for SVG icons
 import icon from 'astro-icon'
 
@@ -66,7 +74,18 @@ export default defineConfig({
 				whiteboard: vscodeThemes.whiteboard,
 				blackboard: vscodeThemes.blackboard,
 			},
+
+
+			excludeLangs: [
+				'apexcharts',
+			],
+			// excludeLangs: [
+			// 	// exclude mermaid diagrams from syntax highlighting, since they are rendered by a plugin
+			// 	'mermaid',
+			// ],
 		},
+
+
 		// Astro can use GitHub Flavored Markdown by default, so no need for the remark-gfm plugin
 		gfm: true,
 		// here is where you can add custom markdown processors
@@ -85,6 +104,8 @@ export default defineConfig({
 		],
 		// here is where you can add custom HTML processors
 		rehypePlugins: [
+			// converts ApexCharts charts to HTML
+			rehypeApexcharts,
 			// remark -> rehype conversion, ensures everything is HTML that needs to be
 			[remarkRehype, {
 				// the prefix for generated IDs (i.e. footnotes)
@@ -115,6 +136,8 @@ export default defineConfig({
 
 			// converts math blocks and inline equations to HTML using KaTeX rendering
 			[rehypeKatex, katexConfig],
+			// converts Mermaid diagrams to HTML
+			// rehypeMermaid,
 			// unwraps images from their parent paragraph tags
 			rehypeUnwrapImages,
 			// adds figure elements around images with captions generated from the alt text
@@ -193,6 +216,11 @@ export default defineConfig({
 				codePaddingInline: '1.0em',
 				codePaddingBlock: '1.0em',
 			},
+		}),
+		// turn mermaid markdown into HTML
+		mermaid({
+			theme: 'forest',
+			autoTheme: true,
 		}),
 		mdx(),
 		// NOTE: https://www.astroicon.dev/reference/configuration/

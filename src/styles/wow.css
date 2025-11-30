@@ -391,6 +391,10 @@ html[data-theme="whiteboard"] {
     /* make the background stand out above other content */
     background: var(--wow-back-alt);
 
+    /* don't allow table to overflow parent, let it horizontally scroll if needed */
+    overflow: auto;
+    display: block;
+
     /* TODO: this sizes the table to the headings, but that might clip things... */
     /* table-layout: fixed; */
 }

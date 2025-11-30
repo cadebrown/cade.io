@@ -17,14 +17,14 @@ First, clone this repository [from GitHub](https://github.com/cadebrown/cade.io)
 
 Then, you can install the project's dependencies locally:
 
-```sh
-npm install
+```shell
+$ npm install
 ```
 
 To make sure everything is working, you can start the development server:
 
-```sh
-npm run dev
+```shell
+$ npm run dev
 ```
 
 Now, you should be able to access it via a web browser at [localhost:4321](http://localhost:4321). It will automatically reload and update as you make changes to the source code. Enjoy!
@@ -62,7 +62,6 @@ This project mainly follows the official [Astro project structure guide](https:/
 
 To add a new blog post, add a new file in the `./src/content/posts` directory (just copy from an existing one).
 
-
 ## Utilities
 
 ### Visual Studio Code: Editor and IDE
@@ -75,7 +74,7 @@ You can read more about setting up your own environment in the [Astro Editor Set
 
 This uses [Prettier](https://prettier.io/) as the formatting engine. I had to define my configuration options in `.prettierrc.json` for the Astro extension to format properly. You can customize the syntax choices in the [Prettier Configuration Options](https://prettier.io/docs/en/configuration.html).
 
-### KaTeX: Math Rendering
+### Math Rendering: KaTeX
 
 [KaTeX](https://katex.org/docs/browser) is a way of writing mathematical equations in LaTeX format (as well as other typesetting and diagrams).
 
@@ -83,15 +82,32 @@ I used [KaTeX v0.16.21](https://github.com/KaTeX/KaTeX/releases/tag/v0.16.21) an
 
 * [KaTeX extension: copy-tex](https://github.com/KaTeX/KaTeX/tree/main/contrib/copy-tex) - allows copying the LaTeX source of an equation
 
-```sh
-npm i katex
+```shell
+$ npm install katex
 ```
 
 And to integrate it in Astro (via `astro.config.ts`), it needs remark/rehype plugins:
 
-```sh
-npm install remark-math
-npm install rehype-katex
+```shell
+$ npm install remark-math
+$ npm install rehype-katex
+```
+
+### Diagram Rendering: Mermaid and D2
+
+To make diagrams in markdown that are automatically rendered, I use [Mermaid](https://mermaid.js.org/) and [D2](https://d2lang.com/).
+
+```shell
+$ npm install astro-mermaid mermaid
+$ npm install @mermaid-js/layout-elk
+```
+
+### Charts and Plots: ApexCharts
+
+* [Adding Interactive Charts to Astro](https://dteather.com/blogs/astro-interactive-charts/)
+
+```shell
+$ npm install apexcharts
 ```
 
 ### Expressive Code: Syntax Highlighting
@@ -103,13 +119,13 @@ I use the following plugins (or am experimenting with using them):
 * [@fujocoded/expressive-code-caption](https://github.com/FujoWebDev/fujocoded-plugins/tree/main/expressive-code-caption)
 * [@fujocoded/expressive-code-output](https://github.com/FujoWebDev/fujocoded-plugins/tree/main/expressive-code-output)
 
-```sh
-npx astro add astro-expressive-code
-npm i @expressive-code/plugin-collapsible-sections
-npm i @expressive-code/plugin-line-numbers
+```shell
+$ npx astro add astro-expressive-code
+$ npm i @expressive-code/plugin-collapsible-sections
+$ npm i @expressive-code/plugin-line-numbers
 
 # community
-npm i expressive-code-color-chips
+$ npm i expressive-code-color-chips
 ```
 
 ### Astro Icon: Icons and SVGs

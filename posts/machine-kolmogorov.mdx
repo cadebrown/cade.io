@@ -6,109 +6,6 @@ image: '/assets/machine-kolmogorov/machine-kolmogorov.webp'
 draft: true
 ---
 
-
-
-## Software Install
-
-
-```shell
-# connect to wifi
-$ iwctl device wlan0 show
-$ iwctl station wlan0 connect "WIFI NAME"
-
-$ sgdisk --zap-all /dev/nvme0n1
-$ sgdisk -p /dev/nvme0n1
-
-
-$ mkfs.fat -F 32 /dev/nvme0n1p1
-$ mkswap /dev/nvme0n1p2
-$ mkfs.ext4 /dev/nvme0n1p3
-
-$ mount /dev/nvme0n1p3 /mnt
-$ swapon /dev/nvme0n1p2
-$ mount --mkdir /dev/nvme0n1p1 /mnt/boot
-
-$ reflector
-$ pacstrap -K /mnt base linux linux-firmware networkmanager iwd git vim amd-ucode man-db man-pages texinfo
-$ genfstab -U /mnt >> /mnt/etc/fstab
-
-# actually configure the new system
-$ arch-chroot /mnt
-$ echo "LANG=en_US.UTF-8" > /etc/locale.conf
-$ echo "kolmogorov" > /etc/hostname
-
-$ locale-gen
-$ mkinitcpio -P
-
-# enter a new password for the root user
-$ passwd
-$ echo '''default  arch.conf
-timeout  4
-console-mode max
-editor   no
-''' > /boot/loader/loader.conf
-
-$ echo '''title   Kolmogorov Arch Linux
-linux   /vmlinuz-linux
-initrd  /initramfs-linux.img
-options root=UUID='''$(blkid -s UUID -o value /dev/nvme0n1p3)''' rw
-''' > /boot/loader/entries/arch.conf
-
-
-$ pacman -S neovim which zsh 
-
-# TODO: https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface#UEFI_Shell
-
-$ mkinitcpio -P
-$ exit
-$ reboot
-```
-
-
-
-Then, we actually reboot and setup the rest of the system: https://wiki.archlinux.org/title/General_recommendations
-
-
-For setting up NVIDIA graphics card: https://wiki.archlinux.org/title/NVIDIA
-
-```shell
-$ pacman -S nvidia nvidia-utils
-$ pacman -S cuda opencl-nvidia
-```
-
-Setting up graphical environment:
-
-```shell
-$ pacman -S greetd
-$ pacman -S hyprland
-```
-
-
-https://wiki.archlinux.org/title/Greetd
-
-
-Networking:
-
-* https://wiki.archlinux.org/title/NetworkManager#Using_iwd_as_the_Wi-Fi_backend
-
-
-
-
-
-Customizing boot further: https://wiki.archlinux.org/title/Category:Boot_process
-
-
-https://wiki.archlinux.org/title/EFI_system_partition#Format_the_partition
-
-
-https://chrisdown.name/2018/01/02/in-defence-of-swap.html
-
-Partitions:
-
-* `/boot`: 1GB
-* `/swap`: 16GB
-* `/` (rest, 3TB)
-
 ## References
 
 * [Building a Mid Range Gaming ITX PC doesn't have to be difficult - Featuring S300 ITX case (Mash IT)](https://www.youtube.com/watch?v=rVP9kyrK7zk)
@@ -116,8 +13,6 @@ Partitions:
   * discusses S300 case and different fan configurations
 
 [Sleeper Small Form Factor Case - KXRORS S300 Review (Bartman's Bits)](https://www.youtube.com/watch?v=1ptU9BNEBv8)
-  * 
-
 * [Ghost R1. Will Louqe survive? (EIGA)](https://www.youtube.com/watch?v=c-XSFOHexVQ)
   * different case, but 
 * [ultiminate mini PC build (optimum)](https://www.youtube.com/watch?v=C1rHpHN_3L0)
@@ -126,8 +21,3 @@ Partitions:
 [PC Case AIRFLOW; A Visual Guide for Optimal Cooling. (Mr Matt Lee)](https://www.youtube.com/watch?v=YNcd-IGMj2c)
   * general overview of airflow and cooling
 
-
-
-
-
-TODO: WINE

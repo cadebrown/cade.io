@@ -3,7 +3,7 @@
   "include": [
     ".astro/types.d.ts",
     "**/*"
-, "content/posts/paper-magma.mdx"  ],
+  ],
   "exclude": [
     "dist"
   ],

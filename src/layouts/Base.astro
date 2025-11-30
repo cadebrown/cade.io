@@ -106,3 +106,59 @@ const { dated, title, blurb, image, authors, ...rest } = Astro.props.frontmatter
 		/* margin: 0; */
 	}
 </style>
+
+<script>
+	import ApexCharts from "apexcharts";
+   
+	function flipChartThemeMode(chartOptions: any, darkMode: boolean) {
+		const theme = chartOptions.theme;
+		const tooltip = chartOptions.tooltip;
+		const chart = chartOptions.chart;
+
+		chartOptions = {
+			...chartOptions,
+			chart: {
+				...chart,
+				background: "transparent", // also make the background transparent
+				fontFamily: "inherit", // inherit the font family
+			},
+			theme: {
+				...theme,
+				mode: darkMode ? "dark" : "light",
+			},
+			tooltip: {
+				...tooltip,
+				theme: darkMode ? "dark" : "light",
+			},
+		};
+
+		return chartOptions;
+	}
+
+	// when the page loads
+	document.addEventListener("DOMContentLoaded", () => {
+
+		// detect the theme of the page
+		const dataTheme = document.documentElement.getAttribute("data-theme");
+		console.log("dataTheme", dataTheme);
+		// TODO: have better logic here, to allow theme switching after the page loads
+		const isDarkMode = dataTheme === "blackboard";
+
+		// look for each of our charts
+		document.querySelectorAll(".rehype-apexcharts-container").forEach((chartDiv) => {
+			// extract our Apex Charts config and render it out
+			// const chartDataAttr = chartDiv.getAttribute("data-rehype-apexcharts");
+			const chartDataAttr = chartDiv.getAttribute("data-rehype-apexcharts");
+			if (chartDataAttr) {
+				// const chartData = JSON.parse(chartDataAttr);
+				const chartData = eval("(" + chartDataAttr + ")");
+				console.log("chartData", chartData);
+				const chart = new ApexCharts(
+					chartDiv,
+					flipChartThemeMode(chartData, isDarkMode)
+				);
+				chart.render();
+			}
+		});
+	});
+</script>
