@@ -1,0 +1,55 @@
+---
+dated: '2025-12-13'
+title: 'LangJam GameJam: Kardinality'
+blurb: 'A game where counting cards is not only encouraged, but required!'
+image: '/assets/kardinality/kardinality-test.png'
+---
+
+I'm developing a game for the [LangJam GameJam](https://langjamgamejam.com/), and I want to make a game based on using cards to achieve a high score using rules of logic. This blog post is my "dev diary" for the game during the jam, which will include updates and decisions I make along the way. I'll be making a separate blog post for the "final product" after the jam is over, showcasing it and the language I created (it'll also be free to play in your browser, of course!)
+
+## The Game Idea: Cards as Code
+
+I'm calling the game 'Kardinality', since it uses a lot of mathematical concepts, and the name is cool. Part of the challenge of the game jam is to make the whole game within a single week, with an added condition that I must also create a new programming language that is used in the game. In my case, I'm going to be using Rust to create the actual game engine, renderering pipeline, and implement the in-game language called "The Kardinal Language", of which each card can call functions in. Specifically, I want both simple cards (add to score, double score, etc), and more complex cards (loop cards, rewriting cards, etc) to be used in tandem to retrigger and achieve very high scores with as few cards as possible.
+
+I want to model the entire game as a big virtual machine, executing bytecode. Thus, each card contains some instructions to execute, or control flow to control which other cards to trigger (or, loop, clone, undo, etc). Knowing the optimal order, or tricks with self reference allow you to achieve very high scores.
+
+## Implementation Plan
+
+As an experiment, I'm completely vibe-coding it from scratch. That means I only talk to the chat window (I'm using the Cursor IDE), in agent mode, and let it do all the work. This will present some interesting challenges, since it's a graphical app. But, it should be fun! Once I get a good base setup, I can actually have multiple agents working on different parts of the project in parallel, inventing multiple features at once.
+
+As far as running the game, I'm designing it to run in the browser (using WASM) completely client-side, with no server-side components. 
+
+As far as the artwork and assets, I want to make it all if possible (using AI tools where appropriate). I'm planning on starting with some basic programmer art for the cards and logos, and upgrading to more detailed artwork as I go.
+
+I'm going to compose the music and sound effects myself, without AI this time (because I don't think music AI is even good TBH). I'm more than competent enough to make a soundtrack, so that'll be fun.
+
+See it on GitHub: [cadebrown/kardinality](https://github.com/cadebrown/kardinality)
+
+## Day 1/2: Basic Prototyping
+
+I was a bit busy on Sunday, and am still working this week so I haven't been able to give 100% to it. But, already I have some pretty cool progress!
+
+* It turns out GPT-5.2 is actually kind of goated with the sauce at agentic coding. Much more fire-and-forget than Claude in my experience.
+* Rust is the OBVIOUS language for agentic coding, due to static analysis, easy testing and tooling, and a great ecosystem.
+* After suggesting actual UI tests, the LLM implemented a playwright test runner, which is pretty cool!
+  * This really bridges the gap between text and visual programming, which can be hard to describe for an LLM.
+* Both keyboard and mouse input are supported, and the game is fully playable with both. (TODO: controllers!)
+
+## Day 3: Adding artwork, animations, and basic deployment
+
+So far today, I've been just asking it to add animations, make them smooth, replay the game footage, and overall making it look "cool".
+
+* CRT effects in plain CSS are nice! Although, they caused problems with the UI tests, so I'm leaving them off by default for now
+* Adding docs and tooltips to the game, all the elements is in general a good idea (makes it more user friendly)
+* Composing the music myself, and adding it in as a forever-looping audio-file (in the future: unlock new songs as you progress, and randomly shuffle between them)
+
+## Day 4: Structural questions, adding more abilities, and making it "playable"
+
+This is my plan for day 4:
+
+* I need to implement a lot more kinds of cards and their default functions -- I have some ideas but need to also solidify the execution model for the game, and how cards are executed.
+  * I need to figure out how "rewind" will work, how "loop" will work, and how registers will work
+  * Also, how about "wildcards"? How to input them efficiently and make it not annoying to use.
+* Right now, level transitions are instant. I want a "You Win! Continue?" screen to show by default, and in general for the flow of the game to be more polished.
+* Figuring out RNG generation for new cards, good random distribution, and play testing the game a bit
+* More granular control over features, so I can have multiple agents going on at once
