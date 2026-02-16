@@ -39,6 +39,12 @@ tofu plan
 tofu apply
 ```
 
+## File layout
+
+All OpenTofu config for this site lives in a single file:
+
+* `infra/cloudflare/main.tf`
+
 ## What this does
 
 * Creates/updates the Cloudflare Pages project `cade-io`
@@ -48,7 +54,7 @@ tofu apply
 
 Commit:
 
-* `infra/cloudflare/*.tf`
+* `infra/cloudflare/main.tf`
 * `infra/cloudflare/terraform.tfvars.example`
 * `infra/cloudflare/.terraform.lock.hcl`
 
