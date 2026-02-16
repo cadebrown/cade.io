@@ -1,0 +1,6 @@
+account_id   = "YOUR_CLOUDFLARE_ACCOUNT_ID"
+github_owner = "YOUR_GITHUB_USER_OR_ORG"
+# github_repo = "cade.io"
+# pages_project_name = "cade-io"
+# pages_production_branch = "main"
+# pages_custom_domain = "cade.io"

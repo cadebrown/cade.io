@@ -1,6 +1,6 @@
 # cade.io: Near Computronium
 
-This is the source code for my personal website ([cade.io](https://cade.io)), which is built using [Astro](https://astro.build) and hosted using [GitHub Pages](https://pages.github.com/). This includes my personal blog posts, prototype projects, and artwork I've made over the years.
+This is the source code for my personal website ([cade.io](https://cade.io)), which is built using [Astro](https://astro.build) and hosted using [Cloudflare Pages](https://pages.cloudflare.com/). This includes my personal blog posts, prototype projects, and artwork I've made over the years.
 
 It's quite modularized, so feel free to use it as a template or starting point for your own website.
 
@@ -13,7 +13,7 @@ It's quite modularized, so feel free to use it as a template or starting point f
 
 ## Setup
 
-First, clone this repository [from GitHub](https://github.com/cadebrown/cade.io), and ensure you have [installed Node.js/NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your machine.
+First, clone this repository and ensure you have [installed Node.js/NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your machine.
 
 Then, you can install the project's dependencies locally:
 
@@ -149,9 +149,13 @@ Also, with more customization and sometimes lower quality:
 
 ## Processes
 
-### Hosting on GitHub Pages
+## Infrastructure
 
-To deploy to GitHub Pages, we can follow the [Official Astro Guide](https://docs.astro.build/en/guides/deploy/github/). Specifically, I used `cade.io` and set up [a custom domain for GitHub Pages](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site).
+Cloudflare Pages and the `cade.io` apex domain are managed as code with OpenTofu.
+
+See setup instructions in:
+
+* `infra/README.md`
 
 ### Updating the Favicon
 

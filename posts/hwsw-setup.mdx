@@ -1,0 +1,31 @@
+---
+dated: '2025-11-11'
+title: 'Hardware Software Setup'
+blurb: 'My portable configuration management for all devices and operating systems.'
+image: '/assets/hwsw-setup/hwsw-setup.webp'
+draft: true
+---
+
+If you're like me, you find yourself using an ever-increasing number and variety of machines. 
+
+> `ImportError: No module named scipy`
+>
+> Ahh, I only installed numpy... Let me `pip install scipy`...
+>
+> `'cargo' is not recognized as an internal or external command, operable program or batch file.`
+>
+> Now, let me install `rustup`, and add it to my `.zshrc`...
+>
+> And so on...
+
+* [GNU Stow: A symlink farm manager](https://www.gnu.org/software/stow/)
+* [Tuckr: A super powered replacement for GNU Stow](https://github.com/RaphGL/Tuckr)
+
+## GNU Stow: A Pretty Good Solution
+
+If you haven't heard of [GNU Stow](https://www.gnu.org/software/stow/) yet, it's a tool for managing software installations in a very flexible way. It allows you to create symlinks to software packages in a single directory, and then use that directory as a single point of entry for all your software.
+
+You can pair that with a Git repository, which most people put in `~/dotfiles/`, and then call `stow` to install the software you want. This also allows you to track changes over time and synchronize your software across multiple machines.
+
+https://github.com/cadebrown/hwsw
+

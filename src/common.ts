@@ -29,8 +29,6 @@ export const SITE_IMAGE = '/assets/favicon.dev.svg'
 export const SITE_CANON = 'https://cade.io'
 
 
-export const SITE_EDIT_LINK = (path: string) => `https://github.com/cadebrown/kscript/edit/main/{path}`
-
 export const SITE_TEXTS = {
     
 }
@@ -116,5 +114,4 @@ export const katexConfig = {
 	// custom default macros I use across the site
 	macros: katexMacros,
 }
-
 

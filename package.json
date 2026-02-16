@@ -6,7 +6,8 @@
     "dev": "astro dev --watch",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "deploy:pages": "wrangler pages deploy dist"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.5",
@@ -37,6 +38,7 @@
     "remark-reference-links": "^7.0.0"
   },
   "devDependencies": {
-    "less": "^4.2.2"
+    "less": "^4.2.2",
+    "wrangler": "^3.99.0"
   }
 }

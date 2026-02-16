@@ -3,15 +3,33 @@ dated: '2025-12-13'
 title: 'LangJam GameJam: Kardinality'
 blurb: 'A game where counting cards is not only encouraged, but required!'
 image: '/assets/kardinality/kardinality-test.png'
+draft: true
 ---
 
 I'm developing a game for the [LangJam GameJam](https://langjamgamejam.com/), and I want to make a game based on using cards to achieve a high score using rules of logic. This blog post is my "dev diary" for the game during the jam, which will include updates and decisions I make along the way. I'll be making a separate blog post for the "final product" after the jam is over, showcasing it and the language I created (it'll also be free to play in your browser, of course!)
+
+
+
 
 ## The Game Idea: Cards as Code
 
 I'm calling the game 'Kardinality', since it uses a lot of mathematical concepts, and the name is cool. Part of the challenge of the game jam is to make the whole game within a single week, with an added condition that I must also create a new programming language that is used in the game. In my case, I'm going to be using Rust to create the actual game engine, renderering pipeline, and implement the in-game language called "The Kardinal Language", of which each card can call functions in. Specifically, I want both simple cards (add to score, double score, etc), and more complex cards (loop cards, rewriting cards, etc) to be used in tandem to retrigger and achieve very high scores with as few cards as possible.
 
 I want to model the entire game as a big virtual machine, executing bytecode. Thus, each card contains some instructions to execute, or control flow to control which other cards to trigger (or, loop, clone, undo, etc). Knowing the optimal order, or tricks with self reference allow you to achieve very high scores.
+
+## The Language
+
+As for the language itself: I haven't fully specced it out yet, on purpose (I want to test how looping and other things should work with the UI before fully committing)
+
+But essentially, the grammar is stupid simple: function(args...) is what every card is made of. The interesting parts come from the restrictions
+
+* Implicitly, all cards operate on the global VM state, which stores execution history, which cards were just ran, which cards are about to run
+* Cards are limited in what they can execute, with most being read-only (so, effectively like balatro)
+* Writeable cards, like wildcards, allow you to change their code -- but they have a size restriction, so you can't just make a singular "god card" -- it always has to be played in tandem with others to really create a high score
+* Numbers count their own magnitude in characters, effectively meaning a unary number system is used (you can type numbers for convience, but they cost equivalent to the size of the number). This is to reduce things like "score(999999)". Instead you need to play cards in sequence like "acc(9); square(); again(4); score(acc)"
+
+
+This ties in with the idea of https://en.wikipedia.org/wiki/Kolmogorov_complexity of numbers. For example, there is a certain shortest program that produces each natural number, which neccessarily increases as N -> inf. My goal is to make the rate at which this increases roughly correlate to the actual difficulty of the various levels (in a perfect world, this means the busybeaver function of this language is roughly tied to the highest level that can be achieved using a set number of cards). Of course, it's not linear but the challenge of writing ever-more-complicated functions and sequences is kind of like the infamous "big number duel" at MIT, except with such a constrained language that it is interesting again.
 
 ## Implementation Plan
 
