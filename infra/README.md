@@ -11,7 +11,6 @@ This repo uses OpenTofu to manage Cloudflare Pages infrastructure (project + ape
 
 * OpenTofu installed (`tofu`)
 * Cloudflare API token with least-privilege permissions
-* Cloudflare Pages app authorized for your GitHub account
 
 ## Token permissions (minimum)
 
@@ -61,5 +60,4 @@ Do not commit (already ignored in `.gitignore`):
 
 ## Notes
 
-* The Pages project uses Cloudflare's Git integration and will build on Cloudflare's infrastructure.
 * No GitHub Actions workflow is required for deployments.
