@@ -50,9 +50,9 @@ variable "github_repo" {
 }
 
 variable "pages_build_command" {
-  description = "Build command used by Cloudflare Pages."
+  description = "Build command used by Cloudflare Pages. Runs tests first so a failing test blocks the deploy."
   type        = string
-  default     = "npm run build"
+  default     = "npm test && npm run build"
 }
 
 variable "pages_destination_dir" {
