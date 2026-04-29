@@ -21,3 +21,6 @@ pnpm-debug.log*
 
 # annoying paths
 .DS_Store
+
+# claude code local state
+.claude/
