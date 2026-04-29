@@ -13,7 +13,7 @@
     "deploy:pages": "wrangler pages deploy dist"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.5",
+    "@astrojs/mdx": "^5.0.4",
     "@astrojs/rss": "^4.0.12",
     "@astrojs/sitemap": "^3.6.0",
     "@expressive-code/plugin-collapsible-sections": "^0.41.7",
@@ -21,7 +21,7 @@
     "@mermaid-js/layout-elk": "^0.2.0",
     "@microflash/rehype-figure": "^2.1.1",
     "apexcharts": "^5.3.6",
-    "astro": "^5.13.8",
+    "astro": "^6.1.10",
     "astro-expressive-code": "^0.41.7",
     "astro-favicons": "^3.1.5",
     "astro-icon": "^1.1.5",

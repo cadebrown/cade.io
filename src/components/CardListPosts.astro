@@ -18,7 +18,7 @@ const { posts } = Astro.props
         ({ id, data: { dated, title, blurb, image, authors } }: CollectionEntry<'posts'>) => (
             <Card href={`/posts/${id}`} image={image} title={title} blurb={blurb}>
                 <span slot='subtitle'>
-                    by <Authors authors={authors.map((author) => author.id)} /> on <Dated dated={dated} />
+                    by <Authors authors={authors} /> on <Dated dated={dated} />
                 </span>
             </Card>
         )

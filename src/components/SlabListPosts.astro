@@ -19,7 +19,7 @@ const { posts } = Astro.props
         ({ id, data: { dated, title, blurb, image, authors } }: CollectionEntry<'posts'>) => (
             <>
                 <hr />
-                <Slab href={`/posts/${id}`} image={image} title={title} blurb={blurb} dated={dated} authors={authors.map((author) => author.id)}>
+                <Slab href={`/posts/${id}`} image={image} title={title} blurb={blurb} dated={dated} authors={authors}>
                     {/* <span slot='subtitle'>
                         on <Dated dated={dated} /> by <Authors authors={authors} />
                     </span> */}
