@@ -1,14 +1,9 @@
 ---
-import Names from '@components/Names.astro'
-import Dated from '@components/Dated.astro'
-import Page from '@layouts/Page.astro'
-import Image from '@components/Image.astro'
-import Socials from '@components/Socials.astro'
-import { type CollectionEntry, getCollection, getEntries } from 'astro:content'
-import { render } from 'astro:content'
+import { type CollectionEntry, getCollection, getEntries, render } from 'astro:content'
 import Post from '@layouts/Post.astro'
+import StructuredData from '@components/StructuredData.astro'
+import { readingStats } from '@format'
 
-// define which paths are valid for this page
 export async function getStaticPaths() {
 	const posts = await getCollection('posts')
 	return posts.map((post) => ({
@@ -26,10 +21,13 @@ const {
 	data: { dated, title, blurb, image, authors, ...rest },
 } = post
 
-// and render the post content itself
+const authorEntries = await getEntries(authors)
+const reading = readingStats(post.body ?? '')
+
 const { Content } = await render(post)
 ---
 
-<Post title={title} blurb={blurb} image={image} authors={authors.map((author) => author.id)} dated={dated} {...rest}>
+<Post title={title} blurb={blurb} image={image} authors={authors.map((author) => author.id)} dated={dated} reading={reading} {...rest}>
+	<StructuredData title={title} blurb={blurb} dated={dated} image={image} authors={authorEntries} />
 	<Content />
 </Post>

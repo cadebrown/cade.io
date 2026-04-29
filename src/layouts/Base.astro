@@ -17,10 +17,11 @@ type Props = MarkdownLayoutProps<{
 	dated?: Date
 	authors?: (string | CollectionEntry<'authors'>)[]
 	image?: ImageMetadata | string
+	reading?: { words: number; minutes: number }
 }>
 
 // destructure the props so it works from MDX fronmatter or props directly
-const { dated, title, blurb, image, authors, ...rest } = Astro.props.frontmatter || Astro.props
+const { dated, title, blurb, image, authors, reading, ...rest } = Astro.props.frontmatter || Astro.props
 ---
 
 <!doctype html>
@@ -50,6 +51,13 @@ const { dated, title, blurb, image, authors, ...rest } = Astro.props.frontmatter
 								authors && (
 									<>
 										by <Authors authors={authors} />
+									</>
+								)
+							}
+							{
+								reading && (
+									<>
+										&middot; <span class='intro-reading'>{reading.minutes} min read &middot; {reading.words.toLocaleString()} words</span>
 									</>
 								)
 							}
@@ -91,51 +99,34 @@ const { dated, title, blurb, image, authors, ...rest } = Astro.props.frontmatter
 </style>
 
 <script>
-	import ApexCharts from "apexcharts";
+	// ApexCharts is dynamically imported only when chart elements are present on the page.
+	// This avoids loading ~600KB of JS on pages that don't use charts.
 
-	function flipChartThemeMode(chartOptions: any, darkMode: boolean) {
-		const theme = chartOptions.theme;
-		const tooltip = chartOptions.tooltip;
-		const chart = chartOptions.chart;
-
-		chartOptions = {
-			...chartOptions,
-			chart: {
-				...chart,
-				background: "transparent",
-				fontFamily: "inherit",
-			},
-			theme: {
-				...theme,
-				mode: darkMode ? "dark" : "light",
-			},
-			tooltip: {
-				...tooltip,
-				theme: darkMode ? "dark" : "light",
-			},
-		};
-
-		return chartOptions;
+	function applyTheme(opts: any, darkMode: boolean) {
+		return {
+			...opts,
+			chart: { ...opts.chart, background: 'transparent', fontFamily: 'inherit' },
+			theme: { ...opts.theme, mode: darkMode ? 'dark' : 'light' },
+			tooltip: { ...opts.tooltip, theme: darkMode ? 'dark' : 'light' },
+		}
 	}
 
-	// when the page loads
-	document.addEventListener("DOMContentLoaded", () => {
+	// astro:page-load fires on initial load AND after each view transition,
+	// so charts render correctly on direct navigation and on client-side nav.
+	document.addEventListener('astro:page-load', async () => {
+		const charts = document.querySelectorAll('.rehype-apexcharts-container')
+		if (charts.length === 0) return
 
-		// detect the theme of the page
-		const dataTheme = document.documentElement.getAttribute("data-theme");
-		const isDarkMode = dataTheme === "blackboard";
+		const { default: ApexCharts } = await import('apexcharts')
+		const isDarkMode = document.documentElement.getAttribute('data-theme') === 'blackboard'
 
-		// look for each of our charts
-		document.querySelectorAll(".rehype-apexcharts-container").forEach((chartDiv) => {
-			const chartDataAttr = chartDiv.getAttribute("data-rehype-apexcharts");
-			if (chartDataAttr) {
-				const chartData = eval("(" + chartDataAttr + ")");
-				const chart = new ApexCharts(
-					chartDiv,
-					flipChartThemeMode(chartData, isDarkMode)
-				);
-				chart.render();
-			}
-		});
-	});
+		charts.forEach((chartDiv) => {
+			const raw = chartDiv.getAttribute('data-rehype-apexcharts')
+			if (!raw) return
+			// Chart config is a JS object literal (may include arrow functions for formatters),
+			// so we use Function() rather than JSON.parse(). Source is trusted (build-time markdown).
+			const config = new Function('return (' + raw + ')')()
+			new ApexCharts(chartDiv, applyTheme(config, isDarkMode)).render()
+		})
+	})
 </script>

@@ -5,7 +5,7 @@ import { getCollection } from 'astro:content'
 
 import rss from '@astrojs/rss'
 
-import { SITE_TITLE, SITE_BLURB } from '@common'
+import { SITE_TITLE, SITE_BLURB } from '@site'
 
 export async function GET(context: any) {
 	const posts = await getCollection('posts', ({ data }) => !data.draft)

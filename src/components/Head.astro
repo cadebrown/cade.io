@@ -3,7 +3,11 @@
 import '@styles/wow.css'
 import '@styles/cadeio.css'
 
-import { SITE_CANON, SITE_TITLE } from '@common'
+// KaTeX styles bundled by Astro from the npm package (no vendored copy)
+import 'katex/dist/katex.min.css'
+
+import { ClientRouter } from 'astro:transitions'
+import { SITE_CANON, SITE_TITLE } from '@site'
 import type { ImageMetadata } from 'astro'
 
 type Props = {
@@ -70,19 +74,11 @@ const image_url = image_src ? new URL(image_src, Astro.site) : new URL('/favicon
 <meta property='twitter:description' content={blurb} />
 <meta property='twitter:image' content={image_url} />
 
-<!-- KaTex: Math Rendering -->
-<!-- TODO: import this? bundle with the page? -->
-<link rel='stylesheet' href='/ext/katex/katex.min.css' />
+<!-- KaTeX copy-tex extension: lets users copy LaTeX source from rendered equations -->
+<script>import 'katex/dist/contrib/copy-tex.min.js'</script>
 
-<!-- The loading of KaTeX is deferred to speed up page rendering -->
-<!-- TODO: is this even required? I don't think so -->
-<!-- <script defer src="/ext/katex/katex.min.js" crossorigin="anonymous"></script> -->
-
-<!-- KaTeX Extension: copy-tex, which allows clipboard to copy useful LaTeX source -->
-<script defer src='/ext/katex/contrib/copy-tex.min.js' crossorigin='anonymous'></script>
-
-<!-- TODO: some pages may need auto render... -->
-<!-- <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script> -->
+<!-- View transitions for smooth page navigation -->
+<ClientRouter />
 
 <!-- Font preloads removed: currently using system monospace (--wow-font-text: monospace).
      @font-face declarations in cadeio.css are retained so switching back is easy. -->

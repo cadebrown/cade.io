@@ -48,8 +48,8 @@ import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-s
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
 import { pluginColorChips } from 'expressive-code-color-chips'
 
-// extra configuration, constants, and definitions
-import { katexConfig, vscodeThemes } from './src/common.ts'
+import { katexConfig } from './src/katex.ts'
+import { vscodeThemes } from './src/themes.ts'
 
 // the actual configuration object, which is a JSON tree of settings
 // NOTE: https://astro.build/config

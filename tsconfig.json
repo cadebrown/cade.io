@@ -27,8 +27,17 @@
       "@assets/*": [
         "public/assets/*"
       ],
-      "@common": [
-        "src/common.ts"
+      "@site": [
+        "src/site.ts"
+      ],
+      "@format": [
+        "src/format.ts"
+      ],
+      "@themes": [
+        "src/themes.ts"
+      ],
+      "@katex": [
+        "src/katex.ts"
       ]
     },
     "plugins": [

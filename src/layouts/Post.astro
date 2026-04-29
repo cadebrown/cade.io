@@ -10,12 +10,13 @@ type Props = MarkdownLayoutProps<{
 	authors: (string | CollectionEntry<'authors'>)[]
 	image?: ImageMetadata | string
 	dated?: Date
+	reading?: { words: number; minutes: number }
 }>
 
-const { title, blurb, image, dated, authors, ...rest } = Astro.props.frontmatter || Astro.props
+const { title, blurb, image, dated, authors, reading, ...rest } = Astro.props.frontmatter || Astro.props
 ---
 
-<Page title={title} blurb={blurb} image={image} authors={authors} dated={dated} {...rest}>
+<Page title={title} blurb={blurb} image={image} authors={authors} dated={dated} reading={reading} {...rest}>
 	<article>
 		<slot />
 	</article>

@@ -1,0 +1,50 @@
+---
+// JSON-LD structured data for blog posts. Helps search engines build rich results.
+// Schema reference: https://schema.org/BlogPosting
+
+import type { ImageMetadata } from 'astro'
+import type { CollectionEntry } from 'astro:content'
+import { SITE_TITLE, SITE_CANON } from '@site'
+
+type Props = {
+	title: string
+	blurb: string
+	dated?: Date
+	image?: ImageMetadata | string
+	authors?: CollectionEntry<'authors'>[]
+}
+
+const { title, blurb, dated, image, authors } = Astro.props
+
+const url = new URL(Astro.url.pathname, Astro.site).toString()
+const imageSrc = image && typeof image === 'object' && 'src' in image ? image.src : (image as string | undefined)
+const imageUrl = imageSrc ? new URL(imageSrc, Astro.site).toString() : undefined
+
+const data: Record<string, unknown> = {
+	'@context': 'https://schema.org',
+	'@type': 'BlogPosting',
+	headline: title,
+	description: blurb,
+	url,
+	mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+	publisher: {
+		'@type': 'Organization',
+		name: SITE_TITLE,
+		url: SITE_CANON,
+	},
+}
+
+if (dated) {
+	data.datePublished = dated.toISOString()
+	data.dateModified = dated.toISOString()
+}
+if (imageUrl) data.image = imageUrl
+if (authors && authors.length > 0) {
+	data.author = authors.map((a) => ({
+		'@type': 'Person',
+		name: a.data.name,
+	}))
+}
+---
+
+<script type='application/ld+json' set:html={JSON.stringify(data)} />
