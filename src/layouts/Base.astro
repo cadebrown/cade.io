@@ -70,46 +70,29 @@ const { dated, title, blurb, image, authors, ...rest } = Astro.props.frontmatter
 
 <style>
 	section.intro {
-		/* width: 60%; */
 		max-width: 1200px;
 		margin: 0 auto;
-
-		/* align-items: center; */
-		/* justify-content: center; */
 	}
 	img {
 		display: block;
 		object-fit: cover;
-		/* height: 50vh; */
 		height: 33vh;
 		width: 100%;
 		border-bottom: 1px solid var(--wow-border);
 	}
 
-	section.intro .intro-subtitle {
-		/* font-size: 1.1em; */
-	}
 	section.intro .intro-blurb {
-		/* font-size: 1.1em; */
-		/* font-size: 1.1em; */
-		/* make italic */
 		font-style: italic;
-	}
-
-	.intro h1 {
-		/* font-size: 2.4em; */
 	}
 
 	section.intro p {
 		margin: 0.5em 0;
-		/* font-size: 1.25em; */
-		/* margin: 0; */
 	}
 </style>
 
 <script>
 	import ApexCharts from "apexcharts";
-   
+
 	function flipChartThemeMode(chartOptions: any, darkMode: boolean) {
 		const theme = chartOptions.theme;
 		const tooltip = chartOptions.tooltip;
@@ -119,8 +102,8 @@ const { dated, title, blurb, image, authors, ...rest } = Astro.props.frontmatter
 			...chartOptions,
 			chart: {
 				...chart,
-				background: "transparent", // also make the background transparent
-				fontFamily: "inherit", // inherit the font family
+				background: "transparent",
+				fontFamily: "inherit",
 			},
 			theme: {
 				...theme,
@@ -140,19 +123,13 @@ const { dated, title, blurb, image, authors, ...rest } = Astro.props.frontmatter
 
 		// detect the theme of the page
 		const dataTheme = document.documentElement.getAttribute("data-theme");
-		console.log("dataTheme", dataTheme);
-		// TODO: have better logic here, to allow theme switching after the page loads
 		const isDarkMode = dataTheme === "blackboard";
 
 		// look for each of our charts
 		document.querySelectorAll(".rehype-apexcharts-container").forEach((chartDiv) => {
-			// extract our Apex Charts config and render it out
-			// const chartDataAttr = chartDiv.getAttribute("data-rehype-apexcharts");
 			const chartDataAttr = chartDiv.getAttribute("data-rehype-apexcharts");
 			if (chartDataAttr) {
-				// const chartData = JSON.parse(chartDataAttr);
 				const chartData = eval("(" + chartDataAttr + ")");
-				console.log("chartData", chartData);
 				const chart = new ApexCharts(
 					chartDiv,
 					flipChartThemeMode(chartData, isDarkMode)

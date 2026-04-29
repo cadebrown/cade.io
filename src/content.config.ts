@@ -18,11 +18,9 @@ const posts = defineCollection({
 		title: z.string(),
 		// the blurb of the blog post (a short description), as a string
 		blurb: z.string(),
-		// the cover image (preview/thumbnail), which should be an Astro image source
+		// the cover image (preview/thumbnail), resolved by Astro's image pipeline
 		// NOTE: https://docs.astro.build/en/guides/images/#images-in-content-collections
-		// TODO: default here?
-		image: z.string(),
-		// image: image(),
+		image: image(),
 		// default to the site's owner as the name
 		authors: z.array(reference('authors')).default(['cade-brown']),
 		// the keywords of the blog post, used for categorization

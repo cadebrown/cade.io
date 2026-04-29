@@ -1,11 +1,7 @@
 ---
 import type { ImageMetadata, MarkdownLayoutProps } from 'astro'
 
-import Base from '@layouts/Base.astro'
 import Page from '@layouts/Page.astro'
-import Image from '@components/Image.astro'
-import Authors from '@components/Authors.astro'
-import Dated from '@components/Dated.astro'
 import type { CollectionEntry } from 'astro:content'
 
 type Props = MarkdownLayoutProps<{
@@ -24,37 +20,3 @@ const { title, blurb, image, dated, authors, ...rest } = Astro.props.frontmatter
 		<slot />
 	</article>
 </Page>
-
-
-
-
-
-<!-- 
-<style>
-	center.post-top {
-		/* width: 80%; */
-		/* margin: 1em auto; */
-		margin: 0 auto;
-	}
-
-	h1.post-top-title {
-		font-size: 2.4em;
-	}
-
-	p.post-top-blurb {
-		font-size: 1.1em;
-	}
-
-	img.post-top-image {
-		display: block;
-		max-height: 35vh;
-		width: 100%;
-		object-fit: cover;
-		/* display: block;
-		max-height: 40vh;
-		border-radius: 1em;
-		object-fit: cover; */
-		/* TODO: should it crop or not? */
-		/* width: 100%; */
-	}
-</style> -->

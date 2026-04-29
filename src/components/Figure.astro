@@ -1,10 +1,9 @@
 ---
+import type { ImageMetadata } from 'astro'
 import Image from './Image.astro'
 
-// NOTE: https://vkbansal.me/blog/resolving-images-astro-md-2
-
 type Props = {
-  src: string
+  src: ImageMetadata | string
   alt?: string
   caption?: string
   style?: string
@@ -13,7 +12,6 @@ type Props = {
   imgStyle?: string
   imgClass?: string
 }
-
 
 const {
   src,
@@ -26,8 +24,6 @@ const {
   imgClass,
   ...rest
 } = Astro.props
-
-
 ---
 
 <figure class:list={[className]} style={style} {...rest}>

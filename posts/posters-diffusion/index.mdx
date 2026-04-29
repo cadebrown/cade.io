@@ -1,0 +1,26 @@
+---
+dated: '2023-04-20'
+title: 'Diffusion Wallpapers and Posters'
+blurb: 'These are wallpapers and posters made by playing around with Stable Diffusion.'
+image: ./diffusion-posters.webp
+---
+
+I just made a bunch of images with [Stable Diffusion](https://stability.ai/), which is available for free (kinda cool)! I made them for displaying on my phone, desktop, and physical wall. Enjoy!
+
+import Gallery from "@components/Gallery.astro"
+
+export const phoneImages = Object.values(import.meta.glob('./phone-*.webp', { eager: true, import: 'default' }))
+export const visionImages = Object.values(import.meta.glob('./vision-*.webp', { eager: true, import: 'default' }))
+export const posterImages = Object.values(import.meta.glob('./poster-36x24-*.webp', { eager: true, import: 'default' }))
+
+# Phone Wallpapers
+
+<Gallery images={phoneImages} />
+
+# Desktop Wallpapers
+
+<Gallery images={visionImages} />
+
+# Wall Posters (36x24)
+
+<Gallery images={posterImages} />

@@ -22,9 +22,8 @@ const { title, blurb, image } = Astro.props
 const title_full = `${title} | cade.io`
 // const title_full = `${title} | ${SITE_TITLE}`
 
-const image_url = image && image.src ? new URL(image.src, Astro.site) : new URL(image as string, Astro.site)
-// const image_url = ((image && image.hasOwnProperty('src')) && new URL(image.src, Astro.site) || new URL(image, Astro.site)) || new URL('/favicon-96x96.png', Astro.site)
-// const image_url = new URL(image.src, Astro.site)
+const image_src = image && typeof image === 'object' && 'src' in image ? image.src : image as string
+const image_url = image_src ? new URL(image_src, Astro.site) : new URL('/favicon-96x96.png', Astro.site)
 ---
 
 <script is:inline>
@@ -85,22 +84,5 @@ const image_url = image && image.src ? new URL(image.src, Astro.site) : new URL(
 <!-- TODO: some pages may need auto render... -->
 <!-- <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script> -->
 
-<!-- Font Family: Ubuntu -->
-<link rel='preload' href='/fonts/Ubuntu-Regular.woff2' as='font' type='font/woff2' crossorigin />
-<link rel='preload' href='/fonts/Ubuntu-Italic.woff2' as='font' type='font/woff2' crossorigin />
-<link rel='preload' href='/fonts/Ubuntu-Bold.woff2' as='font' type='font/woff2' crossorigin />
-<link rel='preload' href='/fonts/Ubuntu-BoldItalic.woff2' as='font' type='font/woff2' crossorigin />
-<link rel='preload' href='/fonts/Ubuntu-Medium.woff2' as='font' type='font/woff2' crossorigin />
-<link rel='preload' href='/fonts/Ubuntu-MediumItalic.woff2' as='font' type='font/woff2' crossorigin />
-<link rel='preload' href='/fonts/Ubuntu-Light.woff2' as='font' type='font/woff2' crossorigin />
-<link rel='preload' href='/fonts/Ubuntu-LightItalic.woff2' as='font' type='font/woff2' crossorigin />
-
-<!-- Font Family: Ubuntu Mono -->
-<link rel='preload' href='/fonts/UbuntuMono-Regular.woff2' as='font' type='font/woff2' crossorigin />
-<link rel='preload' href='/fonts/UbuntuMono-Italic.woff2' as='font' type='font/woff2' crossorigin />
-<link rel='preload' href='/fonts/UbuntuMono-Bold.woff2' as='font' type='font/woff2' crossorigin />
-<link rel='preload' href='/fonts/UbuntuMono-BoldItalic.woff2' as='font' type='font/woff2' crossorigin />
-
-<link rel='preconnect' href='https://fonts.googleapis.com' />
-<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
-<link href='https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap' rel='stylesheet' />
+<!-- Font preloads removed: currently using system monospace (--wow-font-text: monospace).
+     @font-face declarations in cadeio.css are retained so switching back is easy. -->

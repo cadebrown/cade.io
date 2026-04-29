@@ -61,6 +61,13 @@ export default defineConfig({
 	server: {
 		host: true,
 	},
+	image: {
+		// custom image service — passthrough when possible, lossless WebP when not.
+		// see ./src/image-service-cade.ts for details.
+		service: {
+			entrypoint: './src/image-service-cade.ts',
+		},
+	},
 	experimental: {
 		// for content collections
 		contentIntellisense: true,

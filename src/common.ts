@@ -33,34 +33,6 @@ export const SITE_TEXTS = {
     
 }
 
-// a dirty dirty hack for importing all possible images in the /assets directory
-export const ASSETS = import.meta.glob([
-    // import all blog assets
-    '../public/assets/**.{png,jpg,jpeg,webp}',
-], {
-    import: 'default' 
-})
-
-// attempt to import and asset and return a local handle, if it exists within /public. otherwise, it will return 'undefined' (which signals the caller should treat it like an arbitrary URL to an external resource)
-// NOTE: 'src' should start with a leading slash, but not a '/public' prefix (since '/public' disappears at runtime)
-// for example, if a file is stored in '/public/images/thumb.png', you should call 'getAsset("/images/thumb.png")'
-export const getAsset = async (src: string) => {
-    // construct a key to the 'ASSETS' variable, since it is imported at build time and does need to include '/public' in the path (specifically, '../public' since we are in 'src/'
-    const key = "../public" + src
-    if (key in ASSETS) {
-        // found the asset, so call the promise and return the result
-        return (await ASSETS[key]())
-    }
-    
-    // not a valid asset, so signal it
-    return undefined
-}
-
-export const getAssets = async (srcs: string[]) => {
-    // for each source, get the asset and return the results
-    // NOTE: we return as an object with keys, so it can be easily accessed by the caller
-    return Object.fromEntries(await Promise.all(srcs.map(async src => [src, await getAsset(src)])))
-}
 
 
 

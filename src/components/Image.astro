@@ -1,23 +1,18 @@
 ---
-// NOTE: https://vkbansal.me/blog/resolving-images-astro-md-2
-
-const { src, alt, style, class: className, href, ...rest } = Astro.props
-
-// attempt to statically import the asset
-// NOTE: https://vkbansal.me/blog/resolving-images-astro-md-2
-
-import { getAsset } from '@common'
+import type { ImageMetadata } from 'astro'
 import { Image as AstroImage } from 'astro:assets'
 
-console.log('Image.astro: src', src)
+type Props = {
+    src: ImageMetadata | string
+    alt?: string
+    style?: string
+    class?: string
+}
 
-const srcAsset = (src.src && src) || (await getAsset(src))
-
-console.log('Image.astro: srcAsset', srcAsset)
-
-//const srcURL = src.src || src
+const { src, alt, style, class: className } = Astro.props
 ---
 
-<!-- TODO: use actual Astro image component? or both, if its available? -->{(srcAsset && <AstroImage src={srcAsset} alt={alt || ''} style={style} class={className} />) || <img src={src} alt={alt || ''} style={style} class={className} />}
-
-<!-- <img src={srcURL} alt={alt || ''} style={style} class:list={[className]} {...rest}/> -->
+{typeof src === 'string'
+    ? <img src={src} alt={alt || ''} style={style} class={className} />
+    : <AstroImage src={src} alt={alt || ''} style={style} class={className} />
+}

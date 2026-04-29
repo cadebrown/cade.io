@@ -2,13 +2,14 @@
 // Slab.astro - a slab of content, used in conjunction with SlabList.astro
 // TODO: document how this hierarchy works with Slab/SlabList
 import { Icon } from 'astro-icon/components'
+import type { ImageMetadata } from 'astro'
 import Image from './Image.astro'
 import Dated from './Dated.astro'
 import Authors from './Authors.astro'
 
 type Props = {
     href: string
-    image: string
+    image: ImageMetadata | string
     title: string
     blurb: string
     dated: Date

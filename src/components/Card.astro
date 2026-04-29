@@ -1,9 +1,10 @@
 ---
+import type { ImageMetadata } from 'astro'
 import Image from './Image.astro'
 
 type Props = {
     href: string
-    image: string
+    image: ImageMetadata | string
     title: string
     blurb: string
 }
