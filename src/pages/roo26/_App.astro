@@ -111,13 +111,12 @@ const desc =
 					<h2>My Roo</h2>
 					<div class="plan-actions">
 						<button class="tool-btn" id="sharePlan">Share</button>
+						<button class="tool-btn" id="qrPlan" title="QR code of your plan">⊞ QR</button>
 						<button class="tool-btn" id="icsPlan">📅</button>
 						<button class="tool-btn tool-danger" id="clearPlan">Clear</button>
 					</div>
 				</div>
-				<div id="petCard"></div>
 				<div id="planBody"></div>
-				<div id="questCard"></div>
 			</section>
 
 			<!-- ════════════ TRIP REPORT ════════════ -->
@@ -252,6 +251,14 @@ const desc =
 					</details>
 
 					<details class="info-sec">
+						<summary>🏆 Roo Quest & your festival buddy</summary>
+						<div class="sec-body">
+							<div id="petCard"></div>
+							<div id="questCard"></div>
+						</div>
+					</details>
+
+					<details class="info-sec">
 						<summary>🔗 Official links</summary>
 						<div class="sec-body">
 							<ul>
@@ -327,6 +334,14 @@ const desc =
 			</div>
 		</div>
 
+		<!-- QR share: fullscreen, white for easy scanning in sunlight -->
+		<div class="qr-wrap" id="qrWrap" hidden>
+			<div class="qr-name" id="qrName"></div>
+			<canvas id="qrCanvas"></canvas>
+			<div class="qr-hint">Scan to open this plan — no app needed</div>
+			<button class="tool-btn qr-close" id="qrClose">Close</button>
+		</div>
+
 		<!-- take-me-home compass -->
 		<div class="compass-wrap" id="compassWrap" hidden>
 			<button class="omap-close compass-close" id="compassClose" aria-label="Close">✕</button>
@@ -361,7 +376,7 @@ const desc =
 					<ul class="help-list">
 						<li><b>🎸 Schedule</b> — every Centeroo set with live <i>NOW</i> badges. Tap a set for the artist's photo, bio, socials, news and Spotify. Tap ☆ to save it to My Roo. Search looks at today first, then shows matches from other days below. Hit <b>Now</b> to jump to the current moment.</li>
 						<li><b>🗺️ Map</b> — satellite map of the Farm. 📍 live location + distance to every stage, water and medical (auto-reconnects when signal drops). ⛺ custom pins for camps and meetup spots. 🧭 a compass that points straight back to your camp at 2 AM. 📜 the official festival maps. Chips toggle 🌧️ live rain radar and ➤ your route — yellow arrows through today's ★ sets in order.</li>
-						<li><b>⭐ My Roo</b> — your plan, day by day: overlap warnings, 🚶 leave-by walking times between stages, 📅 export to your calendar for offline reminders, and <b>Share</b> sends a link that carries your whole plan — friends who open it can save it and see where you'll both be.</li>
+						<li><b>⭐ My Roo</b> — your plan, day by day: overlap warnings, 🚶 leave-by walking times between stages, 📅 export to your calendar for offline reminders. <b>Share</b> sends a link carrying your whole plan, or hit <b>⊞ QR</b> for a fullscreen code anyone can scan — no app needed. Friends' plans you open get saved with 🤝 overlap markers.</li>
 						<li><b>📈 Trip</b> — while 📍 is on, your wandering is logged <i>on your phone only</i>: miles walked, est. steps, hour-by-hour movement charts per day, and a 🐾 Tracks trail on the map. Your whole Roo, visualized.</li>
 						<li><b>🧭 Guide</b> — live forecast + storm alerts, gate rules, what you can bring, water/medical info, and official links.</li>
 						<li><b>Works offline-ish</b> — once loaded, the app and official maps keep working with no signal; only live tiles, radar and weather need a connection. Everything you save stays on your phone.</li>
@@ -1321,6 +1336,40 @@ const desc =
 	}
 	.route-step span {
 		font-weight: 700;
+	}
+	.qr-wrap {
+		position: fixed;
+		inset: 0;
+		z-index: 3200;
+		background: #fff;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+		padding: 1.5rem;
+	}
+	.qr-name {
+		color: #14101f;
+		font-size: 1.3rem;
+		font-weight: 900;
+		text-align: center;
+	}
+	#qrCanvas {
+		width: min(78vw, 24rem) !important;
+		height: auto !important;
+		image-rendering: pixelated;
+	}
+	.qr-hint {
+		color: #5a5470;
+		font-size: 0.9rem;
+		font-weight: 600;
+		text-align: center;
+	}
+	.qr-close {
+		background: #14101f;
+		border-color: #14101f;
+		color: #fff;
 	}
 	.compass-wrap {
 		position: fixed;

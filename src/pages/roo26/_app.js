@@ -181,13 +181,13 @@ function setTab(tab, push = true) {
 	if (push && location.pathname.replace(/\/$/, '') !== TAB_PATH[tab])
 		history.pushState({}, '', TAB_PATH[tab])
 	if (tab === 'map') initMap()
-	if (tab === 'plan') {
-		renderPlan()
+	if (tab === 'plan') renderPlan()
+	if (tab === 'trip') renderTrip()
+	if (tab === 'info') {
+		loadWeather()
 		renderPet()
 		renderQuest()
 	}
-	if (tab === 'trip') renderTrip()
-	if (tab === 'info') loadWeather()
 	window.scrollTo({ top: 0 })
 }
 
@@ -706,6 +706,31 @@ $('#sharePlan').addEventListener('click', async () => {
 		}
 		questFlag('share')
 	} catch {}
+})
+
+// fullscreen QR of your plan link — for friends without the app
+$('#qrPlan').addEventListener('click', async () => {
+	if (!Object.keys(state.favs).length) return toast('Star some sets first!')
+	let name = store.get('myname', '')
+	if (!name) {
+		name = (prompt('Your name (shown when friends scan):') || 'A friend').trim()
+		store.set('myname', name)
+	}
+	const url = `https://cade.io/roo26/plan#p=${encodePlan(name)}`
+	try {
+		const QR = (await import('qrcode')).default
+		await QR.toCanvas($('#qrCanvas'), url, { width: 720, margin: 2, errorCorrectionLevel: 'M' })
+	} catch {
+		return toast('Could not build the QR code')
+	}
+	$('#qrName').textContent = `${name}'s Roo '26 plan`
+	$('#qrWrap').hidden = false
+	document.body.style.overflow = 'hidden'
+	questFlag('share')
+})
+$('#qrClose').addEventListener('click', () => {
+	$('#qrWrap').hidden = true
+	document.body.style.overflow = ''
 })
 
 // importing a friend's plan from a shared link
@@ -1231,8 +1256,10 @@ function drawPins() {
 	if (!map || !pinLayer) return
 	pinLayer.clearLayers()
 	for (const pin of state.pins) {
+		// pins are locked by default — panning/zooming was nudging them around.
+		// Moving requires an explicit "Move" from the pin's popup.
 		const m = L.marker([pin.lat, pin.lon], {
-			draggable: true,
+			draggable: false,
 			icon: L.divIcon({
 				className: '',
 				html: `<div class="camp-pin">${pin.emoji}</div>`,
@@ -1247,6 +1274,12 @@ function drawPins() {
 			className: 'poi-lbl',
 		})
 		m.bindPopup(() => {
+			const move = el('button', { class: 'pop-btn' }, 'Move')
+			move.addEventListener('click', () => {
+				m.closePopup()
+				m.dragging.enable()
+				toast(`Drag ${pin.name} to its new spot — it locks when you drop it`)
+			})
 			const rename = el('button', { class: 'pop-btn' }, 'Rename')
 			rename.addEventListener('click', () => {
 				const name = prompt('Pin name:', pin.name)
@@ -1265,7 +1298,7 @@ function drawPins() {
 				toast(`${pin.emoji} ${pin.name} removed`)
 				renderNearest()
 			})
-			return el('div', {}, el('b', {}, `${pin.emoji} ${pin.name}`), el('br'), rename, ' ', rm)
+			return el('div', {}, el('b', {}, `${pin.emoji} ${pin.name}`), el('br'), move, ' ', rename, ' ', rm)
 		})
 		m.on('dragend', () => {
 			const ll = m.getLatLng()
@@ -1273,6 +1306,8 @@ function drawPins() {
 			pin.lon = ll.lng
 			savePins()
 			renderNearest()
+			m.dragging.disable()
+			toast(`${pin.emoji} ${pin.name} locked in`)
 		})
 	}
 }
@@ -1794,11 +1829,11 @@ async function renderPet() {
 	if (!card) return
 	if (!petSvg) {
 		try {
-			const [{ createAvatar }, { bottts }] = await Promise.all([
+			const [{ createAvatar }, { bigEars }] = await Promise.all([
 				import('@dicebear/core'),
 				import('@dicebear/collection'),
 			])
-			petSvg = createAvatar(bottts, { seed: pet.seed, backgroundColor: [] }).toString()
+			petSvg = createAvatar(bigEars, { seed: pet.seed, backgroundColor: [] }).toString()
 		} catch {
 			petSvg = '<div style="font-size:3rem">🦘</div>'
 		}
@@ -1989,7 +2024,7 @@ window.addEventListener('hashchange', checkImport)
 setInterval(() => {
 	refreshStatuses()
 	checkQuests()
-	if (state.tab === 'plan') renderPet()
+	if (state.tab === 'info') renderPet()
 }, 30e3)
 setInterval(loadAlerts, 10 * 60e3)
 
