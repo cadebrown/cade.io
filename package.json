@@ -27,6 +27,7 @@
     "astro-icon": "^1.1.5",
     "astro-mermaid": "^2.0.1",
     "expressive-code-color-chips": "^0.1.2",
+    "leaflet": "^1.9.4",
     "mermaid": "^11.12.1",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-katex": "^7.0.1",

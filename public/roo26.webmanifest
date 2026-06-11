@@ -1,0 +1,17 @@
+{
+	"name": "Roo '26 — Bonnaroo 2026 Guide",
+	"short_name": "Roo '26",
+	"description": "Unofficial interactive Bonnaroo 2026 guide: set times, live map, and survival info.",
+	"start_url": "/roo26",
+	"scope": "/roo26",
+	"display": "standalone",
+	"background_color": "#120d1d",
+	"theme_color": "#120d1d",
+	"icons": [
+		{
+			"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23120d1d'/><text x='50' y='72' font-size='60' text-anchor='middle'>🌈</text></svg>",
+			"sizes": "any",
+			"type": "image/svg+xml"
+		}
+	]
+}
