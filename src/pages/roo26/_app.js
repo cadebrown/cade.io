@@ -107,11 +107,19 @@ const state = {
 	day: store.get('day', null) || currentFestDay() || SCHED.days[0].id,
 	stage: 'all',
 	search: '',
-	favs: new Set(store.get('favs', [])),
+	favs: store.get('favs2', null), // {setId: 2 (going) | 1 (interested)}
+	friends: store.get('friends', []), // imported plans: [{name, going:[], interested:[], at}]
 	pins: store.get('pins', []), // [{id, emoji, name, lat, lon}] — camps & meetup spots
 	placing: null, // pin payload waiting for a map tap: {emoji, name} | null
 	pos: null, // latest geolocation fix {lat, lon, acc, at}
 	locatePref: store.get('locate', null), // user's last explicit locate on/off choice
+}
+
+// migrate v1 single-tier favorites → "going"
+if (state.favs == null) {
+	state.favs = Object.fromEntries(store.get('favs', []).map((id) => [id, 2]))
+	store.set('favs2', state.favs)
+	store.del('favs')
 }
 
 // migrate the old single "tent" pin into the pins list
@@ -139,8 +147,23 @@ function currentFestDay() {
 	return null
 }
 
-const saveFavs = () => store.set('favs', [...state.favs])
+const saveFavs = () => store.set('favs2', state.favs)
 const savePins = () => store.set('pins', state.pins)
+const saveFriends = () => store.set('friends', state.friends)
+
+// favorite tiers: 0 = none, 2 = going ★, 1 = interested 👀
+const favTier = (id) => state.favs[id] || 0
+const TIER_ICON = { 0: '☆', 2: '★', 1: '👀' }
+const TIER_LABEL = { 0: '', 2: 'going', 1: 'interested' }
+
+function setFavTier(set, tier) {
+	if (tier === 0) delete state.favs[set.id]
+	else state.favs[set.id] = tier
+	saveFavs()
+	renderFavCount()
+	if (state.tab === 'plan') renderPlan()
+	drawRoute()
+}
 
 // ───────────────────────── router ─────────────────────────
 const TAB_PATH = { schedule: '/roo26', map: '/roo26/map', plan: '/roo26/plan', info: '/roo26/info' }
@@ -191,38 +214,28 @@ function setStatus(s, now = Date.now()) {
 	return 'next'
 }
 
+// row button cycles: none → ★ going → 👀 interested → none
 function favButton(set) {
-	const on = () => state.favs.has(set.id)
-	const b = el(
-		'button',
-		{
-			class: 'fav-btn' + (on() ? ' faved' : ''),
-			'aria-label': 'Save to My Roo',
-			'aria-pressed': String(on()),
-		},
-		on() ? '★' : '☆',
-	)
+	const b = el('button', { class: 'fav-btn', 'aria-label': 'Save to My Roo' })
+	const paint = () => {
+		const t = favTier(set.id)
+		b.textContent = TIER_ICON[t]
+		b.classList.toggle('faved', t === 2)
+		b.classList.toggle('interested', t === 1)
+	}
+	paint()
 	b.addEventListener('click', (e) => {
 		e.stopPropagation()
-		toggleFav(set)
-		b.classList.toggle('faved', on())
-		b.textContent = on() ? '★' : '☆'
-		b.setAttribute('aria-pressed', String(on()))
+		const next = { 0: 2, 2: 1, 1: 0 }[favTier(set.id)]
+		setFavTier(set, next)
+		toast(
+			next === 0
+				? `Removed ${set.artist}`
+				: `${TIER_ICON[next]} ${set.artist} — ${TIER_LABEL[next]}`,
+		)
+		paint()
 	})
 	return b
-}
-
-function toggleFav(set) {
-	if (state.favs.has(set.id)) {
-		state.favs.delete(set.id)
-		toast(`Removed ${set.artist} from My Roo`)
-	} else {
-		state.favs.add(set.id)
-		toast(`★ ${set.artist} added to My Roo`)
-	}
-	saveFavs()
-	renderFavCount()
-	if (state.tab === 'plan') renderPlan()
 }
 
 function setRow(set) {
@@ -426,9 +439,10 @@ function openSheet(set) {
 	const tag = $('#sheetStage')
 	tag.textContent = set.stage.name
 	tag.style.color = set.stage.color
-	const fav = $('#sheetFav')
-	fav.textContent = state.favs.has(set.id) ? '★ In My Roo' : '☆ Add to My Roo'
-	fav.classList.toggle('faved', state.favs.has(set.id))
+	const t = favTier(set.id)
+	$('#sheetGoing').classList.toggle('faved', t === 2)
+	$('#sheetGoing').textContent = t === 2 ? '★ Going' : '☆ Going'
+	$('#sheetInterested').classList.toggle('faved', t === 1)
 	$('#sheetSpotify').href = a?.id
 		? `https://open.spotify.com/artist/${a.id}`
 		: `https://open.spotify.com/search/${encodeURIComponent(set.artist)}`
@@ -446,13 +460,15 @@ $('#sheetClose').addEventListener('click', closeSheet)
 $('#sheetWrap').addEventListener('click', (e) => {
 	if (e.target.id === 'sheetWrap') closeSheet()
 })
-$('#sheetFav').addEventListener('click', () => {
+function sheetTier(tier) {
 	if (!sheetSet) return
 	const keep = sheetSet
-	toggleFav(keep)
+	setFavTier(keep, favTier(keep.id) === tier ? 0 : tier)
 	openSheet(keep) // refresh sheet button state
 	renderSched()
-})
+}
+$('#sheetGoing').addEventListener('click', () => sheetTier(2))
+$('#sheetInterested').addEventListener('click', () => sheetTier(1))
 $('#sheetMap').addEventListener('click', async () => {
 	if (!sheetSet) return
 	const poi = POIS.pois.find((p) => p.cat === 'stage' && p.stage === sheetSet.stage.id)
@@ -467,76 +483,247 @@ $('#sheetMap').addEventListener('click', async () => {
 
 // ───────────────────────── my plan ─────────────────────────
 function renderFavCount() {
+	const n = Object.keys(state.favs).length
 	const b = $('#favCount')
-	b.hidden = state.favs.size === 0
-	b.textContent = state.favs.size
+	b.hidden = n === 0
+	b.textContent = n
 }
+
+const STAGE_POI = Object.fromEntries(
+	POIS.pois.filter((p) => p.cat === 'stage' && p.stage).map((p) => [p.stage, p]),
+)
+const stageDist = (a, b) =>
+	STAGE_POI[a] && STAGE_POI[b] && a !== b ? haversine(STAGE_POI[a], STAGE_POI[b]) : 0
 
 function renderPlan() {
 	const body = $('#planBody')
-	const favs = SETS.filter((s) => state.favs.has(s.id))
+	const favs = SETS.filter((s) => favTier(s.id) > 0)
+	const frag = document.createDocumentFragment()
 	if (!favs.length) {
-		body.replaceChildren(
+		frag.append(
 			el(
 				'div',
 				{ class: 'empty-note' },
-				'No sets saved yet. Tap the ☆ next to any set in the schedule to build your weekend.',
+				'No sets saved yet. Tap ☆ next to any set — once for ★ going, twice for 👀 interested.',
 			),
 		)
-		return
 	}
-	const frag = document.createDocumentFragment()
 	for (const d of SCHED.days) {
 		const daySets = favs.filter((s) => s.day === d.id)
 		if (!daySets.length) continue
 		frag.append(el('div', { class: 'plan-day-h' }, d.full.toUpperCase()))
+		const going = daySets.filter((s) => favTier(s.id) === 2)
 		for (let i = 0; i < daySets.length; i++) {
-			frag.append(setRow(daySets[i]))
-			const next = daySets[i + 1]
-			if (next && daySets[i].endMs && next.startMs && next.startMs < daySets[i].endMs) {
-				frag.append(
-					el(
-						'div',
-						{ class: 'conflict-note' },
-						'⚠️',
-						`Overlaps with ${next.artist} — you'll have to choose (or split it)`,
-					),
-				)
+			const s = daySets[i]
+			const row = setRow(s)
+			if (favTier(s.id) === 1) row.classList.add('is-interested')
+			frag.append(row)
+			// conflicts + walk advisories only matter between sets you're committed to
+			const gi = going.indexOf(s)
+			const next = gi >= 0 ? going[gi + 1] : null
+			if (next && s.endMs && next.startMs) {
+				if (next.startMs < s.endMs) {
+					frag.append(
+						el(
+							'div',
+							{ class: 'conflict-note' },
+							'⚠️',
+							`Overlaps with ${next.artist} — you'll have to choose (or split it)`,
+						),
+					)
+				} else {
+					const dist = stageDist(s.stage.id, next.stage.id)
+					if (dist > 120) {
+						const walkMin = Math.max(1, Math.round(dist / 80))
+						const leaveMs = next.startMs - (walkMin + 5) * 60e3
+						// format leave time in festival local time (CDT = UTC-5)
+						const lvLocal = new Date(leaveMs - 5 * 3600e3)
+						const hh = lvLocal.getUTCHours()
+						const mm = String(lvLocal.getUTCMinutes()).padStart(2, '0')
+						const ap = hh >= 12 ? 'PM' : 'AM'
+						const tight = leaveMs < s.endMs
+						frag.append(
+							el(
+								'div',
+								{ class: 'walk-note' + (tight ? ' tight' : '') },
+								'🚶',
+								`${walkMin} min to ${next.stage.name} — leave by ${hh % 12 || 12}:${mm} ${ap}` +
+									(tight ? ` (before ${s.artist} ends!)` : ''),
+							),
+						)
+					}
+				}
 			}
 		}
 	}
+	renderFriends(frag)
 	body.replaceChildren(frag)
 }
 
+// ── friends' imported plans ──
+function renderFriends(frag) {
+	if (!state.friends.length) return
+	frag.append(el('div', { class: 'plan-day-h friends-h' }, "FRIENDS' PLANS"))
+	for (const f of state.friends) {
+		const goingSets = f.going.map((id) => SET_BY_ID[id]).filter(Boolean)
+		const overlap = goingSets.filter((s) => favTier(s.id) === 2).length
+		const card = el('div', { class: 'friend-card' })
+		const head = el(
+			'button',
+			{ class: 'friend-head' },
+			el('span', { class: 'friend-name' }, `🤝 ${f.name}`),
+			el(
+				'span',
+				{ class: 'friend-meta' },
+				`${goingSets.length} sets${overlap ? ` · ${overlap} with you` : ''} ▾`,
+			),
+		)
+		const listEl = el('div', { class: 'friend-sets' }, '')
+		listEl.hidden = true
+		head.addEventListener('click', () => {
+			listEl.hidden = !listEl.hidden
+			if (!listEl.hidden && !listEl.childElementCount) {
+				for (const d of SCHED.days) {
+					const ds = goingSets.filter((s) => s.day === d.id)
+					if (!ds.length) continue
+					listEl.append(el('div', { class: 'friend-day' }, d.label.toUpperCase()))
+					for (const s of ds)
+						listEl.append(
+							el(
+								'div',
+								{ class: 'friend-set' },
+								`${s.start ? fmtTime(s.start) : 'TBA'} — ${s.artist} (${s.stage.short})`,
+								favTier(s.id) === 2 ? el('span', { class: 'both-tag' }, ' 🤝 you too') : null,
+							),
+						)
+				}
+			}
+		})
+		const rm = el('button', { class: 'friend-rm', 'aria-label': 'Remove' }, '✕')
+		rm.addEventListener('click', () => {
+			state.friends = state.friends.filter((x) => x !== f)
+			saveFriends()
+			renderPlan()
+		})
+		card.append(head, rm, listEl)
+		frag.append(card)
+	}
+}
+
 $('#clearPlan').addEventListener('click', () => {
-	if (!state.favs.size) return toast('Nothing to clear')
+	if (!Object.keys(state.favs).length) return toast('Nothing to clear')
 	if (!confirm('Remove all saved sets from My Roo?')) return
-	state.favs.clear()
+	state.favs = {}
 	saveFavs()
 	renderFavCount()
 	renderPlan()
 	renderSched()
+	drawRoute()
 })
 
-$('#sharePlan').addEventListener('click', async () => {
-	const favs = SETS.filter((s) => state.favs.has(s.id))
-	if (!favs.length) return toast('Star some sets first!')
+// ── share: text + a link that carries your whole plan ──
+function encodePlan(name) {
+	const going = []
+	const interested = []
+	SETS.forEach((s, i) => {
+		if (favTier(s.id) === 2) going.push(i)
+		if (favTier(s.id) === 1) interested.push(i)
+	})
+	return `2!${encodeURIComponent(name)}!${going.join('.')}!${interested.join('.')}`
+}
+
+function decodePlan(hash) {
+	const parts = hash.split('!')
+	if (parts[0] !== '2' || parts.length < 4) return null
+	const idx = (s) =>
+		s
+			? s
+					.split('.')
+					.map(Number)
+					.filter((i) => SETS[i])
+					.map((i) => SETS[i].id)
+			: []
+	return { name: decodeURIComponent(parts[1]) || 'A friend', going: idx(parts[2]), interested: idx(parts[3]) }
+}
+
+function planText() {
+	const favs = SETS.filter((s) => favTier(s.id) > 0)
 	let txt = "My Bonnaroo '26 plan 🌈\n"
 	for (const d of SCHED.days) {
 		const daySets = favs.filter((s) => s.day === d.id)
 		if (!daySets.length) continue
 		txt += `\n${d.full}\n`
 		for (const s of daySets)
-			txt += `  ${s.start ? fmtTime(s.start) : 'TBA'} — ${s.artist} (${s.stage.name})\n`
+			txt += `  ${favTier(s.id) === 1 ? '👀 ' : ''}${s.start ? fmtTime(s.start) : 'TBA'} — ${s.artist} (${s.stage.name})\n`
 	}
-	txt += '\nvia cade.io/roo26'
+	return txt
+}
+
+$('#sharePlan').addEventListener('click', async () => {
+	if (!Object.keys(state.favs).length) return toast('Star some sets first!')
+	let name = store.get('myname', '')
+	if (!name) {
+		name = (prompt('Your name (shown to friends who open your link):') || 'A friend').trim()
+		store.set('myname', name)
+	}
+	const url = `https://cade.io/roo26/plan#p=${encodePlan(name)}`
+	const txt = planText() + '\nOpen my full plan: ' + url
 	try {
 		if (navigator.share) await navigator.share({ text: txt })
 		else {
 			await navigator.clipboard.writeText(txt)
-			toast('Plan copied to clipboard')
+			toast('Plan + link copied to clipboard')
 		}
 	} catch {}
+})
+
+// importing a friend's plan from a shared link
+function checkImport() {
+	const m = location.hash.match(/^#p=(.+)$/)
+	if (!m) return
+	const plan = decodePlan(decodeURI(m[1]))
+	history.replaceState({}, '', location.pathname)
+	if (!plan || (!plan.going.length && !plan.interested.length)) return
+	if (
+		!confirm(
+			`🌈 ${plan.name} shared a Roo plan (${plan.going.length} going, ${plan.interested.length} interested). Save it to My Roo?`,
+		)
+	)
+		return
+	state.friends = state.friends.filter((f) => f.name !== plan.name)
+	state.friends.push({ ...plan, at: Date.now() })
+	saveFriends()
+	setTab('plan')
+	toast(`Saved ${plan.name}'s plan`)
+}
+
+// ── calendar export (.ics) — native reminders that work offline ──
+$('#icsPlan').addEventListener('click', () => {
+	const favs = SETS.filter((s) => favTier(s.id) > 0 && s.startMs)
+	if (!favs.length) return toast('Star some sets first!')
+	const utc = (ms) => new Date(ms).toISOString().replace(/[-:]|\.\d{3}/g, '')
+	let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//cade.io//roo26//EN\r\n'
+	for (const s of favs) {
+		ics +=
+			'BEGIN:VEVENT\r\n' +
+			`UID:${s.id}@cade.io\r\n` +
+			`DTSTAMP:${utc(Date.now())}\r\n` +
+			`DTSTART:${utc(s.startMs)}\r\n` +
+			`DTEND:${utc(s.endMs || s.startMs + 3600e3)}\r\n` +
+			`SUMMARY:${favTier(s.id) === 1 ? '👀 ' : ''}${s.artist.replace(/[,;\\]/g, ' ')} @ ${s.stage.name}\r\n` +
+			`LOCATION:${s.stage.name}, Bonnaroo, Manchester TN\r\n` +
+			'BEGIN:VALARM\r\nTRIGGER:-PT20M\r\nACTION:DISPLAY\r\nDESCRIPTION:Set starting soon\r\nEND:VALARM\r\n' +
+			'END:VEVENT\r\n'
+	}
+	ics += 'END:VCALENDAR\r\n'
+	const a = el('a', {
+		href: URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })),
+		download: 'my-roo26.ics',
+	})
+	document.body.append(a)
+	a.click()
+	a.remove()
+	toast('Calendar file downloaded — open it to add reminders')
 })
 
 // ───────────────────────── map ─────────────────────────
@@ -584,10 +771,6 @@ async function initMap() {
 		'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
 		{ maxZoom: 19, attribution: 'Imagery © Esri' },
 	)
-	const street = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		maxZoom: 19,
-		attribution: '© OpenStreetMap',
-	})
 
 	map = L.map('map', {
 		center: POIS.center,
@@ -596,12 +779,6 @@ async function initMap() {
 		zoomControl: false,
 		maxBounds: L.latLngBounds(POIS.farmBounds).pad(0.6),
 		attributionControl: true,
-	})
-	let satOn = true
-	$('#fabLayers').addEventListener('click', () => {
-		satOn = !satOn
-		map.removeLayer(satOn ? street : sat)
-		map.addLayer(satOn ? sat : street)
 	})
 
 	// build category layers + markers
@@ -632,7 +809,9 @@ async function initMap() {
 	for (const [cat, def] of Object.entries(POI_CATS)) if (def.on) catLayers[cat].addTo(map)
 
 	pinLayer = L.layerGroup().addTo(map)
+	routeLayer = L.layerGroup().addTo(map)
 	drawPins()
+	drawRoute()
 
 	const syncZoomClass = () => $('#map').classList.toggle('map-zoomed-out', map.getZoom() < 17)
 	map.on('zoomend', syncZoomClass)
@@ -677,9 +856,34 @@ function poiPopup(p) {
 	return wrap
 }
 
+let radarOn = false
+let routeOn = true
+
 function renderPoiChips() {
 	const wrap = $('#poiChips')
+	const radarChip = el(
+		'button',
+		{ class: 'chip' + (radarOn ? ' active' : ''), style: '--chip-c:#7fd4ff' },
+		'🌧️ Radar',
+	)
+	radarChip.addEventListener('click', () => {
+		radarOn = !radarOn
+		radarOn ? showRadar() : hideRadar()
+		renderPoiChips()
+	})
+	const routeChip = el(
+		'button',
+		{ class: 'chip' + (routeOn ? ' active' : ''), style: '--chip-c:#ffe66d' },
+		'➤ My route',
+	)
+	routeChip.addEventListener('click', () => {
+		routeOn = !routeOn
+		drawRoute()
+		renderPoiChips()
+	})
 	wrap.replaceChildren(
+		radarChip,
+		routeChip,
 		...Object.entries(POI_CATS).map(([id, def]) => {
 			const c = el(
 				'button',
@@ -694,6 +898,97 @@ function renderPoiChips() {
 			return c
 		}),
 	)
+}
+
+// — live precipitation radar (RainViewer free tiles) —
+let radarLayer = null
+let radarTimer = null
+
+async function showRadar() {
+	if (!map) return
+	try {
+		const meta = await (await fetch('https://api.rainviewer.com/public/weather-maps.json')).json()
+		const frames = meta?.radar?.past
+		if (!frames?.length) throw new Error('no frames')
+		const path = frames.at(-1).path
+		if (radarLayer) radarLayer.remove()
+		radarLayer = L.tileLayer(`${meta.host}${path}/256/{z}/{x}/{y}/2/1_1.png`, {
+			opacity: 0.62,
+			maxZoom: 19,
+		}).addTo(map)
+		clearInterval(radarTimer)
+		radarTimer = setInterval(() => radarOn && showRadar(), 5 * 60e3)
+	} catch {
+		toast('Radar unavailable right now')
+		radarOn = false
+		renderPoiChips()
+	}
+}
+
+function hideRadar() {
+	clearInterval(radarTimer)
+	radarTimer = null
+	if (radarLayer) {
+		radarLayer.remove()
+		radarLayer = null
+	}
+}
+
+// — today's route: arrows through your ★ going sets, in time order —
+let routeLayer = null
+
+function bearing(a, b) {
+	const φ1 = (a.lat * Math.PI) / 180
+	const φ2 = (b.lat * Math.PI) / 180
+	const Δλ = ((b.lon - a.lon) * Math.PI) / 180
+	const y = Math.sin(Δλ) * Math.cos(φ2)
+	const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ)
+	return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360
+}
+
+function drawRoute() {
+	if (!map || !routeLayer) return
+	routeLayer.clearLayers()
+	if (!routeOn) return
+	const today = currentFestDay() || state.day
+	const going = SETS.filter(
+		(s) => s.day === today && favTier(s.id) === 2 && s.startMs && STAGE_POI[s.stage.id],
+	)
+	// collapse consecutive sets at the same stage into single waypoints
+	const pts = []
+	for (const s of going) {
+		const poi = STAGE_POI[s.stage.id]
+		if (!pts.length || pts.at(-1).stage !== s.stage.id)
+			pts.push({ stage: s.stage.id, lat: poi.lat, lon: poi.lon, t: s.start })
+	}
+	if (pts.length < 2) return
+	L.polyline(
+		pts.map((p) => [p.lat, p.lon]),
+		{ color: '#ffe66d', weight: 3, opacity: 0.85, dashArray: '7 9' },
+	).addTo(routeLayer)
+	for (let i = 0; i < pts.length - 1; i++) {
+		const a = pts[i]
+		const b = pts[i + 1]
+		const mid = [(a.lat + b.lat) / 2, (a.lon + b.lon) / 2]
+		L.marker(mid, {
+			interactive: false,
+			icon: L.divIcon({
+				className: '',
+				html: `<div class="route-arrow" style="transform:rotate(${bearing(a, b) - 90}deg)">➤</div>`,
+				iconSize: [22, 22],
+				iconAnchor: [11, 11],
+			}),
+		}).addTo(routeLayer)
+		L.marker([b.lat, b.lon], {
+			interactive: false,
+			icon: L.divIcon({
+				className: '',
+				html: `<div class="route-step">${i + 2}<span>${fmtTime(b.t)}</span></div>`,
+				iconSize: [0, 0],
+				iconAnchor: [-16, 10],
+			}),
+		}).addTo(routeLayer)
+	}
 }
 
 // — custom pins: mark your camp, friends' camps, meetup spots —
@@ -959,6 +1254,75 @@ function renderNearest() {
 	)
 }
 
+// — take-me-home compass: point at any saved pin, 2 AM-proof —
+let compassTarget = 0
+let headingHandler = null
+
+async function openCompass() {
+	if (!state.pins.length) {
+		toast('Drop a ⛺ pin first so I know where home is')
+		return
+	}
+	$('#compassWrap').hidden = false
+	document.body.style.overflow = 'hidden'
+	if (watchId == null) startLocate(true)
+	// iOS requires an explicit permission request from a user gesture
+	try {
+		if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission)
+			await DeviceOrientationEvent.requestPermission()
+	} catch {}
+	let heading = null
+	headingHandler = (e) => {
+		heading = e.webkitCompassHeading ?? (e.absolute && e.alpha != null ? 360 - e.alpha : null)
+		paintCompass(heading)
+	}
+	window.addEventListener('deviceorientationabsolute', headingHandler)
+	window.addEventListener('deviceorientation', headingHandler)
+	paintCompass(heading)
+	if (compassTimer) clearInterval(compassTimer)
+	compassTimer = setInterval(() => paintCompass(heading), 1500)
+}
+
+let compassTimer = null
+
+function paintCompass(heading) {
+	const pin = state.pins[compassTarget % state.pins.length]
+	if (!pin) return
+	$('#compassName').textContent = `${pin.emoji} ${pin.name}`
+	if (!state.pos) {
+		$('#compassDist').textContent = 'finding you…'
+		return
+	}
+	const dist = haversine(state.pos, pin)
+	$('#compassDist').textContent = `${fmtDist(dist)} · ${fmtWalk(dist) || 'far'}`
+	const brg = bearing(state.pos, pin)
+	const rot = heading == null ? brg : brg - heading
+	$('#compassArrow').style.transform = `rotate(${rot}deg)`
+	$('#compassHint').textContent =
+		heading == null ? 'arrow points relative to north — hold phone flat' : 'follow the arrow'
+	const age = Math.round((Date.now() - state.pos.at) / 1000)
+	$('#compassAge').textContent = age > 20 ? `last fix ${age}s ago` : ''
+}
+
+function closeCompass() {
+	$('#compassWrap').hidden = true
+	document.body.style.overflow = ''
+	clearInterval(compassTimer)
+	compassTimer = null
+	if (headingHandler) {
+		window.removeEventListener('deviceorientationabsolute', headingHandler)
+		window.removeEventListener('deviceorientation', headingHandler)
+		headingHandler = null
+	}
+}
+
+$('#fabHome').addEventListener('click', openCompass)
+$('#compassClose').addEventListener('click', closeCompass)
+$('#compassName').addEventListener('click', () => {
+	compassTarget = (compassTarget + 1) % state.pins.length
+	paintCompass(null)
+})
+
 // — official map viewer (pinch-zoom over the official festival map images) —
 const OMAPS = {
 	centeroo: {
@@ -1125,6 +1489,8 @@ renderPill()
 renderFavCount()
 setTab(state.tab, false)
 loadAlerts()
+checkImport()
+window.addEventListener('hashchange', checkImport)
 
 setInterval(refreshStatuses, 30e3)
 setInterval(loadAlerts, 10 * 60e3)

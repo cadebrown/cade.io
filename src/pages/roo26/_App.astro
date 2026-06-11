@@ -88,9 +88,9 @@ const desc =
 				<div class="map-wrap">
 					<div id="map"></div>
 					<div class="map-fabs">
-						<button class="fab" id="fabLayers" title="Toggle satellite / street">🛰️</button>
 						<button class="fab" id="fabOmap" title="Official festival map">📜</button>
 						<button class="fab" id="fabPin" title="Mark a camp or meetup spot">⛺</button>
+						<button class="fab" id="fabHome" title="Compass to your camp">🧭</button>
 						<button class="fab fab-locate" id="fabLocate" title="Show my location">📍</button>
 					</div>
 					<div class="map-banner" id="tentBanner" hidden>Tap the map to place the pin</div>
@@ -110,6 +110,7 @@ const desc =
 					<h2>My Roo</h2>
 					<div class="plan-actions">
 						<button class="tool-btn" id="sharePlan">Share</button>
+						<button class="tool-btn" id="icsPlan">📅</button>
 						<button class="tool-btn tool-danger" id="clearPlan">Clear</button>
 					</div>
 				</div>
@@ -287,7 +288,8 @@ const desc =
 					<p class="sheet-desc" id="sheetDesc"></p>
 					<p class="sheet-when"><span id="sheetWhen"></span> · <b id="sheetStage"></b></p>
 					<div class="sheet-actions">
-						<button class="sheet-btn" id="sheetFav">☆ Add to My Roo</button>
+						<button class="sheet-btn" id="sheetGoing">☆ Going</button>
+						<button class="sheet-btn" id="sheetInterested">👀 Interested</button>
 						<a class="sheet-btn sheet-spotify" id="sheetSpotify" href="#" target="_blank" rel="noopener">▶ Spotify</a>
 						<button class="sheet-btn" id="sheetMap">🗺️ Stage</button>
 					</div>
@@ -312,6 +314,16 @@ const desc =
 			</div>
 		</div>
 
+		<!-- take-me-home compass -->
+		<div class="compass-wrap" id="compassWrap" hidden>
+			<button class="omap-close compass-close" id="compassClose" aria-label="Close">✕</button>
+			<button class="compass-name" id="compassName"></button>
+			<div class="compass-arrow-box"><div class="compass-arrow" id="compassArrow">⬆</div></div>
+			<div class="compass-dist" id="compassDist"></div>
+			<div class="compass-hint" id="compassHint"></div>
+			<div class="compass-age" id="compassAge"></div>
+		</div>
+
 		<!-- official map viewer -->
 		<div class="omap-wrap" id="omapWrap" hidden>
 			<div class="omap-top">
@@ -334,11 +346,11 @@ const desc =
 						<button class="sheet-close static" id="helpClose" aria-label="Close">✕</button>
 					</div>
 					<ul class="help-list">
-						<li><b>🎸 Schedule</b> — every Centeroo set with live <i>NOW</i> badges. Tap a set for the artist's photo, genre, blurb and Spotify. Tap ☆ to save it. Filter by stage, search by name, hit <b>Now</b> to jump to the current moment.</li>
-						<li><b>🗺️ Map</b> — satellite map of the Farm. 📍 shows your live location and how far you are from every stage, water refill and medical tent (it reconnects automatically if signal drops). ⛺ drops custom pins — your camp, friends' camps, the car — drag to move, tap to rename or remove. 📜 opens the official festival maps. 🛰️ switches satellite/street.</li>
-						<li><b>⭐ My Roo</b> — your starred sets as a day-by-day plan, with overlap warnings. Share it with your crew.</li>
+						<li><b>🎸 Schedule</b> — every Centeroo set with live <i>NOW</i> badges. Tap a set for the artist's photo, genre, blurb and Spotify. The save button cycles: <b>★ going → 👀 interested → off</b>. Filter by stage, search, hit <b>Now</b> to jump to the current moment.</li>
+						<li><b>🗺️ Map</b> — satellite map of the Farm. 📍 live location + distance to every stage, water and medical (auto-reconnects when signal drops). ⛺ custom pins for camps and meetup spots. 🧭 a compass that points straight back to your camp at 2 AM. 📜 the official festival maps. Chips toggle 🌧️ live rain radar and ➤ your route — yellow arrows through today's ★ sets in order.</li>
+						<li><b>⭐ My Roo</b> — your plan, day by day: overlap warnings, 🚶 leave-by walking times between stages, 📅 export to your calendar for offline reminders, and <b>Share</b> sends a link that carries your whole plan — friends who open it can save it and see where you'll both be.</li>
 						<li><b>🧭 Guide</b> — live forecast + storm alerts, gate rules, what you can bring, water/medical info, and official links.</li>
-						<li><b>Works offline-ish</b> — once loaded, the app and official maps keep working with no signal; only live tiles and weather need a connection. Everything you save stays on your phone.</li>
+						<li><b>Works offline-ish</b> — once loaded, the app and official maps keep working with no signal; only live tiles, radar and weather need a connection. Everything you save stays on your phone.</li>
 					</ul>
 					<div class="help-install">
 						<button class="sheet-btn sheet-primary" id="installBtn" hidden>📲 Install as an app</button>
@@ -907,6 +919,89 @@ const desc =
 	.fav-btn.faved {
 		color: var(--roo-orange);
 	}
+	.fav-btn.interested {
+		font-size: 1.05rem;
+	}
+	.set-row.is-interested {
+		opacity: 0.75;
+		border-style: dashed;
+	}
+	.walk-note {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin: -0.15rem 0 0.4rem;
+		padding: 0.3rem 0.65rem;
+		border-radius: 8px;
+		background: rgba(61, 220, 151, 0.1);
+		border: 1px dashed rgba(61, 220, 151, 0.4);
+		color: var(--roo-green);
+		font-size: 0.72rem;
+		font-weight: 700;
+	}
+	.walk-note.tight {
+		background: rgba(255, 176, 46, 0.12);
+		border-color: rgba(255, 176, 46, 0.45);
+		color: var(--roo-orange);
+	}
+	.friends-h {
+		margin-top: 1rem;
+	}
+	.friend-card {
+		position: relative;
+		margin-bottom: 0.45rem;
+		border-radius: var(--rad);
+		background: var(--bg-2);
+		border: 1px solid var(--line);
+		padding: 0.1rem 0.4rem;
+	}
+	.friend-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		width: calc(100% - 2rem);
+		padding: 0.55rem 0.4rem;
+		text-align: left;
+	}
+	.friend-name {
+		font-weight: 800;
+		font-size: 0.92rem;
+	}
+	.friend-meta {
+		color: var(--dim);
+		font-size: 0.72rem;
+		font-weight: 700;
+		white-space: nowrap;
+	}
+	.friend-rm {
+		position: absolute;
+		top: 0.55rem;
+		right: 0.55rem;
+		color: var(--dim);
+		font-size: 0.85rem;
+		padding: 0.2rem 0.35rem;
+	}
+	.friend-sets {
+		padding: 0 0.5rem 0.6rem;
+	}
+	.friend-day {
+		font-size: 0.66rem;
+		font-weight: 900;
+		letter-spacing: 0.12em;
+		color: var(--roo-purple);
+		padding: 0.35rem 0 0.15rem;
+	}
+	.friend-set {
+		font-size: 0.8rem;
+		color: var(--mut);
+		padding: 0.12rem 0;
+	}
+	.both-tag {
+		color: var(--roo-green);
+		font-weight: 800;
+		font-size: 0.7rem;
+	}
 	.empty-note {
 		padding: 2.2rem 1rem;
 		text-align: center;
@@ -1086,6 +1181,91 @@ const desc =
 	.camp-pin {
 		font-size: 1.7rem;
 		filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+	}
+	.route-arrow {
+		color: #ffe66d;
+		font-size: 1.1rem;
+		text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 22px;
+		height: 22px;
+	}
+	.route-step {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		background: rgba(255, 230, 109, 0.92);
+		color: #14101f;
+		font-size: 0.66rem;
+		font-weight: 900;
+		border-radius: 999px;
+		padding: 0.08rem 0.4rem;
+		white-space: nowrap;
+		box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+	}
+	.route-step span {
+		font-weight: 700;
+	}
+	.compass-wrap {
+		position: fixed;
+		inset: 0;
+		z-index: 3000;
+		background: radial-gradient(circle at 50% 38%, #221a3e, #0b0814 70%);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.7rem;
+	}
+	.compass-close {
+		position: absolute;
+		top: calc(0.9rem + env(safe-area-inset-top, 0px));
+		right: 0.9rem;
+	}
+	.compass-name {
+		font-size: 1.15rem;
+		font-weight: 900;
+		padding: 0.5rem 1.1rem;
+		border-radius: 999px;
+		background: var(--bg-2);
+		border: 1px solid var(--line);
+	}
+	.compass-arrow-box {
+		width: min(58vw, 16rem);
+		height: min(58vw, 16rem);
+		border-radius: 50%;
+		border: 2px solid var(--line);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(28, 21, 48, 0.6);
+	}
+	.compass-arrow {
+		font-size: min(34vw, 9rem);
+		line-height: 1;
+		background: var(--rainbow);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		transition: transform 0.3s ease-out;
+		will-change: transform;
+	}
+	.compass-dist {
+		font-size: 1.5rem;
+		font-weight: 900;
+		color: var(--roo-green);
+	}
+	.compass-hint {
+		color: var(--mut);
+		font-size: 0.85rem;
+		font-weight: 600;
+	}
+	.compass-age {
+		color: var(--dim);
+		font-size: 0.72rem;
+		min-height: 1em;
 	}
 	.user-dot.stale {
 		background: #8fa3ad;
