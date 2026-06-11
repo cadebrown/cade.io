@@ -2,11 +2,12 @@
 // Cell service on the Farm is rough: network-first for pages (so updates land
 // when there IS signal), cache-fallback when there isn't. Built assets and the
 // official festival maps are cached so the app + maps work with zero signal.
-const CACHE = 'roo26-v2'
+const CACHE = 'roo26-v3'
 const PRECACHE = [
 	'/roo26/',
 	'/roo26/map/',
 	'/roo26/plan/',
+	'/roo26/trip/',
 	'/roo26/info/',
 	'/roo26-map-centeroo.webp',
 	'/roo26-map-outeroo.webp',

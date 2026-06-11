@@ -1,7 +1,28 @@
 {
-  "center": [35.4714, -86.0517],
-  "centerooBounds": [[35.467, -86.057], [35.476, -86.046]],
-  "farmBounds": [[35.46, -86.067], [35.492, -86.026]],
+  "center": [
+    35.4714,
+    -86.0517
+  ],
+  "centerooBounds": [
+    [
+      35.467,
+      -86.057
+    ],
+    [
+      35.476,
+      -86.046
+    ]
+  ],
+  "farmBounds": [
+    [
+      35.46,
+      -86.067
+    ],
+    [
+      35.492,
+      -86.026
+    ]
+  ],
   "pois": [
     {
       "name": "What Stage",
@@ -57,7 +78,6 @@
       "emoji": "🛸",
       "desc": "The UFO — moved inside Centeroo for '26. Late-night Fri & Sat only. Location approximate."
     },
-
     {
       "name": "Bonnaroo Fountain",
       "lat": 35.47143,
@@ -90,7 +110,6 @@
       "emoji": "🛝",
       "desc": "Cool-off zone near The Other, with the Big Ass Waterslide (approx.)."
     },
-
     {
       "name": "The Arch (NE entrance)",
       "lat": 35.47227,
@@ -125,13 +144,12 @@
     },
     {
       "name": "West Toll",
-      "lat": 35.483,
-      "lon": -86.0595,
+      "lat": 35.48072,
+      "lon": -86.06111,
       "cat": "entrance",
       "emoji": "🚙",
       "desc": "NW vehicle gate off New Bushy Branch Rd (approx.)."
     },
-
     {
       "name": "Water refill — Tower",
       "lat": 35.474,
@@ -153,7 +171,6 @@
       "cat": "water",
       "desc": "Free filtered water near The Oasis / The Other (approx.). Every Outeroo Plaza has one too."
     },
-
     {
       "name": "Medical — What/Which",
       "lat": 35.4692,
@@ -175,7 +192,6 @@
       "cat": "medical",
       "desc": "Medical near the Arch Entrance / VIP area (approx.). Every Plaza also has 24-hr medical."
     },
-
     {
       "name": "Vendor Village",
       "lat": 35.4716,
@@ -200,7 +216,6 @@
       "emoji": "🍺",
       "desc": "New for '26, in That Tent's old spot on the north edge (approx.)."
     },
-
     {
       "name": "Restrooms — What Stage",
       "lat": 35.4697,
@@ -257,11 +272,144 @@
       "desc": "Shaded wooded camping east of Centeroo."
     },
     {
-      "name": "The Grove (Plaza 7)",
-      "lat": 35.4805,
-      "lon": -86.0465,
+      "name": "Plaza 1",
+      "lat": 35.47091,
+      "lon": -86.04518,
       "cat": "camping",
-      "desc": "Premium shaded camping + The Grove stage, NE campgrounds (approx.)."
+      "emoji": "🛖",
+      "desc": "Free water, 24-hr medical & security, showers, charging, Wi-Fi (location approx.)."
+    },
+    {
+      "name": "Plaza 2",
+      "lat": 35.47484,
+      "lon": -86.03971,
+      "cat": "camping",
+      "emoji": "🛖",
+      "desc": "Free water, 24-hr medical & security, showers, charging, Wi-Fi (location approx.). Home of the Why? Barn stage."
+    },
+    {
+      "name": "Plaza 3",
+      "lat": 35.47532,
+      "lon": -86.04588,
+      "cat": "camping",
+      "emoji": "🛖",
+      "desc": "Free water, 24-hr medical & security, showers, charging, Wi-Fi (location approx.). Home of the When? Barn stage."
+    },
+    {
+      "name": "Plaza 4",
+      "lat": 35.47478,
+      "lon": -86.05098,
+      "cat": "camping",
+      "emoji": "🛖",
+      "desc": "Free water, 24-hr medical & security, showers, charging, Wi-Fi (location approx.)."
+    },
+    {
+      "name": "Plaza 5",
+      "lat": 35.47658,
+      "lon": -86.06086,
+      "cat": "camping",
+      "emoji": "🛖",
+      "desc": "Free water, 24-hr medical & security, showers, charging, Wi-Fi (location approx.). Home of the Groop stage."
+    },
+    {
+      "name": "Plaza 6",
+      "lat": 35.47817,
+      "lon": -86.05841,
+      "cat": "camping",
+      "emoji": "🛖",
+      "desc": "Free water, 24-hr medical & security, showers, charging, Wi-Fi (location approx.). Community camps cluster here."
+    },
+    {
+      "name": "Plaza 7",
+      "lat": 35.47713,
+      "lon": -86.05251,
+      "cat": "camping",
+      "emoji": "🛖",
+      "desc": "Free water, 24-hr medical & security, showers, charging, Wi-Fi (location approx.). The Grove premium camping nearby."
+    },
+    {
+      "name": "Plaza 8",
+      "lat": 35.48076,
+      "lon": -86.04858,
+      "cat": "camping",
+      "emoji": "🛖",
+      "desc": "Free water, 24-hr medical & security, showers, charging, Wi-Fi (location approx.)."
+    },
+    {
+      "name": "Plaza 9",
+      "lat": 35.47991,
+      "lon": -86.04635,
+      "cat": "camping",
+      "emoji": "🛖",
+      "desc": "Free water, 24-hr medical & security, showers, charging, Wi-Fi (location approx.). Home of the Silent Disco."
+    },
+    {
+      "name": "General Store (east)",
+      "lat": 35.47512,
+      "lon": -86.04695,
+      "cat": "food",
+      "emoji": "🏪",
+      "desc": "Ice, water, beer, food, sundries — near Plaza 3 (approx.)."
+    },
+    {
+      "name": "General Store (west)",
+      "lat": 35.47423,
+      "lon": -86.05211,
+      "cat": "food",
+      "emoji": "🏪",
+      "desc": "Ice, water, beer, food, sundries — near Plaza 4 (approx.)."
+    },
+    {
+      "name": "SoloRoo",
+      "lat": 35.47877,
+      "lon": -86.05944,
+      "cat": "camping",
+      "desc": "Community camp for solo travelers (approx.)."
+    },
+    {
+      "name": "SoberRoo",
+      "lat": 35.47877,
+      "lon": -86.05606,
+      "cat": "camping",
+      "desc": "Sober community camp (approx.)."
+    },
+    {
+      "name": "FamilyRoo",
+      "lat": 35.47952,
+      "lon": -86.05941,
+      "cat": "camping",
+      "desc": "Family camping (approx.)."
+    },
+    {
+      "name": "The Beyond",
+      "lat": 35.47882,
+      "lon": -86.05707,
+      "cat": "camping",
+      "desc": "Community camp (approx.)."
+    },
+    {
+      "name": "Rideshare lot",
+      "lat": 35.48022,
+      "lon": -86.03169,
+      "cat": "entrance",
+      "emoji": "🚕",
+      "desc": "Pickup/drop-off outside the East Toll — 2465 New Bushy Branch Rd."
+    },
+    {
+      "name": "Day Parking",
+      "lat": 35.48134,
+      "lon": -86.05729,
+      "cat": "entrance",
+      "emoji": "🅿️",
+      "desc": "West Toll corridor. Opens 11 AM, no in-and-out (approx.)."
+    },
+    {
+      "name": "Old Highway Toll",
+      "lat": 35.47289,
+      "lon": -86.05994,
+      "cat": "entrance",
+      "emoji": "🚙",
+      "desc": "SW vehicle gate off US-41 (approx.)."
     }
   ]
 }

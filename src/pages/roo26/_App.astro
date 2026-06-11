@@ -3,7 +3,7 @@
 // Wrapper pages (index/map/plan/info.astro) pass the initial tab; client-side
 // pushState handles switching between them without a reload.
 interface Props {
-	tab?: 'schedule' | 'map' | 'plan' | 'info'
+	tab?: 'schedule' | 'map' | 'plan' | 'trip' | 'info'
 }
 const { tab = 'schedule' } = Astro.props
 
@@ -11,6 +11,7 @@ const titles: Record<string, string> = {
 	schedule: "Roo '26 — Bonnaroo 2026 Schedule & Set Times",
 	map: "Roo '26 — Interactive Bonnaroo 2026 Map",
 	plan: "Roo '26 — My Bonnaroo 2026 Plan",
+	trip: "Roo '26 — My Bonnaroo 2026 Trip Report",
 	info: "Roo '26 — Bonnaroo 2026 Survival Guide",
 }
 const title = titles[tab]
@@ -117,6 +118,14 @@ const desc =
 				<div id="petCard"></div>
 				<div id="planBody"></div>
 				<div id="questCard"></div>
+			</section>
+
+			<!-- ════════════ TRIP REPORT ════════════ -->
+			<section class="view" id="view-trip">
+				<div class="plan-head">
+					<h2>Trip Report</h2>
+				</div>
+				<div id="tripBody"></div>
 			</section>
 
 			<!-- ════════════ INFO ════════════ -->
@@ -273,6 +282,7 @@ const desc =
 			<button class="nav-btn" data-nav="plan"
 				><span class="nav-ico">⭐</span>My Roo<span class="nav-badge" id="favCount" hidden></span></button
 			>
+			<button class="nav-btn" data-nav="trip"><span class="nav-ico">📈</span>Trip</button>
 			<button class="nav-btn" data-nav="info"><span class="nav-ico">🧭</span>Guide</button>
 		</nav>
 
@@ -292,8 +302,7 @@ const desc =
 					<div class="sheet-links" id="sheetLinks"></div>
 					<p class="sheet-when"><span id="sheetWhen"></span> · <b id="sheetStage"></b></p>
 					<div class="sheet-actions">
-						<button class="sheet-btn" id="sheetGoing">☆ Going</button>
-						<button class="sheet-btn" id="sheetInterested">👀 Interested</button>
+						<button class="sheet-btn" id="sheetGoing">☆ Add to My Roo</button>
 						<a class="sheet-btn sheet-spotify" id="sheetSpotify" href="#" target="_blank" rel="noopener">▶ Spotify</a>
 						<button class="sheet-btn" id="sheetMap">🗺️ Stage</button>
 					</div>
@@ -350,9 +359,10 @@ const desc =
 						<button class="sheet-close static" id="helpClose" aria-label="Close">✕</button>
 					</div>
 					<ul class="help-list">
-						<li><b>🎸 Schedule</b> — every Centeroo set with live <i>NOW</i> badges. Tap a set for the artist's photo, genre, blurb and Spotify. The save button cycles: <b>★ going → 👀 interested → off</b>. Filter by stage, search, hit <b>Now</b> to jump to the current moment.</li>
+						<li><b>🎸 Schedule</b> — every Centeroo set with live <i>NOW</i> badges. Tap a set for the artist's photo, bio, socials, news and Spotify. Tap ☆ to save it to My Roo. Search looks at today first, then shows matches from other days below. Hit <b>Now</b> to jump to the current moment.</li>
 						<li><b>🗺️ Map</b> — satellite map of the Farm. 📍 live location + distance to every stage, water and medical (auto-reconnects when signal drops). ⛺ custom pins for camps and meetup spots. 🧭 a compass that points straight back to your camp at 2 AM. 📜 the official festival maps. Chips toggle 🌧️ live rain radar and ➤ your route — yellow arrows through today's ★ sets in order.</li>
 						<li><b>⭐ My Roo</b> — your plan, day by day: overlap warnings, 🚶 leave-by walking times between stages, 📅 export to your calendar for offline reminders, and <b>Share</b> sends a link that carries your whole plan — friends who open it can save it and see where you'll both be.</li>
+						<li><b>📈 Trip</b> — while 📍 is on, your wandering is logged <i>on your phone only</i>: miles walked, est. steps, hour-by-hour movement charts per day, and a 🐾 Tracks trail on the map. Your whole Roo, visualized.</li>
 						<li><b>🧭 Guide</b> — live forecast + storm alerts, gate rules, what you can bring, water/medical info, and official links.</li>
 						<li><b>Works offline-ish</b> — once loaded, the app and official maps keep working with no signal; only live tiles, radar and weather need a connection. Everything you save stays on your phone.</li>
 					</ul>
@@ -878,6 +888,90 @@ const desc =
 	.stage-tag {
 		color: var(--sc, var(--mut));
 		letter-spacing: 0.06em;
+	}
+	.day-tag {
+		color: #14101f;
+		background: var(--roo-purple);
+		border-radius: 5px;
+		padding: 0.05rem 0.35rem;
+		font-size: 0.6rem;
+		font-weight: 900;
+		letter-spacing: 0.08em;
+	}
+	.empty-note.slim {
+		padding: 0.8rem 1rem 0.2rem;
+	}
+	/* ── trip report ── */
+	.trip-stats {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 0.45rem;
+		margin-bottom: 0.5rem;
+	}
+	.trip-stat {
+		padding: 0.6rem 0.3rem;
+		border-radius: var(--rad);
+		background: var(--bg-2);
+		border: 1px solid var(--line);
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+	}
+	.trip-stat b {
+		font-size: 1.02rem;
+		background: var(--rainbow);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+	.trip-stat span {
+		font-size: 0.64rem;
+		color: var(--dim);
+		font-weight: 700;
+	}
+	.trip-day-meta {
+		color: var(--mut);
+		font-size: 0.78rem;
+		font-weight: 600;
+		margin-bottom: 0.4rem;
+	}
+	.trip-bars {
+		display: flex;
+		align-items: flex-end;
+		gap: 2px;
+		height: 5.2rem;
+		padding: 0.4rem 0.2rem 0;
+		border-radius: 10px;
+		background: var(--bg-2);
+		border: 1px solid var(--line);
+	}
+	.trip-bar {
+		flex: 1;
+		border-radius: 3px 3px 0 0;
+		background: var(--roo-blue);
+		opacity: 0.85;
+		min-height: 2px;
+	}
+	.trip-bar.peak {
+		background: var(--roo-pink);
+	}
+	.trip-axis {
+		display: flex;
+		justify-content: space-between;
+		padding: 0.15rem 0.2rem 0.6rem;
+		font-size: 0.62rem;
+		color: var(--dim);
+		font-weight: 700;
+	}
+	.trip-foot {
+		margin-top: 1rem;
+		color: var(--dim);
+		font-size: 0.78rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+		align-items: flex-start;
 	}
 	.genre-tag {
 		color: var(--dim);

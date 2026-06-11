@@ -151,14 +151,14 @@ const saveFavs = () => store.set('favs2', state.favs)
 const savePins = () => store.set('pins', state.pins)
 const saveFriends = () => store.set('friends', state.friends)
 
-// favorite tiers: 0 = none, 2 = going ★, 1 = interested 👀
-const favTier = (id) => state.favs[id] || 0
-const TIER_ICON = { 0: '☆', 2: '★', 1: '👀' }
-const TIER_LABEL = { 0: '', 2: 'going', 1: 'interested' }
+// single-star favorites. Storage keeps the {id: tier} shape from the old
+// two-tier system so nobody's saved plan is lost — any tier counts as starred.
+const isFav = (id) => !!state.favs[id]
+const favTier = (id) => (state.favs[id] ? 2 : 0) // legacy callers
 
-function setFavTier(set, tier) {
-	if (tier === 0) delete state.favs[set.id]
-	else state.favs[set.id] = tier
+function setFav(set, on) {
+	if (on) state.favs[set.id] = 2
+	else delete state.favs[set.id]
 	saveFavs()
 	renderFavCount()
 	if (state.tab === 'plan') renderPlan()
@@ -166,7 +166,13 @@ function setFavTier(set, tier) {
 }
 
 // ───────────────────────── router ─────────────────────────
-const TAB_PATH = { schedule: '/roo26', map: '/roo26/map', plan: '/roo26/plan', info: '/roo26/info' }
+const TAB_PATH = {
+	schedule: '/roo26',
+	map: '/roo26/map',
+	plan: '/roo26/plan',
+	trip: '/roo26/trip',
+	info: '/roo26/info',
+}
 
 function setTab(tab, push = true) {
 	state.tab = tab
@@ -180,6 +186,7 @@ function setTab(tab, push = true) {
 		renderPet()
 		renderQuest()
 	}
+	if (tab === 'trip') renderTrip()
 	if (tab === 'info') loadWeather()
 	window.scrollTo({ top: 0 })
 }
@@ -218,32 +225,27 @@ function setStatus(s, now = Date.now()) {
 	return 'next'
 }
 
-// row button cycles: none → ★ going → 👀 interested → none
 function favButton(set) {
 	const b = el('button', { class: 'fav-btn', 'aria-label': 'Save to My Roo' })
 	const paint = () => {
-		const t = favTier(set.id)
-		b.textContent = TIER_ICON[t]
-		b.classList.toggle('faved', t === 2)
-		b.classList.toggle('interested', t === 1)
+		b.textContent = isFav(set.id) ? '★' : '☆'
+		b.classList.toggle('faved', isFav(set.id))
+		b.setAttribute('aria-pressed', String(isFav(set.id)))
 	}
 	paint()
 	b.addEventListener('click', (e) => {
 		e.stopPropagation()
-		const next = { 0: 2, 2: 1, 1: 0 }[favTier(set.id)]
-		setFavTier(set, next)
-		toast(
-			next === 0
-				? `Removed ${set.artist}`
-				: `${TIER_ICON[next]} ${set.artist} — ${TIER_LABEL[next]}`,
-		)
+		const on = !isFav(set.id)
+		setFav(set, on)
+		toast(on ? `★ ${set.artist} added to My Roo` : `Removed ${set.artist}`)
 		paint()
 	})
 	return b
 }
 
-function setRow(set) {
+function setRow(set, showDay = false) {
 	const st = setStatus(set)
+	const dayLbl = showDay ? SCHED.days.find((d) => d.id === set.day)?.label : null
 	const row = el(
 		'div',
 		{
@@ -266,6 +268,7 @@ function setRow(set) {
 			el(
 				'div',
 				{ class: 'set-meta' },
+				dayLbl ? el('span', { class: 'day-tag' }, dayLbl.toUpperCase()) : null,
 				el('span', { class: 'stage-tag' }, set.stage.name.toUpperCase()),
 				set.info?.g ? el('span', { class: 'genre-tag' }, set.info.g) : null,
 				st === 'live' ? el('span', { class: 'live-tag' }, 'LIVE') : null,
@@ -344,12 +347,22 @@ function visibleSets() {
 function renderSched() {
 	const list = $('#schedList')
 	const sets = visibleSets()
-	if (!sets.length) {
+	const q = state.search.trim().toLowerCase()
+	// while searching, also surface matches from the other days, after today's
+	const otherDays = q
+		? SETS.filter(
+				(s) =>
+					s.day !== state.day &&
+					(state.stage === 'all' || s.stage.id === state.stage) &&
+					(s.artist.toLowerCase().includes(q) || (s.info?.g || '').includes(q)),
+			)
+		: []
+	if (!sets.length && !otherDays.length) {
 		list.replaceChildren(
 			el(
 				'div',
 				{ class: 'empty-note' },
-				state.search ? `No artists matching “${state.search}” on this day.` : 'Nothing here yet.',
+				state.search ? `No artists matching “${state.search}”.` : 'Nothing here yet.',
 			),
 		)
 		return
@@ -363,6 +376,12 @@ function renderSched() {
 			lastH = h
 		}
 		frag.append(setRow(s))
+	}
+	if (otherDays.length) {
+		if (!sets.length)
+			frag.append(el('div', { class: 'empty-note slim' }, `Nothing on this day for “${state.search}” —`))
+		frag.append(el('div', { class: 'sched-group-h' }, 'OTHER DAYS'))
+		for (const s of otherDays) frag.append(setRow(s, true))
 	}
 	list.replaceChildren(frag)
 }
@@ -455,10 +474,8 @@ function openSheet(set) {
 	const tag = $('#sheetStage')
 	tag.textContent = set.stage.name
 	tag.style.color = set.stage.color
-	const t = favTier(set.id)
-	$('#sheetGoing').classList.toggle('faved', t === 2)
-	$('#sheetGoing').textContent = t === 2 ? '★ Going' : '☆ Going'
-	$('#sheetInterested').classList.toggle('faved', t === 1)
+	$('#sheetGoing').classList.toggle('faved', isFav(set.id))
+	$('#sheetGoing').textContent = isFav(set.id) ? '★ In My Roo' : '☆ Add to My Roo'
 	$('#sheetSpotify').href = a?.id
 		? `https://open.spotify.com/artist/${a.id}`
 		: `https://open.spotify.com/search/${encodeURIComponent(set.artist)}`
@@ -476,15 +493,13 @@ $('#sheetClose').addEventListener('click', closeSheet)
 $('#sheetWrap').addEventListener('click', (e) => {
 	if (e.target.id === 'sheetWrap') closeSheet()
 })
-function sheetTier(tier) {
+$('#sheetGoing').addEventListener('click', () => {
 	if (!sheetSet) return
 	const keep = sheetSet
-	setFavTier(keep, favTier(keep.id) === tier ? 0 : tier)
+	setFav(keep, !isFav(keep.id))
 	openSheet(keep) // refresh sheet button state
 	renderSched()
-}
-$('#sheetGoing').addEventListener('click', () => sheetTier(2))
-$('#sheetInterested').addEventListener('click', () => sheetTier(1))
+})
 $('#sheetMap').addEventListener('click', async () => {
 	if (!sheetSet) return
 	const poi = POIS.pois.find((p) => p.cat === 'stage' && p.stage === sheetSet.stage.id)
@@ -513,14 +528,14 @@ const stageDist = (a, b) =>
 
 function renderPlan() {
 	const body = $('#planBody')
-	const favs = SETS.filter((s) => favTier(s.id) > 0)
+	const favs = SETS.filter((s) => isFav(s.id))
 	const frag = document.createDocumentFragment()
 	if (!favs.length) {
 		frag.append(
 			el(
 				'div',
 				{ class: 'empty-note' },
-				'No sets saved yet. Tap ☆ next to any set — once for ★ going, twice for 👀 interested.',
+				'No sets saved yet. Tap the ☆ next to any set to build your weekend.',
 			),
 		)
 	}
@@ -528,15 +543,10 @@ function renderPlan() {
 		const daySets = favs.filter((s) => s.day === d.id)
 		if (!daySets.length) continue
 		frag.append(el('div', { class: 'plan-day-h' }, d.full.toUpperCase()))
-		const going = daySets.filter((s) => favTier(s.id) === 2)
 		for (let i = 0; i < daySets.length; i++) {
 			const s = daySets[i]
-			const row = setRow(s)
-			if (favTier(s.id) === 1) row.classList.add('is-interested')
-			frag.append(row)
-			// conflicts + walk advisories only matter between sets you're committed to
-			const gi = going.indexOf(s)
-			const next = gi >= 0 ? going[gi + 1] : null
+			frag.append(setRow(s))
+			const next = daySets[i + 1]
 			if (next && s.endMs && next.startMs) {
 				if (next.startMs < s.endMs) {
 					frag.append(
@@ -640,12 +650,11 @@ $('#clearPlan').addEventListener('click', () => {
 // ── share: text + a link that carries your whole plan ──
 function encodePlan(name) {
 	const going = []
-	const interested = []
 	SETS.forEach((s, i) => {
-		if (favTier(s.id) === 2) going.push(i)
-		if (favTier(s.id) === 1) interested.push(i)
+		if (isFav(s.id)) going.push(i)
 	})
-	return `2!${encodeURIComponent(name)}!${going.join('.')}!${interested.join('.')}`
+	// format stays "2!" with an empty interested slot so older shared links still decode
+	return `2!${encodeURIComponent(name)}!${going.join('.')}!`
 }
 
 function decodePlan(hash) {
@@ -659,18 +668,23 @@ function decodePlan(hash) {
 					.filter((i) => SETS[i])
 					.map((i) => SETS[i].id)
 			: []
-	return { name: decodeURIComponent(parts[1]) || 'A friend', going: idx(parts[2]), interested: idx(parts[3]) }
+	// old two-tier links: fold "interested" into the single list
+	return {
+		name: decodeURIComponent(parts[1]) || 'A friend',
+		going: [...idx(parts[2]), ...idx(parts[3])],
+		interested: [],
+	}
 }
 
 function planText() {
-	const favs = SETS.filter((s) => favTier(s.id) > 0)
+	const favs = SETS.filter((s) => isFav(s.id))
 	let txt = "My Bonnaroo '26 plan 🌈\n"
 	for (const d of SCHED.days) {
 		const daySets = favs.filter((s) => s.day === d.id)
 		if (!daySets.length) continue
 		txt += `\n${d.full}\n`
 		for (const s of daySets)
-			txt += `  ${favTier(s.id) === 1 ? '👀 ' : ''}${s.start ? fmtTime(s.start) : 'TBA'} — ${s.artist} (${s.stage.name})\n`
+			txt += `  ${s.start ? fmtTime(s.start) : 'TBA'} — ${s.artist} (${s.stage.name})\n`
 	}
 	return txt
 }
@@ -701,11 +715,7 @@ function checkImport() {
 	const plan = decodePlan(decodeURI(m[1]))
 	history.replaceState({}, '', location.pathname)
 	if (!plan || (!plan.going.length && !plan.interested.length)) return
-	if (
-		!confirm(
-			`🌈 ${plan.name} shared a Roo plan (${plan.going.length} going, ${plan.interested.length} interested). Save it to My Roo?`,
-		)
-	)
+	if (!confirm(`🌈 ${plan.name} shared a Roo plan (${plan.going.length} sets). Save it to My Roo?`))
 		return
 	state.friends = state.friends.filter((f) => f.name !== plan.name)
 	state.friends.push({ ...plan, at: Date.now() })
@@ -727,7 +737,7 @@ $('#icsPlan').addEventListener('click', () => {
 			`DTSTAMP:${utc(Date.now())}\r\n` +
 			`DTSTART:${utc(s.startMs)}\r\n` +
 			`DTEND:${utc(s.endMs || s.startMs + 3600e3)}\r\n` +
-			`SUMMARY:${favTier(s.id) === 1 ? '👀 ' : ''}${s.artist.replace(/[,;\\]/g, ' ')} @ ${s.stage.name}\r\n` +
+			`SUMMARY:${s.artist.replace(/[,;\\]/g, ' ')} @ ${s.stage.name}\r\n` +
 			`LOCATION:${s.stage.name}, Bonnaroo, Manchester TN\r\n` +
 			'BEGIN:VALARM\r\nTRIGGER:-PT20M\r\nACTION:DISPLAY\r\nDESCRIPTION:Set starting soon\r\nEND:VALARM\r\n' +
 			'END:VEVENT\r\n'
@@ -899,6 +909,16 @@ function renderPoiChips() {
 		drawRoute()
 		renderPoiChips()
 	})
+	const tracksChip = el(
+		'button',
+		{ class: 'chip' + (tracksOn ? ' active' : ''), style: '--chip-c:#7ff0e0' },
+		'🐾 Tracks',
+	)
+	tracksChip.addEventListener('click', () => {
+		tracksOn = !tracksOn
+		drawTracks()
+		renderPoiChips()
+	})
 	const extraChips = []
 	if (crewAvailable) {
 		const c = el(
@@ -913,6 +933,7 @@ function renderPoiChips() {
 		...extraChips,
 		radarChip,
 		routeChip,
+		tracksChip,
 		...Object.entries(POI_CATS).map(([id, def]) => {
 			const c = el(
 				'button',
@@ -1052,6 +1073,39 @@ function hideRadar() {
 		radarLayer.remove()
 		radarLayer = null
 	}
+}
+
+// — your trail: everywhere you've been, from the trip log —
+let tracksOn = false
+let tracksLayer = null
+
+function drawTracks() {
+	if (!map) return
+	if (tracksLayer) {
+		tracksLayer.remove()
+		tracksLayer = null
+	}
+	if (!tracksOn) return
+	if (track.length < 2) return toast('No trail yet — wander with 📍 on')
+	const step = Math.max(1, Math.ceil(track.length / 1500))
+	// break the trail where there are big time gaps (app closed, overnight)
+	const segs = []
+	let seg = []
+	for (let i = 0; i < track.length; i += step) {
+		const p = track[i]
+		if (seg.length && p[0] - seg.at(-1)[0] > 1800) {
+			if (seg.length > 1) segs.push(seg)
+			seg = []
+		}
+		seg.push(p)
+	}
+	if (seg.length > 1) segs.push(seg)
+	tracksLayer = L.layerGroup().addTo(map)
+	for (const s of segs)
+		L.polyline(
+			s.map((p) => [p[1], p[2]]),
+			{ color: '#7ff0e0', weight: 2.5, opacity: 0.7 },
+		).addTo(tracksLayer)
 }
 
 // — today's route: arrows through your ★ going sets, in time order —
@@ -1264,6 +1318,7 @@ function startLocate(auto = false) {
 			drawUser()
 			renderNearest()
 			checkQuests()
+			logTrack()
 			if (first) {
 				const far = haversine(state.pos, { lat: POIS.center[0], lon: POIS.center[1] })
 				if (far < 30000) map?.flyTo([state.pos.lat, state.pos.lon], Math.max(map.getZoom(), 16))
@@ -1568,6 +1623,143 @@ async function loadAlerts() {
 			loadAlerts()
 		}
 	} catch {}
+}
+
+// ───────────────────────── trip tracking ─────────────────────────
+// Every fix (while 📍 is on) feeds a local-only trip log: raw points for the
+// map trail + per-day/per-hour distance aggregates that survive point thinning.
+let track = store.get('track', [])
+let trackAgg = store.get('trackagg', {})
+let lastLog = track.length
+	? { t: track.at(-1)[0] * 1000, lat: track.at(-1)[1], lon: track.at(-1)[2] }
+	: null
+
+const localDate = (ms) => new Date(ms - 5 * 3600e3) // festival clock (CDT)
+const locTime = (ms) => {
+	const d = localDate(ms)
+	const h = d.getUTCHours()
+	return `${h % 12 || 12}:${String(d.getUTCMinutes()).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`
+}
+
+function logTrack() {
+	if (!state.pos) return
+	const { lat, lon } = state.pos
+	const now = Date.now()
+	if (lastLog) {
+		const d = haversine(lastLog, { lat, lon })
+		const dt = now - lastLog.t
+		if (dt < 20e3 && d < 15) return // too soon and barely moved
+		if (d >= 8 && d < 400) {
+			// credit walking distance; ignore GPS teleports
+			const local = localDate(now)
+			const key = local.toISOString().slice(0, 10)
+			const agg = (trackAgg[key] ??= { dist: 0, hours: {}, first: now, last: now })
+			agg.dist += d
+			const h = local.getUTCHours()
+			agg.hours[h] = (agg.hours[h] || 0) + d
+			agg.last = now
+		} else if (d < 8) {
+			lastLog.t = now // standing still: don't spam points
+			return
+		}
+	}
+	lastLog = { t: now, lat, lon }
+	track.push([Math.round(now / 1000), +lat.toFixed(5), +lon.toFixed(5)])
+	// keep storage bounded: thin old points, keep recent ones dense
+	if (track.length > 15000) track = track.filter((_, i) => i % 2 === 0 || i > track.length - 2000)
+	store.set('track', track)
+	store.set('trackagg', trackAgg)
+}
+
+function renderTrip() {
+	const body = $('#tripBody')
+	const days = Object.entries(trackAgg).sort()
+	if (!days.length) {
+		body.replaceChildren(
+			el(
+				'div',
+				{ class: 'empty-note' },
+				'No trip data yet — turn on 📍 on the map and go wander. Your trail is logged only on this phone, never uploaded.',
+			),
+		)
+		return
+	}
+	const total = days.reduce((a, [, v]) => a + v.dist, 0)
+	const activeHours = days.reduce(
+		(a, [, v]) => a + Object.values(v.hours).filter((m) => m > 150).length,
+		0,
+	)
+	const stat = (n, l) => el('div', { class: 'trip-stat' }, el('b', {}, n), el('span', {}, l))
+	const frag = document.createDocumentFragment()
+	frag.append(
+		el(
+			'div',
+			{ class: 'trip-stats' },
+			stat((total / 1609.34).toFixed(1) + ' mi', 'walked'),
+			stat(Math.round(total / 0.762).toLocaleString(), 'est. steps'),
+			stat(activeHours + ' h', 'on the move'),
+			stat(track.length.toLocaleString(), 'GPS points'),
+		),
+	)
+	for (const [key, v] of days) {
+		const dayName = SCHED.days.find((d) => d.date === key)?.full || key
+		frag.append(el('div', { class: 'plan-day-h' }, dayName.toUpperCase()))
+		frag.append(
+			el(
+				'div',
+				{ class: 'trip-day-meta' },
+				`${(v.dist / 1609.34).toFixed(1)} mi · ~${Math.round(v.dist / 0.762).toLocaleString()} steps · out ${locTime(v.first)} → ${locTime(v.last)}`,
+			),
+		)
+		const max = Math.max(...Object.values(v.hours), 1)
+		const bars = el('div', { class: 'trip-bars' })
+		for (let h = 0; h < 24; h++) {
+			const m = v.hours[h] || 0
+			bars.append(
+				el('div', {
+					class: 'trip-bar' + (m === max && m > 0 ? ' peak' : ''),
+					title: `${h % 12 || 12}${h >= 12 ? 'PM' : 'AM'} — ${Math.round(m)} m`,
+					style: `height:${m ? Math.max(7, (m / max) * 100) : 4}%`,
+				}),
+			)
+		}
+		frag.append(
+			bars,
+			el(
+				'div',
+				{ class: 'trip-axis' },
+				el('span', {}, '12a'),
+				el('span', {}, '6a'),
+				el('span', {}, '12p'),
+				el('span', {}, '6p'),
+				el('span', {}, '11p'),
+			),
+		)
+	}
+	frag.append(
+		el(
+			'div',
+			{ class: 'trip-foot' },
+			'Toggle 🐾 Tracks on the map to see your trail. Data lives only in this browser. ',
+			el(
+				'button',
+				{
+					class: 'tool-btn tool-danger',
+					onclick: () => {
+						if (!confirm('Delete all trip data?')) return
+						track = []
+						trackAgg = {}
+						lastLog = null
+						store.set('track', track)
+						store.set('trackagg', trackAgg)
+						renderTrip()
+					},
+				},
+				'Clear trip data',
+			),
+		),
+	)
+	body.replaceChildren(frag)
 }
 
 // ───────────────────────── Lil Roo: your festival pet ─────────────────────────
