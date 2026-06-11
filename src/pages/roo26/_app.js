@@ -175,7 +175,11 @@ function setTab(tab, push = true) {
 	if (push && location.pathname.replace(/\/$/, '') !== TAB_PATH[tab])
 		history.pushState({}, '', TAB_PATH[tab])
 	if (tab === 'map') initMap()
-	if (tab === 'plan') renderPlan()
+	if (tab === 'plan') {
+		renderPlan()
+		renderPet()
+		renderQuest()
+	}
 	if (tab === 'info') loadWeather()
 	window.scrollTo({ top: 0 })
 }
@@ -434,6 +438,18 @@ function openSheet(set) {
 	$('#sheetGenre').textContent = a?.g || ''
 	$('#sheetGenre').hidden = !a?.g
 	$('#sheetDesc').textContent = a?.d || ''
+	$('#sheetBio').textContent = a?.bio && a.bio !== a.d ? a.bio : ''
+	$('#sheetBio').hidden = !a?.bio || a.bio === a.d
+	const linkChip = (label, href) =>
+		el('a', { class: 'link-chip', href, target: '_blank', rel: 'noopener' }, label)
+	const chips = []
+	if (a?.links?.ig) chips.push(linkChip('📸 Instagram', a.links.ig))
+	if (a?.links?.x) chips.push(linkChip('𝕏', a.links.x))
+	if (a?.links?.bc) chips.push(linkChip('🎵 Bandcamp', a.links.bc))
+	if (a?.links?.web) chips.push(linkChip('🌐 Site', a.links.web))
+	for (const n of a?.news || []) chips.push(linkChip('📰 ' + n.t, n.u))
+	$('#sheetLinks').replaceChildren(...chips)
+	$('#sheetLinks').hidden = !chips.length
 	$('#sheetWhen').textContent =
 		`${day.full} · ${set.start ? fmtTime(set.start) : 'TBA'}${set.end ? '–' + fmtTime(set.end) : ''}`
 	const tag = $('#sheetStage')
@@ -674,6 +690,7 @@ $('#sharePlan').addEventListener('click', async () => {
 			await navigator.clipboard.writeText(txt)
 			toast('Plan + link copied to clipboard')
 		}
+		questFlag('share')
 	} catch {}
 })
 
@@ -1143,6 +1160,7 @@ function startLocate(auto = false) {
 			}
 			drawUser()
 			renderNearest()
+			checkQuests()
 			if (first) {
 				const far = haversine(state.pos, { lat: POIS.center[0], lon: POIS.center[1] })
 				if (far < 30000) map?.flyTo([state.pos.lat, state.pos.lon], Math.max(map.getZoom(), 16))
@@ -1342,6 +1360,7 @@ let omap = null
 let omapOverlay = null
 
 async function openOmap(which = 'centeroo') {
+	questFlag('omap')
 	$('#omapWrap').hidden = false
 	document.body.style.overflow = 'hidden'
 	try {
@@ -1448,6 +1467,186 @@ async function loadAlerts() {
 	} catch {}
 }
 
+// ───────────────────────── Lil Roo: your festival pet ─────────────────────────
+const PET_NAMES = ['Bonnie', 'Roozy', 'Sprocket', 'Mango', 'Disco', 'Pebble', 'Waffle', 'Comet']
+let pet = store.get('pet', null)
+if (!pet) {
+	const seed = Math.random().toString(36).slice(2, 10)
+	pet = { seed, name: PET_NAMES[Math.floor(Math.random() * PET_NAMES.length)], water: Date.now() }
+	store.set('pet', pet)
+}
+const savePet = () => store.set('pet', pet)
+let petSvg = null
+
+function petMood() {
+	const h = (Date.now() - pet.water) / 3600e3
+	const liveGoing = SETS.some((s) => favTier(s.id) === 2 && setStatus(s) === 'live')
+	if (liveGoing && h < 1.5) return 'party'
+	if (h < 1.5) return 'happy'
+	if (h < 3) return 'thirsty'
+	return 'parched'
+}
+
+const MOOD_TEXT = {
+	party: 'is raging with you 🎉',
+	happy: 'is vibing',
+	thirsty: 'is getting thirsty… (so are you)',
+	parched: 'is PARCHED. Water, now — both of you!',
+}
+
+async function renderPet() {
+	const card = $('#petCard')
+	if (!card) return
+	if (!petSvg) {
+		try {
+			const [{ createAvatar }, { bottts }] = await Promise.all([
+				import('@dicebear/core'),
+				import('@dicebear/collection'),
+			])
+			petSvg = createAvatar(bottts, { seed: pet.seed, backgroundColor: [] }).toString()
+		} catch {
+			petSvg = '<div style="font-size:3rem">🦘</div>'
+		}
+	}
+	const mood = petMood()
+	const badges = QUESTS.filter((q) => questDone(q.id)).map((q) => q.e)
+	const allDone = badges.length === QUESTS.length
+	card.replaceChildren(
+		el(
+			'div',
+			{ class: `pet-box pet-${mood}` },
+			Object.assign(el('div', { class: 'pet-svg' }), { innerHTML: petSvg }),
+			el(
+				'div',
+				{ class: 'pet-info' },
+				el('button', { class: 'pet-name', onclick: renamePet }, (allDone ? '👑 ' : '') + pet.name),
+				el('div', { class: 'pet-mood' }, `${MOOD_TEXT[mood]}`),
+				badges.length ? el('div', { class: 'pet-badges' }, badges.join(' ')) : null,
+			),
+			el('button', { class: 'pet-water', onclick: waterPet }, '💧'),
+		),
+	)
+}
+
+function renamePet() {
+	const name = prompt('Name your Roo buddy:', pet.name)
+	if (name?.trim()) {
+		pet.name = name.trim().slice(0, 20)
+		savePet()
+		renderPet()
+	}
+}
+
+function waterPet() {
+	pet.water = Date.now()
+	savePet()
+	renderPet()
+	toast(`${pet.name} is hydrated — now drink some water yourself 💧`)
+}
+
+// ───────────────────────── Roo Quest: scavenger-hunt tutorial ─────────────────────────
+const ARCH = POIS.pois.find((p) => p.name.startsWith('The Arch'))
+const FOUNTAIN = POIS.pois.find((p) => p.name === 'Bonnaroo Fountain')
+
+const QUESTS = [
+	{ id: 'star3', e: '⭐', t: 'Save 3 sets to your plan', auto: () => Object.keys(state.favs).length >= 3 },
+	{ id: 'camp', e: '⛺', t: 'Pin your camp on the map', auto: () => state.pins.length > 0 },
+	{ id: 'share', e: '📤', t: 'Share your plan with a friend' },
+	{ id: 'omap', e: '📜', t: 'Peek at the official map' },
+	{ id: 'fountain', e: '⛲', t: 'Touch the mushroom Fountain', geo: () => FOUNTAIN, r: 75 },
+	{ id: 'water', e: '💧', t: 'Refill at a water station', cat: 'water', r: 65 },
+	{ id: 'arch', e: '🌈', t: 'High-five someone under the Arch', geo: () => ARCH, r: 75 },
+	{ id: 'stages', e: '🎪', t: 'Visit all 6 stages', stages: true },
+	{ id: 'sunrise', e: '🌅', t: 'Survive a sunrise set (4–6 AM)', sunrise: true },
+]
+
+let quest = store.get('quest', { done: {}, stages: {} })
+const saveQuest = () => store.set('quest', quest)
+const questDone = (id) => !!quest.done[id]
+
+function questFlag(id) {
+	if (questDone(id)) return
+	quest.done[id] = Date.now()
+	saveQuest()
+	const q = QUESTS.find((x) => x.id === id)
+	toast(`${q.e} Quest complete: ${q.t}`)
+	renderQuest()
+	renderPet()
+}
+
+function checkQuests() {
+	for (const q of QUESTS) {
+		if (questDone(q.id)) continue
+		if (q.auto && q.auto()) questFlag(q.id)
+		if (!state.pos) continue
+		if (q.geo) {
+			const p = q.geo()
+			if (p && haversine(state.pos, p) < q.r) questFlag(q.id)
+		}
+		if (q.cat) {
+			if (POIS.pois.some((p) => p.cat === q.cat && haversine(state.pos, p) < q.r)) questFlag(q.id)
+		}
+		if (q.stages) {
+			for (const [sid, p] of Object.entries(STAGE_POI))
+				if (!quest.stages[sid] && haversine(state.pos, p) < 130) {
+					quest.stages[sid] = Date.now()
+					saveQuest()
+					renderQuest()
+				}
+			if (Object.keys(quest.stages).length >= Object.keys(STAGE_POI).length) questFlag(q.id)
+		}
+		if (q.sunrise) {
+			// 4:00–6:30 AM festival time, near The Other or Where
+			const local = new Date(Date.now() - 5 * 3600e3)
+			const hr = local.getUTCHours() + local.getUTCMinutes() / 60
+			const near = ['other', 'where'].some(
+				(sid) => STAGE_POI[sid] && haversine(state.pos, STAGE_POI[sid]) < 260,
+			)
+			if (hr >= 4 && hr <= 6.5 && near) questFlag(q.id)
+		}
+	}
+}
+
+function renderQuest() {
+	const card = $('#questCard')
+	if (!card) return
+	const done = QUESTS.filter((q) => questDone(q.id)).length
+	const rows = QUESTS.map((q) => {
+		let hint = ''
+		if (!questDone(q.id) && state.pos) {
+			const target = q.geo ? q.geo() : q.cat ? POIS.pois.find((p) => p.cat === q.cat) : null
+			if (target) hint = fmtDist(haversine(state.pos, target)) + ' away'
+			if (q.stages) hint = `${Object.keys(quest.stages).length}/${Object.keys(STAGE_POI).length} stages`
+		} else if (q.stages && !questDone(q.id)) {
+			hint = `${Object.keys(quest.stages).length}/${Object.keys(STAGE_POI).length} stages`
+		}
+		return el(
+			'div',
+			{ class: 'quest-row' + (questDone(q.id) ? ' done' : '') },
+			el('span', { class: 'q-check' }, questDone(q.id) ? '✅' : q.e),
+			el('span', { class: 'q-label' }, q.t),
+			hint ? el('span', { class: 'q-hint' }, hint) : null,
+		)
+	})
+	card.replaceChildren(
+		el(
+			'div',
+			{ class: 'quest-box' },
+			el(
+				'div',
+				{ class: 'quest-head' },
+				el('span', {}, '🏆 Roo Quest'),
+				el('span', { class: 'quest-count' }, `${done}/${QUESTS.length}`),
+			),
+			el('div', { class: 'quest-bar' }, el('div', { class: 'quest-fill', style: `width:${(done / QUESTS.length) * 100}%` })),
+			...rows,
+			done === QUESTS.length
+				? el('div', { class: 'quest-won' }, `👑 ${pet.name} is festival royalty. You ARE Bonnaroo.`)
+				: el('div', { class: 'quest-tip' }, 'Location quests check automatically while 📍 is on.'),
+		),
+	)
+}
+
 // ───────────────────────── help & install ─────────────────────────
 let deferredInstall = null
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -1492,7 +1691,11 @@ loadAlerts()
 checkImport()
 window.addEventListener('hashchange', checkImport)
 
-setInterval(refreshStatuses, 30e3)
+setInterval(() => {
+	refreshStatuses()
+	checkQuests()
+	if (state.tab === 'plan') renderPet()
+}, 30e3)
 setInterval(loadAlerts, 10 * 60e3)
 
 if ('serviceWorker' in navigator) {

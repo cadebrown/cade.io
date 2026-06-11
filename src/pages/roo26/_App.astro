@@ -114,7 +114,9 @@ const desc =
 						<button class="tool-btn tool-danger" id="clearPlan">Clear</button>
 					</div>
 				</div>
+				<div id="petCard"></div>
 				<div id="planBody"></div>
+				<div id="questCard"></div>
 			</section>
 
 			<!-- ════════════ INFO ════════════ -->
@@ -286,6 +288,8 @@ const desc =
 						<span class="genre-tag big" id="sheetGenre"></span>
 					</div>
 					<p class="sheet-desc" id="sheetDesc"></p>
+					<p class="sheet-bio" id="sheetBio"></p>
+					<div class="sheet-links" id="sheetLinks"></div>
 					<p class="sheet-when"><span id="sheetWhen"></span> · <b id="sheetStage"></b></p>
 					<div class="sheet-actions">
 						<button class="sheet-btn" id="sheetGoing">☆ Going</button>
@@ -1380,6 +1384,182 @@ const desc =
 		margin: 0.25rem 0 0.4rem;
 		color: var(--mut);
 		font-size: 0.92rem;
+	}
+	.sheet-bio {
+		margin: 0.1rem 0 0.5rem;
+		color: var(--mut);
+		font-size: 0.85rem;
+		line-height: 1.5;
+	}
+	.sheet-links {
+		display: flex;
+		gap: 0.4rem;
+		flex-wrap: wrap;
+		margin: 0.1rem 0 0.7rem;
+	}
+	.link-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.3rem 0.7rem;
+		border-radius: 999px;
+		background: var(--bg-3);
+		border: 1px solid var(--line);
+		color: var(--mut);
+		font-size: 0.74rem;
+		font-weight: 700;
+		text-decoration: none;
+		max-width: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	/* ── pet + quest ── */
+	.pet-box {
+		display: flex;
+		align-items: center;
+		gap: 0.8rem;
+		margin-bottom: 0.7rem;
+		padding: 0.6rem 0.8rem;
+		border-radius: var(--rad);
+		background: linear-gradient(135deg, rgba(176, 139, 255, 0.12), var(--bg-2) 60%);
+		border: 1px solid var(--line);
+	}
+	.pet-svg {
+		width: 3.6rem;
+		height: 3.6rem;
+		flex-shrink: 0;
+	}
+	.pet-svg svg {
+		width: 100%;
+		height: 100%;
+	}
+	.pet-happy .pet-svg {
+		animation: pet-bounce 2.2s ease-in-out infinite;
+	}
+	.pet-party .pet-svg {
+		animation: pet-rave 0.5s ease-in-out infinite;
+	}
+	.pet-thirsty .pet-svg {
+		filter: saturate(0.45);
+		transform: rotate(6deg);
+	}
+	.pet-parched .pet-svg {
+		filter: grayscale(0.9);
+		animation: pet-droop 3s ease-in-out infinite;
+	}
+	@keyframes pet-bounce {
+		50% {
+			transform: translateY(-4px);
+		}
+	}
+	@keyframes pet-rave {
+		25% {
+			transform: rotate(-8deg) scale(1.06);
+		}
+		75% {
+			transform: rotate(8deg) scale(1.06);
+		}
+	}
+	@keyframes pet-droop {
+		50% {
+			transform: rotate(10deg) translateY(2px);
+		}
+	}
+	.pet-info {
+		flex: 1;
+		min-width: 0;
+	}
+	.pet-name {
+		font-weight: 900;
+		font-size: 1rem;
+		padding: 0;
+	}
+	.pet-mood {
+		color: var(--mut);
+		font-size: 0.76rem;
+	}
+	.pet-badges {
+		font-size: 0.8rem;
+		margin-top: 0.15rem;
+		letter-spacing: 0.15em;
+	}
+	.pet-water {
+		flex-shrink: 0;
+		width: 2.6rem;
+		height: 2.6rem;
+		border-radius: 50%;
+		background: rgba(70, 179, 255, 0.15);
+		border: 1px solid rgba(70, 179, 255, 0.5);
+		font-size: 1.2rem;
+	}
+	.quest-box {
+		margin-top: 1rem;
+		padding: 0.75rem 0.9rem;
+		border-radius: var(--rad);
+		background: var(--bg-2);
+		border: 1px solid var(--line);
+	}
+	.quest-head {
+		display: flex;
+		justify-content: space-between;
+		font-weight: 900;
+		font-size: 0.95rem;
+		margin-bottom: 0.45rem;
+	}
+	.quest-count {
+		color: var(--roo-orange);
+	}
+	.quest-bar {
+		height: 0.45rem;
+		border-radius: 999px;
+		background: var(--bg);
+		overflow: hidden;
+		margin-bottom: 0.55rem;
+	}
+	.quest-fill {
+		height: 100%;
+		background: var(--rainbow);
+		border-radius: 999px;
+		transition: width 0.4s;
+	}
+	.quest-row {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.32rem 0;
+		font-size: 0.84rem;
+		color: var(--txt);
+	}
+	.quest-row.done .q-label {
+		color: var(--dim);
+		text-decoration: line-through;
+	}
+	.q-check {
+		width: 1.5rem;
+		text-align: center;
+		flex-shrink: 0;
+	}
+	.q-label {
+		flex: 1;
+	}
+	.q-hint {
+		color: var(--roo-green);
+		font-size: 0.7rem;
+		font-weight: 700;
+		white-space: nowrap;
+	}
+	.quest-tip {
+		margin-top: 0.4rem;
+		color: var(--dim);
+		font-size: 0.7rem;
+	}
+	.quest-won {
+		margin-top: 0.5rem;
+		text-align: center;
+		font-weight: 800;
+		color: var(--roo-orange);
+		animation: pulse 1.6s infinite;
 	}
 	.sheet-when {
 		margin: 0.2rem 0 0.8rem;
