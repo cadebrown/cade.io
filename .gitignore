@@ -24,3 +24,7 @@ pnpm-debug.log*
 
 # claude code local state
 .claude/
+
+# roo26.alkem.dev standalone build outputs
+dist-roo26/
+public-roo26/

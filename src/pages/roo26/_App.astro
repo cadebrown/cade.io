@@ -4,8 +4,9 @@
 // pushState handles switching between them without a reload.
 interface Props {
 	tab?: 'schedule' | 'map' | 'plan' | 'trip' | 'info'
+	standalone?: boolean // true when building for roo26.alkem.dev (app at domain root)
 }
-const { tab = 'schedule' } = Astro.props
+const { tab = 'schedule', standalone = false } = Astro.props
 
 const titles: Record<string, string> = {
 	schedule: "Roo '26 — Bonnaroo 2026 Schedule & Set Times",
@@ -35,7 +36,7 @@ const desc =
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 		<meta name="apple-mobile-web-app-title" content="Roo '26" />
 		<meta name="robots" content="index,follow" />
-		<link rel="manifest" href="/roo26.webmanifest" />
+		<link rel="manifest" href={standalone ? '/roo26-root.webmanifest' : '/roo26.webmanifest'} />
 		<link rel="apple-touch-icon" href="/roo26-icon-180.png" />
 		<link rel="icon" href="/roo26-icon-192.png" type="image/png" />
 	</head>

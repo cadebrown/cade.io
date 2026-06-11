@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check": "astro check",
-    "deploy:pages": "wrangler pages deploy dist"
+    "deploy:pages": "wrangler pages deploy dist",
+    "build:roo26": "node scripts/sync-roo26-public.mjs && astro build --config astro.roo26.config.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",

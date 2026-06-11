@@ -2,13 +2,15 @@
 // Cell service on the Farm is rough: network-first for pages (so updates land
 // when there IS signal), cache-fallback when there isn't. Built assets and the
 // official festival maps are cached so the app + maps work with zero signal.
-const CACHE = 'roo26-v3'
+// serves both cade.io/roo26 and the standalone roo26.alkem.dev
+const BASE = self.location.hostname.startsWith('roo26.') ? '' : '/roo26'
+const CACHE = 'roo26-v4'
 const PRECACHE = [
-	'/roo26/',
-	'/roo26/map/',
-	'/roo26/plan/',
-	'/roo26/trip/',
-	'/roo26/info/',
+	BASE + '/',
+	BASE + '/map/',
+	BASE + '/plan/',
+	BASE + '/trip/',
+	BASE + '/info/',
 	'/roo26-map-centeroo.webp',
 	'/roo26-map-outeroo.webp',
 	'/roo26-icon-192.png',
@@ -42,7 +44,7 @@ self.addEventListener('fetch', (e) => {
 
 	const path = url.pathname
 	// app pages: network-first, fall back to cache when offline
-	const isPage = path.replace(/\/$/, '').startsWith('/roo26') && !path.includes('.')
+	const isPage = path.replace(/\/$/, '').startsWith(BASE) && !path.includes('.')
 	// hashed build assets + roo26 static files: cache-first (immutable-ish)
 	const isAsset = path.startsWith('/_astro/') || /^\/roo26[-.].+\.(webp|png|webmanifest)$/.test(path)
 
@@ -57,7 +59,7 @@ self.addEventListener('fetch', (e) => {
 				.catch(() =>
 					caches
 						.match(e.request, { ignoreSearch: true })
-						.then((m) => m || caches.match('/roo26/')),
+						.then((m) => m || caches.match(BASE + '/')),
 				),
 		)
 	} else if (isAsset) {

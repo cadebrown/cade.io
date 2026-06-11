@@ -166,12 +166,14 @@ function setFav(set, on) {
 }
 
 // ───────────────────────── router ─────────────────────────
+// the app serves at cade.io/roo26 and standalone at roo26.alkem.dev
+const BASE = location.hostname.startsWith('roo26.') ? '' : '/roo26'
 const TAB_PATH = {
-	schedule: '/roo26',
-	map: '/roo26/map',
-	plan: '/roo26/plan',
-	trip: '/roo26/trip',
-	info: '/roo26/info',
+	schedule: BASE || '/',
+	map: `${BASE}/map`,
+	plan: `${BASE}/plan`,
+	trip: `${BASE}/trip`,
+	info: `${BASE}/info`,
 }
 
 function setTab(tab, push = true) {
@@ -696,7 +698,7 @@ $('#sharePlan').addEventListener('click', async () => {
 		name = (prompt('Your name (shown to friends who open your link):') || 'A friend').trim()
 		store.set('myname', name)
 	}
-	const url = `https://cade.io/roo26/plan#p=${encodePlan(name)}`
+	const url = `${location.origin}${BASE}/plan#p=${encodePlan(name)}`
 	const txt = planText() + '\nOpen my full plan: ' + url
 	try {
 		if (navigator.share) await navigator.share({ text: txt })
@@ -716,7 +718,7 @@ $('#qrPlan').addEventListener('click', async () => {
 		name = (prompt('Your name (shown when friends scan):') || 'A friend').trim()
 		store.set('myname', name)
 	}
-	const url = `https://cade.io/roo26/plan#p=${encodePlan(name)}`
+	const url = `${location.origin}${BASE}/plan#p=${encodePlan(name)}`
 	try {
 		const QR = (await import('qrcode')).default
 		await QR.toCanvas($('#qrCanvas'), url, { width: 720, margin: 2, errorCorrectionLevel: 'M' })
