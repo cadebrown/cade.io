@@ -829,6 +829,7 @@ async function initMap() {
 	routeLayer = L.layerGroup().addTo(map)
 	drawPins()
 	drawRoute()
+	if (crewAvailable && crew) startCrew()
 
 	const syncZoomClass = () => $('#map').classList.toggle('map-zoomed-out', map.getZoom() < 17)
 	map.on('zoomend', syncZoomClass)
@@ -898,7 +899,18 @@ function renderPoiChips() {
 		drawRoute()
 		renderPoiChips()
 	})
+	const extraChips = []
+	if (crewAvailable) {
+		const c = el(
+			'button',
+			{ class: 'chip' + (crew ? ' active' : ''), style: '--chip-c:#3ddc97' },
+			crew ? `👥 ${crew.code}` : '👥 Crew',
+		)
+		c.addEventListener('click', crewTap)
+		extraChips.push(c)
+	}
 	wrap.replaceChildren(
+		...extraChips,
 		radarChip,
 		routeChip,
 		...Object.entries(POI_CATS).map(([id, def]) => {
@@ -915,6 +927,97 @@ function renderPoiChips() {
 			return c
 		}),
 	)
+}
+
+// — crew location sharing (only appears if the roo26-api backend is bound) —
+let crewAvailable = false
+let crew = store.get('crew', null) // {code, name}
+let crewLayer = null
+let crewTimer = null
+
+fetch('/roo26-api/health')
+	.then((r) => r.json())
+	.then((h) => {
+		crewAvailable = !!h.ok
+		if (crewAvailable) renderPoiChips()
+		if (crewAvailable && crew) startCrew()
+	})
+	.catch(() => {})
+
+async function crewTap() {
+	if (crew) {
+		if (confirm(`Crew ${crew.code} — share this code with friends.\n\nLeave the crew?`)) {
+			stopCrew()
+			crew = null
+			store.set('crew', null)
+			renderPoiChips()
+		}
+		return
+	}
+	const join = prompt("Join a crew: enter its 6-letter code.\nOr leave empty to create a new crew.")
+	if (join === null) return
+	let code = join.trim().toUpperCase()
+	if (code && !/^[A-Z0-9]{6}$/.test(code)) return toast('Codes are 6 letters/numbers')
+	if (!code) {
+		try {
+			code = (await (await fetch('/roo26-api/crew', { method: 'POST' })).json()).code
+		} catch {
+			return toast('Could not create a crew — no signal?')
+		}
+	}
+	const name = (prompt('Your name (shown to your crew):', store.get('myname', '')) || '').trim()
+	if (!name) return
+	store.set('myname', name)
+	crew = { code, name }
+	store.set('crew', crew)
+	toast(`👥 In crew ${code} — share the code!`)
+	renderPoiChips()
+	startCrew()
+}
+
+function startCrew() {
+	stopCrew()
+	if (!map) return
+	crewLayer = L.layerGroup().addTo(map)
+	const tick = async () => {
+		if (!crew) return
+		try {
+			const opts = state.pos
+				? {
+						method: 'POST',
+						headers: { 'content-type': 'application/json' },
+						body: JSON.stringify({ name: crew.name, lat: state.pos.lat, lon: state.pos.lon, emoji: '🧑' }),
+					}
+				: {}
+			const res = await (await fetch(`/roo26-api/crew/${crew.code}`, opts)).json()
+			crewLayer.clearLayers()
+			for (const mb of res.members || []) {
+				if (mb.name === crew.name) continue
+				const stale = Date.now() - mb.at > 90e3
+				L.marker([mb.lat, mb.lon], {
+					icon: L.divIcon({
+						className: '',
+						html: `<div class="crew-dot${stale ? ' stale' : ''}">${mb.emoji || '🧑'}</div>`,
+						iconSize: [28, 28],
+						iconAnchor: [14, 14],
+					}),
+				})
+					.bindTooltip(mb.name, { permanent: true, direction: 'bottom', offset: [0, 14], className: 'poi-lbl' })
+					.addTo(crewLayer)
+			}
+		} catch {}
+	}
+	tick()
+	crewTimer = setInterval(tick, 25e3)
+}
+
+function stopCrew() {
+	clearInterval(crewTimer)
+	crewTimer = null
+	if (crewLayer) {
+		crewLayer.remove()
+		crewLayer = null
+	}
 }
 
 // — live precipitation radar (RainViewer free tiles) —
