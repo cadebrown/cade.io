@@ -786,7 +786,7 @@ const POI_CATS = {
 	entrance: { label: 'Entrances', emoji: '🚪', color: '#ffb02e', on: true },
 	food: { label: 'Food & shops', emoji: '🍕', color: '#3ddc97', on: false },
 	utility: { label: 'Restrooms & misc', emoji: '🚻', color: '#8fa3ad', on: false },
-	camping: { label: 'Camping', emoji: '⛺', color: '#b08bff', on: false },
+	camping: { label: 'Camping', emoji: '⛺', color: '#b08bff', on: true },
 	landmark: { label: 'Landmarks', emoji: '🎡', color: '#ff8bd2', on: true },
 }
 
@@ -848,11 +848,12 @@ async function initMap() {
 				iconAnchor: [size / 2, size / 2],
 			}),
 		})
+		const majorLabel = isStage || /^Plaza \d/.test(p.name) // key wayfinding anchors
 		m.bindTooltip(p.name, {
 			permanent: true,
 			direction: 'bottom',
 			offset: [0, size / 2 + 1],
-			className: 'poi-lbl' + (isStage ? '' : ' lbl-minor'),
+			className: 'poi-lbl' + (majorLabel ? '' : ' lbl-minor'),
 		})
 		m.bindPopup(() => poiPopup(p))
 		m.addTo(catLayers[p.cat] ? catLayers[p.cat] : catLayers.landmark)
