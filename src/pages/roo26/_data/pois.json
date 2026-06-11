@@ -202,6 +202,54 @@
     },
 
     {
+      "name": "Restrooms — What Stage",
+      "lat": 35.4697,
+      "lon": -86.0495,
+      "cat": "utility",
+      "emoji": "🚻",
+      "desc": "Restroom + food cluster at the What field edge (approx.). Every stage has one nearby."
+    },
+    {
+      "name": "Restrooms — Which Stage",
+      "lat": 35.4699,
+      "lon": -86.0519,
+      "cat": "utility",
+      "emoji": "🚻",
+      "desc": "Restroom cluster near Which Stage (approx.)."
+    },
+    {
+      "name": "Restrooms — This Tent",
+      "lat": 35.4721,
+      "lon": -86.0537,
+      "cat": "utility",
+      "emoji": "🚻",
+      "desc": "Restroom cluster near This Tent / GA+ (approx.)."
+    },
+    {
+      "name": "Restrooms — The Other",
+      "lat": 35.474,
+      "lon": -86.0535,
+      "cat": "utility",
+      "emoji": "🚻",
+      "desc": "Restroom cluster near The Other (approx.)."
+    },
+    {
+      "name": "Charging & lockers",
+      "lat": 35.4723,
+      "lon": -86.049,
+      "cat": "utility",
+      "emoji": "🔌",
+      "desc": "Locker rentals with battery-pack swaps near the Arch (approx.). Free charging at every Plaza."
+    },
+    {
+      "name": "Coca-Cola Refresh Lounge",
+      "lat": 35.4708,
+      "lon": -86.0516,
+      "cat": "utility",
+      "emoji": "🧊",
+      "desc": "Shaded lounge between Which Stage and the Fountain, with water refill (approx.)."
+    },
+    {
       "name": "The Woods",
       "lat": 35.4718,
       "lon": -86.044,

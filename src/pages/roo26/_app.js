@@ -2,6 +2,7 @@
 // Bundled by Astro; shared by /roo26, /roo26/map, /roo26/plan, /roo26/info.
 import SCHED from './_data/schedule.json'
 import POIS from './_data/pois.json'
+import ARTISTS from './_data/artists.json'
 
 const TZ = SCHED.tz || '-05:00' // Central Daylight Time on the Farm
 
@@ -70,6 +71,7 @@ const SETS = SCHED.sets
 			end: x.e,
 			startMs: x.t ? epoch(x.t) : null,
 			endMs: x.e ? epoch(x.e) : null,
+			info: ARTISTS[slug(x.a)] || null,
 		}
 	})
 	.sort((a, b) => (a.startMs ?? Infinity) - (b.startMs ?? Infinity))
@@ -93,6 +95,11 @@ const store = {
 			localStorage.setItem('roo26:' + k, JSON.stringify(v))
 		} catch {}
 	},
+	del(k) {
+		try {
+			localStorage.removeItem('roo26:' + k)
+		} catch {}
+	},
 }
 
 const state = {
@@ -101,9 +108,26 @@ const state = {
 	stage: 'all',
 	search: '',
 	favs: new Set(store.get('favs', [])),
-	tent: store.get('tent', null),
-	placingTent: false,
-	pos: null, // latest geolocation fix {lat, lon, acc}
+	pins: store.get('pins', []), // [{id, emoji, name, lat, lon}] — camps & meetup spots
+	placing: null, // pin payload waiting for a map tap: {emoji, name} | null
+	pos: null, // latest geolocation fix {lat, lon, acc, at}
+	locatePref: store.get('locate', null), // user's last explicit locate on/off choice
+}
+
+// migrate the old single "tent" pin into the pins list
+{
+	const tent = store.get('tent', null)
+	if (tent) {
+		state.pins.push({
+			id: 'pin-' + Date.now(),
+			emoji: '⛺',
+			name: 'My camp',
+			lat: tent.lat,
+			lon: tent.lon,
+		})
+		store.set('pins', state.pins)
+		store.del('tent')
+	}
 }
 
 function currentFestDay() {
@@ -116,6 +140,7 @@ function currentFestDay() {
 }
 
 const saveFavs = () => store.set('favs', [...state.favs])
+const savePins = () => store.set('pins', state.pins)
 
 // ───────────────────────── router ─────────────────────────
 const TAB_PATH = { schedule: '/roo26', map: '/roo26/map', plan: '/roo26/plan', info: '/roo26/info' }
@@ -167,40 +192,49 @@ function setStatus(s, now = Date.now()) {
 }
 
 function favButton(set) {
+	const on = () => state.favs.has(set.id)
 	const b = el(
 		'button',
 		{
-			class: 'fav-btn' + (state.favs.has(set.id) ? ' faved' : ''),
-			'aria-label': 'Add to my plan',
+			class: 'fav-btn' + (on() ? ' faved' : ''),
+			'aria-label': 'Save to My Roo',
+			'aria-pressed': String(on()),
 		},
-		state.favs.has(set.id) ? '★' : '☆',
+		on() ? '★' : '☆',
 	)
 	b.addEventListener('click', (e) => {
 		e.stopPropagation()
-		if (state.favs.has(set.id)) {
-			state.favs.delete(set.id)
-			toast(`Removed ${set.artist} from My Roo`)
-		} else {
-			state.favs.add(set.id)
-			toast(`★ ${set.artist} added to My Roo`)
-		}
-		saveFavs()
-		b.classList.toggle('faved', state.favs.has(set.id))
-		b.textContent = state.favs.has(set.id) ? '★' : '☆'
-		renderFavCount()
-		if (state.tab === 'plan') renderPlan()
+		toggleFav(set)
+		b.classList.toggle('faved', on())
+		b.textContent = on() ? '★' : '☆'
+		b.setAttribute('aria-pressed', String(on()))
 	})
 	return b
 }
 
+function toggleFav(set) {
+	if (state.favs.has(set.id)) {
+		state.favs.delete(set.id)
+		toast(`Removed ${set.artist} from My Roo`)
+	} else {
+		state.favs.add(set.id)
+		toast(`★ ${set.artist} added to My Roo`)
+	}
+	saveFavs()
+	renderFavCount()
+	if (state.tab === 'plan') renderPlan()
+}
+
 function setRow(set) {
 	const st = setStatus(set)
-	return el(
+	const row = el(
 		'div',
 		{
 			class: `set-row is-${st}`,
 			style: `--sc:${set.stage.color}`,
 			'data-id': set.id,
+			role: 'button',
+			tabindex: '0',
 		},
 		el(
 			'div',
@@ -216,11 +250,17 @@ function setRow(set) {
 				'div',
 				{ class: 'set-meta' },
 				el('span', { class: 'stage-tag' }, set.stage.name.toUpperCase()),
+				set.info?.g ? el('span', { class: 'genre-tag' }, set.info.g) : null,
 				st === 'live' ? el('span', { class: 'live-tag' }, 'LIVE') : null,
 			),
 		),
 		favButton(set),
 	)
+	row.addEventListener('click', () => openSheet(set))
+	row.addEventListener('keydown', (e) => {
+		if (e.key === 'Enter') openSheet(set)
+	})
+	return row
 }
 
 function renderDayTabs() {
@@ -280,7 +320,7 @@ function visibleSets() {
 		(s) =>
 			s.day === state.day &&
 			(state.stage === 'all' || s.stage.id === state.stage) &&
-			(!q || s.artist.toLowerCase().includes(q)),
+			(!q || s.artist.toLowerCase().includes(q) || (s.info?.g || '').includes(q)),
 	)
 }
 
@@ -324,13 +364,7 @@ function renderNowStrip() {
 				el('span', { class: 'nc-a' }, s.artist),
 				el('span', { class: 'nc-s' }, `${s.stage.name} · until ${s.end ? fmtTime(s.end) : '?'}`),
 			)
-			c.addEventListener('click', () => {
-				state.day = s.day
-				store.set('day', s.day)
-				renderDayTabs()
-				renderSched()
-				$(`.set-row[data-id="${s.id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-			})
+			c.addEventListener('click', () => openSheet(s))
 			return c
 		}),
 	)
@@ -339,7 +373,7 @@ function renderNowStrip() {
 // refresh live/past classes in place without rebuilding (keeps scroll)
 function refreshStatuses() {
 	const now = Date.now()
-	$$('#schedList .set-row').forEach((row) => {
+	$$('#schedList .set-row, #planBody .set-row').forEach((row) => {
 		const s = SET_BY_ID[row.dataset.id]
 		if (!s) return
 		const st = setStatus(s, now)
@@ -368,9 +402,67 @@ $('#nowJump').addEventListener('click', () => {
 		renderSched()
 	}
 	const target =
-		$('#schedList .set-row.is-live') || $$('#schedList .set-row').find((r) => !r.classList.contains('is-past'))
+		$('#schedList .set-row.is-live') ||
+		$$('#schedList .set-row').find((r) => !r.classList.contains('is-past'))
 	if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' })
 	else toast('No upcoming sets on this day')
+})
+
+// ───────────────────────── artist detail sheet ─────────────────────────
+let sheetSet = null
+
+function openSheet(set) {
+	sheetSet = set
+	const a = set.info
+	const day = SCHED.days.find((d) => d.id === set.day)
+	$('#sheetImg').style.backgroundImage = a?.img ? `url(${a.img})` : 'none'
+	$('#sheetImg').classList.toggle('no-img', !a?.img)
+	$('#sheetArtist').textContent = set.artist
+	$('#sheetGenre').textContent = a?.g || ''
+	$('#sheetGenre').hidden = !a?.g
+	$('#sheetDesc').textContent = a?.d || ''
+	$('#sheetWhen').textContent =
+		`${day.full} · ${set.start ? fmtTime(set.start) : 'TBA'}${set.end ? '–' + fmtTime(set.end) : ''}`
+	const tag = $('#sheetStage')
+	tag.textContent = set.stage.name
+	tag.style.color = set.stage.color
+	const fav = $('#sheetFav')
+	fav.textContent = state.favs.has(set.id) ? '★ In My Roo' : '☆ Add to My Roo'
+	fav.classList.toggle('faved', state.favs.has(set.id))
+	$('#sheetSpotify').href = a?.id
+		? `https://open.spotify.com/artist/${a.id}`
+		: `https://open.spotify.com/search/${encodeURIComponent(set.artist)}`
+	$('#sheetWrap').hidden = false
+	document.body.style.overflow = 'hidden'
+}
+
+function closeSheet() {
+	$('#sheetWrap').hidden = true
+	document.body.style.overflow = ''
+	sheetSet = null
+}
+
+$('#sheetClose').addEventListener('click', closeSheet)
+$('#sheetWrap').addEventListener('click', (e) => {
+	if (e.target.id === 'sheetWrap') closeSheet()
+})
+$('#sheetFav').addEventListener('click', () => {
+	if (!sheetSet) return
+	const keep = sheetSet
+	toggleFav(keep)
+	openSheet(keep) // refresh sheet button state
+	renderSched()
+})
+$('#sheetMap').addEventListener('click', async () => {
+	if (!sheetSet) return
+	const poi = POIS.pois.find((p) => p.cat === 'stage' && p.stage === sheetSet.stage.id)
+	closeSheet()
+	setTab('map')
+	await initMap()
+	if (map && poi) {
+		map.flyTo([poi.lat, poi.lon], 17)
+		stageMarkers[poi.stage]?.openPopup()
+	}
 })
 
 // ───────────────────────── my plan ─────────────────────────
@@ -434,7 +526,8 @@ $('#sharePlan').addEventListener('click', async () => {
 		const daySets = favs.filter((s) => s.day === d.id)
 		if (!daySets.length) continue
 		txt += `\n${d.full}\n`
-		for (const s of daySets) txt += `  ${s.start ? fmtTime(s.start) : 'TBA'} — ${s.artist} (${s.stage.name})\n`
+		for (const s of daySets)
+			txt += `  ${s.start ? fmtTime(s.start) : 'TBA'} — ${s.artist} (${s.stage.name})\n`
 	}
 	txt += '\nvia cade.io/roo26'
 	try {
@@ -453,6 +546,7 @@ const POI_CATS = {
 	medical: { label: 'Medical', emoji: '⛑️', color: '#ff5252', on: true },
 	entrance: { label: 'Entrances', emoji: '🚪', color: '#ffb02e', on: true },
 	food: { label: 'Food & shops', emoji: '🍕', color: '#3ddc97', on: false },
+	utility: { label: 'Restrooms & misc', emoji: '🚻', color: '#8fa3ad', on: false },
 	camping: { label: 'Camping', emoji: '⛺', color: '#b08bff', on: false },
 	landmark: { label: 'Landmarks', emoji: '🎡', color: '#ff8bd2', on: true },
 }
@@ -460,10 +554,19 @@ const POI_CATS = {
 let L = null // leaflet module, loaded lazily on first map view
 let map = null
 const catLayers = {}
+const stageMarkers = {}
+let pinLayer = null
 let userMarker = null
 let userCircle = null
-let tentMarker = null
 let watchId = null
+let retryTimer = null
+
+async function loadLeaflet() {
+	if (L) return L
+	const [mod] = await Promise.all([import('leaflet'), import('leaflet/dist/leaflet.css')])
+	L = mod.default
+	return L
+}
 
 async function initMap() {
 	if (map) {
@@ -471,8 +574,7 @@ async function initMap() {
 		return
 	}
 	try {
-		const [mod] = await Promise.all([import('leaflet'), import('leaflet/dist/leaflet.css')])
-		L = mod.default
+		await loadLeaflet()
 	} catch {
 		toast('Map failed to load — check your connection')
 		return
@@ -523,23 +625,56 @@ async function initMap() {
 			offset: [0, size / 2 + 1],
 			className: 'poi-lbl' + (isStage ? '' : ' lbl-minor'),
 		})
-		m.bindPopup(`<b>${p.name}</b>${p.desc ? '<br>' + p.desc : ''}`)
+		m.bindPopup(() => poiPopup(p))
 		m.addTo(catLayers[p.cat] ? catLayers[p.cat] : catLayers.landmark)
+		if (isStage) stageMarkers[p.stage] = m
 	}
 	for (const [cat, def] of Object.entries(POI_CATS)) if (def.on) catLayers[cat].addTo(map)
 
-	const syncZoomClass = () =>
-		$('#map').classList.toggle('map-zoomed-out', map.getZoom() < 17)
+	pinLayer = L.layerGroup().addTo(map)
+	drawPins()
+
+	const syncZoomClass = () => $('#map').classList.toggle('map-zoomed-out', map.getZoom() < 17)
 	map.on('zoomend', syncZoomClass)
 	syncZoomClass()
 
 	map.on('click', (e) => {
-		if (state.placingTent) placeTent(e.latlng.lat, e.latlng.lng)
+		if (state.placing) placePin(e.latlng.lat, e.latlng.lng)
 	})
 
 	renderPoiChips()
-	if (state.tent) drawTent()
 	setTimeout(() => map.invalidateSize(), 60)
+
+	// auto-locate: resume if the user had it on, or if permission is already granted
+	if (state.locatePref === true) startLocate(true)
+	else if (state.locatePref !== false && navigator.permissions?.query) {
+		navigator.permissions
+			.query({ name: 'geolocation' })
+			.then((p) => {
+				if (p.state === 'granted') startLocate(true)
+			})
+			.catch(() => {})
+	}
+}
+
+// popups show description + what's on now / next at stages
+function poiPopup(p) {
+	const wrap = el('div', {}, el('b', {}, p.name))
+	if (p.desc) wrap.append(el('div', { class: 'pop-desc' }, p.desc))
+	if (p.cat === 'stage' && p.stage) {
+		const now = Date.now()
+		const stageSets = SETS.filter((s) => s.stage.id === p.stage)
+		const live = stageSets.find((s) => setStatus(s, now) === 'live')
+		const next = stageSets.find((s) => s.startMs && s.startMs > now)
+		if (live)
+			wrap.append(
+				el('div', { class: 'pop-now' }, `▶ NOW: ${live.artist} (until ${fmtTime(live.end)})`),
+			)
+		if (next)
+			wrap.append(el('div', { class: 'pop-next' }, `next: ${next.artist} · ${fmtTime(next.start)}`))
+		if (!live && !next) wrap.append(el('div', { class: 'pop-next' }, 'no more sets here — 🌈'))
+	}
+	return wrap
 }
 
 function renderPoiChips() {
@@ -561,75 +696,119 @@ function renderPoiChips() {
 	)
 }
 
-// — tent pin —
-function placeTent(lat, lon) {
-	state.tent = { lat, lon }
-	store.set('tent', state.tent)
-	state.placingTent = false
-	$('#tentBanner').hidden = true
-	$('#fabTent').classList.remove('on')
-	drawTent()
-	toast('⛺ Tent saved — find your way home later')
-	renderNearest()
+// — custom pins: mark your camp, friends' camps, meetup spots —
+const PIN_EMOJIS = ['⛺', '🏕️', '🚐', '🍻', '🔥', '⭐', '🪩', '🦄', '🍄', '💀', '🎈', '🚩']
+let pinEmoji = '⛺'
+
+function openPinSheet() {
+	$('#pinName').value = ''
+	pinEmoji = '⛺'
+	renderPinEmojis()
+	$('#pinSheetWrap').hidden = false
 }
 
-function drawTent() {
-	if (!map || !state.tent) return
-	if (tentMarker) tentMarker.remove()
-	tentMarker = L.marker([state.tent.lat, state.tent.lon], {
-		draggable: true,
-		icon: L.divIcon({
-			className: '',
-			html: '<div class="tent-pin">⛺</div>',
-			iconSize: [34, 34],
-			iconAnchor: [17, 28],
+function renderPinEmojis() {
+	$('#pinEmojis').replaceChildren(
+		...PIN_EMOJIS.map((e) => {
+			const b = el('button', { class: 'pin-emoji' + (e === pinEmoji ? ' active' : '') }, e)
+			b.addEventListener('click', () => {
+				pinEmoji = e
+				renderPinEmojis()
+			})
+			return b
 		}),
-	}).addTo(map)
-	const pop = el(
-		'div',
-		{},
-		el('b', {}, 'My tent'),
-		el('br'),
-		el('button', { class: 'pop-btn', onclick: removeTent }, 'Remove pin'),
 	)
-	tentMarker.bindPopup(pop)
-	tentMarker.bindTooltip('My tent', {
-		permanent: true,
-		direction: 'bottom',
-		offset: [0, 8],
-		className: 'poi-lbl',
-	})
-	tentMarker.on('dragend', () => {
-		const ll = tentMarker.getLatLng()
-		state.tent = { lat: ll.lat, lon: ll.lng }
-		store.set('tent', state.tent)
-		renderNearest()
-	})
 }
 
-function removeTent() {
-	state.tent = null
-	store.set('tent', null)
-	if (tentMarker) {
-		tentMarker.remove()
-		tentMarker = null
-	}
-	toast('Tent pin removed')
-	renderNearest()
-}
-
-$('#fabTent').addEventListener('click', () => {
-	if (state.tent && !state.placingTent) {
-		map?.flyTo([state.tent.lat, state.tent.lon], Math.max(map.getZoom(), 17))
-		toast('That ⛺ is home — drag it to move, tap it to remove')
-		return
-	}
-	state.placingTent = !state.placingTent
-	$('#tentBanner').hidden = !state.placingTent
-	$('#fabTent').classList.toggle('on', state.placingTent)
+$('#fabPin').addEventListener('click', () => {
+	if (!map) return toast('Wait for the map to load first')
+	openPinSheet()
+})
+$('#pinSheetWrap').addEventListener('click', (e) => {
+	if (e.target.id === 'pinSheetWrap') $('#pinSheetWrap').hidden = true
+})
+$('#pinCancel').addEventListener('click', () => ($('#pinSheetWrap').hidden = true))
+$('#pinPlace').addEventListener('click', () => {
+	state.placing = { emoji: pinEmoji, name: $('#pinName').value.trim() || 'My camp' }
+	$('#pinSheetWrap').hidden = true
+	$('#tentBanner').textContent = `Tap the map to place ${state.placing.emoji} ${state.placing.name}`
+	$('#tentBanner').hidden = false
+})
+$('#pinHere').addEventListener('click', () => {
+	if (!state.pos) return toast('Turn on 📍 location first')
+	state.placing = { emoji: pinEmoji, name: $('#pinName').value.trim() || 'My camp' }
+	$('#pinSheetWrap').hidden = true
+	placePin(state.pos.lat, state.pos.lon)
 })
 
-// — geolocation —
+function placePin(lat, lon) {
+	const pin = {
+		id: 'pin-' + Date.now(),
+		emoji: state.placing.emoji,
+		name: state.placing.name,
+		lat,
+		lon,
+	}
+	state.pins.push(pin)
+	savePins()
+	state.placing = null
+	$('#tentBanner').hidden = true
+	drawPins()
+	toast(`${pin.emoji} ${pin.name} saved`)
+	renderNearest()
+}
+
+function drawPins() {
+	if (!map || !pinLayer) return
+	pinLayer.clearLayers()
+	for (const pin of state.pins) {
+		const m = L.marker([pin.lat, pin.lon], {
+			draggable: true,
+			icon: L.divIcon({
+				className: '',
+				html: `<div class="camp-pin">${pin.emoji}</div>`,
+				iconSize: [34, 34],
+				iconAnchor: [17, 28],
+			}),
+		}).addTo(pinLayer)
+		m.bindTooltip(pin.name, {
+			permanent: true,
+			direction: 'bottom',
+			offset: [0, 8],
+			className: 'poi-lbl',
+		})
+		m.bindPopup(() => {
+			const rename = el('button', { class: 'pop-btn' }, 'Rename')
+			rename.addEventListener('click', () => {
+				const name = prompt('Pin name:', pin.name)
+				if (name?.trim()) {
+					pin.name = name.trim()
+					savePins()
+					drawPins()
+					renderNearest()
+				}
+			})
+			const rm = el('button', { class: 'pop-btn pop-btn-danger' }, 'Remove')
+			rm.addEventListener('click', () => {
+				state.pins = state.pins.filter((p) => p.id !== pin.id)
+				savePins()
+				drawPins()
+				toast(`${pin.emoji} ${pin.name} removed`)
+				renderNearest()
+			})
+			return el('div', {}, el('b', {}, `${pin.emoji} ${pin.name}`), el('br'), rename, ' ', rm)
+		})
+		m.on('dragend', () => {
+			const ll = m.getLatLng()
+			pin.lat = ll.lat
+			pin.lon = ll.lng
+			savePins()
+			renderNearest()
+		})
+	}
+}
+
+// — geolocation: sticky, self-healing —
 function haversine(a, b) {
 	const R = 6371000
 	const dLat = ((b.lat - a.lat) * Math.PI) / 180
@@ -647,52 +826,93 @@ const fmtWalk = (m) => {
 	return min > 90 ? '' : `~${min} min walk`
 }
 
-function startLocate() {
+function startLocate(auto = false) {
 	if (!('geolocation' in navigator)) return toast('No location support on this device')
+	if (watchId != null) return
+	clearTimeout(retryTimer)
 	$('#fabLocate').classList.add('on')
-	let firstFix = true
+	if (!auto) {
+		store.set('locate', true)
+		state.locatePref = true
+	}
+	let hadFix = !!state.pos
 	watchId = navigator.geolocation.watchPosition(
 		(p) => {
-			state.pos = { lat: p.coords.latitude, lon: p.coords.longitude, acc: p.coords.accuracy }
+			const first = !hadFix
+			hadFix = true
+			state.pos = {
+				lat: p.coords.latitude,
+				lon: p.coords.longitude,
+				acc: p.coords.accuracy,
+				at: Date.now(),
+			}
 			drawUser()
 			renderNearest()
-			if (firstFix) {
-				firstFix = false
+			if (first) {
 				const far = haversine(state.pos, { lat: POIS.center[0], lon: POIS.center[1] })
-				if (far < 30000) map.flyTo([state.pos.lat, state.pos.lon], Math.max(map.getZoom(), 16))
+				if (far < 30000) map?.flyTo([state.pos.lat, state.pos.lon], Math.max(map.getZoom(), 16))
 				else toast(`You're ${fmtDist(far)} from the Farm — map stays put`)
 			}
 		},
 		(err) => {
-			stopLocate()
-			toast(
-				err.code === 1
-					? 'Location permission denied — enable it in your browser settings'
-					: 'Could not get your location',
-			)
+			if (err.code === 1) {
+				// permission denied — a retry loop would just nag
+				stopLocate(true)
+				toast('Location permission denied — enable it in browser settings')
+				return
+			}
+			// signal lost / timeout: keep the last fix, mark it stale, quietly retry
+			if (watchId != null) navigator.geolocation.clearWatch(watchId)
+			watchId = null
+			userMarker?.getElement()?.querySelector('.user-dot')?.classList.add('stale')
+			retryTimer = setTimeout(() => startLocate(true), 8000)
 		},
 		{ enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 },
 	)
 }
 
-function stopLocate() {
+function stopLocate(silent = false) {
+	clearTimeout(retryTimer)
 	if (watchId != null) navigator.geolocation.clearWatch(watchId)
 	watchId = null
 	state.pos = null
 	$('#fabLocate').classList.remove('on')
-	if (userMarker) (userMarker.remove(), (userMarker = null))
-	if (userCircle) (userCircle.remove(), (userCircle = null))
+	if (!silent) {
+		store.set('locate', false)
+		state.locatePref = false
+	}
+	if (userMarker) {
+		userMarker.remove()
+		userMarker = null
+	}
+	if (userCircle) {
+		userCircle.remove()
+		userCircle = null
+	}
 	renderNearest()
 }
 
 $('#fabLocate').addEventListener('click', () => (watchId == null ? startLocate() : stopLocate()))
+
+// if the tab was backgrounded (screen off in a pocket), re-arm the watch
+document.addEventListener('visibilitychange', () => {
+	if (!document.hidden) {
+		refreshStatuses()
+		if (map && state.locatePref === true && watchId == null) startLocate(true)
+	}
+})
 
 function drawUser() {
 	if (!map || !state.pos) return
 	const ll = [state.pos.lat, state.pos.lon]
 	if (!userMarker) {
 		userMarker = L.marker(ll, {
-			icon: L.divIcon({ className: '', html: '<div class="user-dot"></div>', iconSize: [18, 18], iconAnchor: [9, 9] }),
+			icon: L.divIcon({
+				className: '',
+				html: '<div class="user-dot"></div>',
+				iconSize: [18, 18],
+				iconAnchor: [9, 9],
+			}),
 			zIndexOffset: 1000,
 		}).addTo(map)
 		userCircle = L.circle(ll, {
@@ -705,6 +925,7 @@ function drawUser() {
 		userMarker.setLatLng(ll)
 		userCircle.setLatLng(ll).setRadius(state.pos.acc)
 	}
+	userMarker.getElement()?.querySelector('.user-dot')?.classList.remove('stale')
 }
 
 function renderNearest() {
@@ -717,7 +938,7 @@ function renderNearest() {
 	}
 	hint.hidden = true
 	const targets = [
-		...(state.tent ? [{ name: 'My tent', emoji: '⛺', lat: state.tent.lat, lon: state.tent.lon }] : []),
+		...state.pins.map((p) => ({ name: p.name, emoji: p.emoji, lat: p.lat, lon: p.lon })),
 		...POIS.pois.filter((p) => ['stage', 'water', 'medical'].includes(p.cat)),
 	]
 	const rows = targets
@@ -738,7 +959,64 @@ function renderNearest() {
 	)
 }
 
-// ───────────────────────── weather ─────────────────────────
+// — official map viewer (pinch-zoom over the official festival map images) —
+const OMAPS = {
+	centeroo: {
+		src: '/roo26-map-centeroo.webp',
+		w: 3200,
+		h: 2005,
+		note: 'Heads up: the official Centeroo map is printed SOUTH-UP — north is down.',
+	},
+	outeroo: {
+		src: '/roo26-map-outeroo.webp',
+		w: 3200,
+		h: 2038,
+		note: 'Campgrounds, Plazas 1–9, tolls and day parking.',
+	},
+}
+let omap = null
+let omapOverlay = null
+
+async function openOmap(which = 'centeroo') {
+	$('#omapWrap').hidden = false
+	document.body.style.overflow = 'hidden'
+	try {
+		await loadLeaflet()
+	} catch {
+		toast('Could not load the viewer')
+		return
+	}
+	const def = OMAPS[which]
+	const bounds = [
+		[0, 0],
+		[def.h, def.w],
+	]
+	if (!omap) {
+		omap = L.map('omapMap', {
+			crs: L.CRS.Simple,
+			minZoom: -3,
+			maxZoom: 2,
+			zoomControl: false,
+			attributionControl: false,
+		})
+	}
+	if (omapOverlay) omapOverlay.remove()
+	omapOverlay = L.imageOverlay(def.src, bounds).addTo(omap)
+	omap.setMaxBounds(L.latLngBounds(bounds).pad(0.2))
+	omap.fitBounds(bounds)
+	$('#omapNote').textContent = def.note
+	$$('#omapTabs button').forEach((b) => b.classList.toggle('active', b.dataset.omap === which))
+	setTimeout(() => omap.invalidateSize(), 60)
+}
+
+$('#fabOmap').addEventListener('click', () => openOmap('centeroo'))
+$('#omapClose').addEventListener('click', () => {
+	$('#omapWrap').hidden = true
+	document.body.style.overflow = ''
+})
+$$('#omapTabs button').forEach((b) => b.addEventListener('click', () => openOmap(b.dataset.omap)))
+
+// ───────────────────────── weather + alerts ─────────────────────────
 const WX_POINT = `${POIS.center[0].toFixed(4)},${POIS.center[1].toFixed(4)}`
 let weatherLoaded = false
 
@@ -781,6 +1059,62 @@ function renderWeather(periods, src) {
 	)
 }
 
+// active NWS alerts (storms!) — banner above everything, dismissible per-alert
+async function loadAlerts() {
+	try {
+		const res = await (await fetch(`https://api.weather.gov/alerts/active?point=${WX_POINT}`)).json()
+		const dismissed = new Set(JSON.parse(sessionStorage.getItem('roo26:wxdismiss') || '[]'))
+		const alerts = (res.features || [])
+			.map((f) => f.properties)
+			.filter((p) => ['Severe', 'Extreme', 'Moderate'].includes(p.severity) && !dismissed.has(p.id))
+		const bar = $('#wxAlert')
+		if (!alerts.length) {
+			bar.hidden = true
+			return
+		}
+		const a = alerts[0]
+		$('#wxAlertText').textContent = `⚠️ ${a.event}${a.headline ? ' — ' + a.headline : ''}`
+		bar.hidden = false
+		$('#wxAlertClose').onclick = () => {
+			dismissed.add(a.id)
+			sessionStorage.setItem('roo26:wxdismiss', JSON.stringify([...dismissed]))
+			bar.hidden = true
+			loadAlerts()
+		}
+	} catch {}
+}
+
+// ───────────────────────── help & install ─────────────────────────
+let deferredInstall = null
+window.addEventListener('beforeinstallprompt', (e) => {
+	e.preventDefault()
+	deferredInstall = e
+	$('#installBtn').hidden = false
+})
+
+$('#installBtn').addEventListener('click', async () => {
+	if (!deferredInstall) return
+	deferredInstall.prompt()
+	await deferredInstall.userChoice
+	deferredInstall = null
+	$('#installBtn').hidden = true
+})
+
+function closeHelp() {
+	$('#helpWrap').hidden = true
+	document.body.style.overflow = ''
+}
+$('#helpBtn').addEventListener('click', () => {
+	const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.navigator.standalone
+	$('#iosInstall').hidden = !ios || !!deferredInstall
+	$('#helpWrap').hidden = false
+	document.body.style.overflow = 'hidden'
+})
+$('#helpClose').addEventListener('click', closeHelp)
+$('#helpWrap').addEventListener('click', (e) => {
+	if (e.target.id === 'helpWrap') closeHelp()
+})
+
 // ───────────────────────── boot ─────────────────────────
 renderDayTabs()
 renderStageChips()
@@ -790,11 +1124,10 @@ renderNowStrip()
 renderPill()
 renderFavCount()
 setTab(state.tab, false)
+loadAlerts()
 
 setInterval(refreshStatuses, 30e3)
-document.addEventListener('visibilitychange', () => {
-	if (!document.hidden) refreshStatuses()
-})
+setInterval(loadAlerts, 10 * 60e3)
 
 if ('serviceWorker' in navigator) {
 	navigator.serviceWorker.register('/roo26-sw.js').catch(() => {})

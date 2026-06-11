@@ -1,0 +1,684 @@
+{
+  "spiritual-cramp": {
+    "g": "punk",
+    "d": "San Francisco punks with Clash-style swagger; the razor-sharp first pit of the weekend.",
+    "id": "6cpzd2aRLmkE06P4lFFMlj",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb625cfe946b5373d0d2dcd054"
+  },
+  "vince-staples": {
+    "g": "hip-hop",
+    "d": "Long Beach rap's sharpest wit; deadpan bars over sleek West Coast bounce.",
+    "id": "68kEuyFKyqrdQQLLsmiatm",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebd90bf111a0acbcb98fc6569d"
+  },
+  "four-tet": {
+    "g": "electronic",
+    "d": "Kieran Hebden's blissed-out, genre-melting electronica; a master of the festival build.",
+    "id": "7Eu1txygG6nJttLHbZdQOh",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb21c0ea7fc21ab3038d111ec2"
+  },
+  "skrillex": {
+    "g": "bass",
+    "d": "Bass-music titan headlining Thursday; expect a relentless, surprise-stuffed rave.",
+    "id": "5he5w2lnU9x7JFhnwcekXX",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebf3103acde767f8daf964d5bd"
+  },
+  "villanelle": {
+    "g": "grunge rock",
+    "d": "Gene Gallagher (Liam's son) fronts this London trio reviving 90s grunge snarl.",
+    "id": "3J9QwmRJDdn9Oq1fB6mfcF",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb1ece1eae58afddb4d3238501"
+  },
+  "amble": {
+    "g": "irish folk",
+    "d": "Irish folk trio whose hushed three-part harmonies became a word-of-mouth phenomenon.",
+    "id": "5ZC7GPz5h9zkEfjZBUDNzI",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb703f139d574f97f409870f2a"
+  },
+  "blues-traveler": {
+    "g": "jam rock",
+    "d": "John Popper's harmonica-led 90s jam vets; 'Run-Around' at golden hour.",
+    "id": "3pHeBYl1yujXcZqqfF1UyQ",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb0a75e80e419fa64836518832"
+  },
+  "yungblud": {
+    "g": "alt rock",
+    "d": "UK rock firebrand with arena-size hooks and chaotic, crowd-hugging energy.",
+    "id": "6Ad91Jof8Niiw0lGLLi3NW",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb7c9287712c4355e54c94e0d0"
+  },
+  "griz": {
+    "g": "funk bass",
+    "d": "Sax-wielding electro-soul party-starter; pure feel-good funk and bass.",
+    "id": "25oLRSUjJk4YHNUsQXk7Ut",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb12e878cd579ea7ea99f7028c"
+  },
+  "the-strokes": {
+    "g": "indie rock",
+    "d": "NYC garage-rock icons headlining Friday with era-defining anthems.",
+    "id": "0epOFNiUfyON9EYx7Tpr6V",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebc3b137793230f4043feb0089"
+  },
+  "lambrini-girls": {
+    "g": "punk",
+    "d": "Brighton's confrontational queer-punk duo; the rowdiest, funniest pit on Friday.",
+    "id": "6VR4TJ20WGiho2xZWMuuWb",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb451fcef9face9f013f488a91"
+  },
+  "wolfmother": {
+    "g": "hard rock",
+    "d": "Aussie riff-lords; 'Joker and the Thief' is pure Sabbath-sized catharsis live.",
+    "id": "3yEnArbNHyTCwMRvD9SBy4",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb81029ef3e2c85c4b75f6bd6f"
+  },
+  "zack-fox": {
+    "g": "comedy rap",
+    "d": "Comedian-rapper menace; equal parts standup, trolling, and genuine bangers.",
+    "id": "1UH80jhsYsFztK0anu2FNS",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb9bcefc58f0ceb5ec7c6a5e7a"
+  },
+  "wet-leg": {
+    "g": "indie rock",
+    "d": "Isle of Wight deadpan indie stars; 'Chaise Longue' to 'catch these fists', all teeth.",
+    "id": "2TwOrUcYnAlIiKmVQkkoSZ",
+    "img": "https://i.scdn.co/image/ab6761610000e5eba4e6cf8b3d6ea5a6b4b5fb8f"
+  },
+  "jessie-murph": {
+    "g": "country pop",
+    "d": "Alabama's smoky-voiced country-pop disruptor, riding 'Blue Strips' to superstardom.",
+    "id": "2yLzlEFtIS0Q9UkyBZdQA7",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebabb501717aa1717ea4798061"
+  },
+  "mt-joy": {
+    "g": "indie folk",
+    "d": "Philly indie-folk warmth; sunset singalongs built for the Which Stage.",
+    "id": "69tiO1fG8VWduDl3ji2qhI",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb7c92602e66076f1b0bf5843b"
+  },
+  "turnstile": {
+    "g": "hardcore",
+    "d": "Baltimore hardcore turned ecstatic stage-dive communion; an unmissable late-night set.",
+    "id": "2qnpHrOzdmOo1S4ox3j17x",
+    "img": "https://i.scdn.co/image/ab6761610000e5eba4c3fd0017b42344516dc16c"
+  },
+  "pawpaw-rod": {
+    "g": "funk soul",
+    "d": "Smooth-talking soul-funk rapper; lowrider grooves for an easy afternoon.",
+    "id": "23KIrX6iPiVOkx60F4bjNq",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebe9eb2b2604eaee89cd2264a4"
+  },
+  "goldie-boutilier": {
+    "g": "dark pop",
+    "d": "Nova Scotia chanteuse making cinematic femme-fatale pop.",
+    "id": "392WuM1Yb4QRI0GG4epyn5",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebcb6282ad2fefac9a6abe243c"
+  },
+  "rachel-chinouriri": {
+    "g": "indie pop",
+    "d": "British indie-pop riser with diaristic heartbreak anthems like 'All I Ever Asked'.",
+    "id": "4wrzxtBZw20ufDstKyTnnP",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb1cbc805e89343f30e20fb066"
+  },
+  "mother-mother": {
+    "g": "indie rock",
+    "d": "Canadian cult quintet whose quirky harmonies conquered the internet ('Hayloft').",
+    "id": "0e86yPdC41PGRkLp2Q1Bph",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebfdfbc01d2597633aae65f6b7"
+  },
+  "smino": {
+    "g": "r&b rap",
+    "d": "St. Louis' silkiest rapper-singer; funk-soaked flows and featherlight falsetto.",
+    "id": "1ybINI1qPiFbwDXamRtwxD",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb4942e4dee1baf077fe6a9e2c"
+  },
+  "hot-mulligan": {
+    "g": "emo pop punk",
+    "d": "Michigan emo loudmouths; scream-along catharsis and absurd song titles.",
+    "id": "1lKZzN2d4IqiEYxyECIEHI",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebf39d742e60fa4e7246c133d4"
+  },
+  "the-dare": {
+    "g": "electroclash",
+    "d": "NYC's suited sleaze-pop provocateur ('Girls'); a sweaty 1:30 a.m. dance riot.",
+    "id": "2mqiqsaX4LzFnUP7PmHGAb",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb625f4eebd07e07e68e87b4f1"
+  },
+  "dora-jar": {
+    "g": "alt pop",
+    "d": "Whimsical alt-pop songwriter beloved by Billie Eilish; intricate, strange, charming.",
+    "id": "4V30Q8ACPdJCcAmAYibfrH",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb6bb96703815f1cf459984378"
+  },
+  "wednesday": {
+    "g": "indie rock",
+    "d": "Asheville's countrygaze heroes: pedal steel, shredding, and Karly Hartzman's gut-punch stories.",
+    "id": "4j7DrazfBZLLD0OrVoAtEe",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebcbf22720296d758d8b373a85"
+  },
+  "the-chats": {
+    "g": "punk",
+    "d": "Australian shed-rock larrikins; two-minute pub-punk ragers ('Smoko').",
+    "id": "1aQ7P3HtKOQFW16ebjiks1",
+    "img": "https://i.scdn.co/image/ab6761610000e5eba43a92d50e11b126604d710e"
+  },
+  "bbno": {
+    "g": "pop rap",
+    "d": "Vancouver's goofiest hitmaker ('edamame'); irony-laced bangers, maximum fun.",
+    "id": "41X1TR6hrK8Q2ZCpp2EqCz",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebe7c585e9ecd65c76b7bf91ac"
+  },
+  "geese": {
+    "g": "art rock",
+    "d": "Brooklyn's wildest young art-rock band; 'Getting Killed' made them critics' darlings.",
+    "id": "0WCo84qtCKfbyIf1lqQWB4",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebbc9546a945c7563a9eb21f3d"
+  },
+  "blood-orange": {
+    "g": "alt r&b",
+    "d": "Dev Hynes' luxurious art-pop and R&B; lush, melancholy grooves.",
+    "id": "6LEeAFiJF8OuPx747e1wxR",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb82a833d61eafc09c05c24882"
+  },
+  "lil-jon": {
+    "g": "crunk",
+    "d": "YEAH! The king of crunk turns That Tent into a midnight party time machine.",
+    "id": "7sfl4Xt5KmfyDs2T3SVSMK",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebf893feb44e74c8b4c15ecc95"
+  },
+  "jackie-hollander": {
+    "g": "indie dance",
+    "d": "Indie-dance producer and vocalist; hazy, hooky house cuts like \"Addicted\".",
+    "id": "5ykY9Uweo3gl5VFpb6z6pQ",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebf0e99d6f6b67dd3e7a9bd905"
+  },
+  "daniel-allan": {
+    "g": "electronic pop",
+    "d": "Rising producer blending indie vocals with glossy dance-pop drops.",
+    "id": "5JQ1XqKJ2Art01rF4tu1Ra",
+    "img": "https://i.scdn.co/image/ab6761610000e5eba00db0ce0385b286b57d7c57"
+  },
+  "aszewo": {
+    "g": "indie dance",
+    "d": "LA trio Łaszewo blends breezy indie vocals with house grooves; 'messy' is the vibe.",
+    "id": "6jxGLrn1I14RIeRYodOpLN",
+    "img": "https://i.scdn.co/image/ab6761610000e5eba55ac111cd03a0ce8f08107d"
+  },
+  "notion": {
+    "g": "uk bass",
+    "d": "UK bass producer with garage-flavored heaters like 'Hooked'; millions of monthly listeners.",
+    "id": "1uRVM0wBdtyEuU582EeKJM",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb8436c7707f218912b3dc25a4"
+  },
+  "adventure-club": {
+    "g": "melodic dubstep",
+    "d": "Canadian melodic-dubstep veterans; emotional drops and throwback feels.",
+    "id": "5CdJjUi9f0cVgo9nFuJrFa",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb04dd26cc737ffd8385afa230"
+  },
+  "sidepiece": {
+    "g": "house",
+    "d": "Grammy-nominated duo (Party Favor x Nitti Gritti); 'On My Mind' groove machine.",
+    "id": "5czbzNZZfWpyFgZyfT3Mkk",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb21705221c7f192d4a7963910"
+  },
+  "cloonee": {
+    "g": "tech house",
+    "d": "UK tech-house heavyweight and Hellbent label boss; relentless club heaters.",
+    "id": "7MdlXmq2HViAJWo9cf30sR",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebd0c97bcaa85830ce5f882f0e"
+  },
+  "major-lazer": {
+    "g": "dancehall edm",
+    "d": "Diplo's dancehall-EDM crew; nonstop hits and beautiful chaos at 1:30 a.m.",
+    "id": "738wLrAtLtCtFOLvQBXOXp",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebd18eac6f1e653551fd05a793"
+  },
+  "ganja-white-night": {
+    "g": "dubstep",
+    "d": "Belgian wobble-masters; cartoon-fueled dubstep ('Mr. Wobble').",
+    "id": "1a6oIpEh4DGgaqgWg5xwd3",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb6a093f3ca0f5e122e964b590"
+  },
+  "inzo-sunrise-set": {
+    "g": "melodic dubstep",
+    "d": "'Overthinker' producer INZO guides a psychedelic sunrise comedown.",
+    "id": "18Eu7uJEMPWwwt1QUdCglQ",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb5be0ccf9e78c0371bdb05b42"
+  },
+  "probcause": {
+    "g": "electro hip-hop",
+    "d": "Chicago rapper-producer fusing hip-hop and bass; longtime GRiZ collaborator.",
+    "id": "1ZcfGrGrm9aHnUNVQz3sCY",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebc0d24f8df336e057db125315"
+  },
+  "mary-droppinz": {
+    "g": "bass house",
+    "d": "LA selector dropping gritty house and bass for the late-late crew.",
+    "id": "4tPVnr7VB15UA9TRsie3cS",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebc1ca525597a8b46e429dfcb4"
+  },
+  "richard-finger": {
+    "g": "dubstep",
+    "d": "Anonymous duo making 'unreasonably heavy' dubstep; a SoundCloud cult hit turned Red Rocks act."
+  },
+  "eazybaked": {
+    "g": "experimental bass",
+    "d": "Anonymous experimental-bass duo; glitchy, face-melting weirdness at 4 a.m.",
+    "id": "1ZbT8FIqEc0cktnu6mNlvv",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb65681b04e183d33f1670c86a"
+  },
+  "lumasi": {
+    "g": "bass",
+    "d": "Rising bass producer with deep, meditative wubs to close out the Where Stage.",
+    "id": "0y5sfSvE19x3r3nVUKYbIN",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebfbcabcf56563e4f758a87675"
+  },
+  "midnight-generation": {
+    "g": "disco funk",
+    "d": "Mexican disco-funk band led by Fernando Mares; viral 'Young Girl' grooves.",
+    "id": "4CKIGHCZRzNoiNDSaW5eaq",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebd778fdcbdeb3b703fcd71b6d"
+  },
+  "arcy-drive": {
+    "g": "indie rock",
+    "d": "Long Island 'attic rock' band; scrappy, feel-good indie anthems.",
+    "id": "7o1TBmx7Ube5h2Czlam84O",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb3fa8c4582b6a82addbeaf4d9"
+  },
+  "tash-sultana": {
+    "g": "psych soul",
+    "d": "One-person band looping guitar, keys and sax into hypnotic psych-soul jams.",
+    "id": "6zVFRTB0Y1whWyH7ZNmywf",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb39423f1ee5fd80db932ceba4"
+  },
+  "alabama-shakes": {
+    "g": "soul rock",
+    "d": "Brittany Howard's reunited Southern soul-rock powerhouse; 'Hold On' hits harder live.",
+    "id": "16GcWuvvybAoaHr0NqT8Eh",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb8cf5ed7fcf22c4cbdf082959"
+  },
+  "the-neighbourhood": {
+    "g": "alt rock",
+    "d": "Dark SoCal alt-rock, back from hiatus; 'Sweater Weather' under Saturday lights.",
+    "id": "77SW9BnxLY8rJ0RciFqkHh",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebdf0b5ac84376a0a4b2166816"
+  },
+  "r-f-s-du-sol": {
+    "g": "live electronic",
+    "d": "Australian live-electronic trio headlining Saturday; 'Innerbloom' on the farm at midnight.",
+    "id": "5Pb27ujIyYb33zBqVysBkj",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebdbe0d58f538b7d18e324af5e"
+  },
+  "steph-strings": {
+    "g": "instrumental folk",
+    "d": "Melbourne percussive-guitar virtuoso; sunny, jaw-dropping instrumental folk.",
+    "id": "39qxIdIb1R6se4J3X6nRPB",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb8cf6bb7f458444ba3ee1b0ff"
+  },
+  "mountain-grass-unit": {
+    "g": "bluegrass",
+    "d": "Birmingham's young jamgrass pickers; also guesting in Kesha's SuperJam.",
+    "id": "0FWlJ725NEZpxqxjZG3yGl",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb36f8c28d62c47bc5acd75562"
+  },
+  "holly-humberstone": {
+    "g": "indie pop",
+    "d": "British songwriter of aching, intimate alt-pop confessionals.",
+    "id": "0nnYdIpahs41QiZ9MWp5Wx",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebfc13849ee1941d15f8f475a8"
+  },
+  "amyl-and-the-sniffers": {
+    "g": "punk",
+    "d": "Amy Taylor's Aussie pub-punk wrecking crew; feral, hilarious, unmissable.",
+    "id": "3NqV2DJoAWsjl787bWaHW7",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebee3647a3cd61071b0ca362e8"
+  },
+  "rainbow-kitten-surprise": {
+    "g": "indie rock",
+    "d": "Genre-blurring NC favorites; 'Cocaine Jesus' singalongs and a SuperJam cameo.",
+    "id": "4hz8tIajF2INpgM0qzPJz2",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb6a5725ec47b6d8c613099d74"
+  },
+  "teddy-swims": {
+    "g": "soul pop",
+    "d": "The tattooed voice behind 'Lose Control'; one of pop-soul's biggest belters.",
+    "id": "33qOK5uJ8AR2xuQQAhHump",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb36eb08698aa7794372c97b97"
+  },
+  "weird-al-yankovic-bigger-weirder-late-night-rooview": {
+    "g": "comedy",
+    "d": "The parody legend goes Bigger & Weirder for a one-of-a-kind late-night Rooview.",
+    "id": "1bDWGdIC2hardyt55nlQgG",
+    "img": "https://i.scdn.co/image/ab6772690000c46c8262addd2ddf144690e5ec9c"
+  },
+  "sunami": {
+    "g": "hardcore",
+    "d": "Bay Area beatdown hardcore; a 12:45 p.m. mosh-call alarm clock.",
+    "id": "1pBeRGeBHNPLy95LswDViS",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebff78ee37732de11a8dbc841c"
+  },
+  "congress-the-band": {
+    "g": "rock soul",
+    "d": "Rising rock-and-soul outfit bringing warm, retro grooves to This Tent.",
+    "id": "4LuzeYhmxPW7iKWUXmyb10",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebdbcfad9bf0eef55744951f37"
+  },
+  "waylon-wyatt": {
+    "g": "country",
+    "d": "Arkansas teen songwriter gone viral; raw, heartfelt country in the Zach Bryan lineage.",
+    "id": "6Ff2omMMZOd8FWNqb980Ol",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb51e191838dca7d4729b268a2"
+  },
+  "the-runarounds": {
+    "g": "rock",
+    "d": "Wilmington band born on the Prime Video series—now a real-deal touring rock act.",
+    "id": "6G6I2kNqaE0oDRygzPRGeY",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebd892b233f09a6f7edf807b1b"
+  },
+  "passion-pit": {
+    "g": "indietronica",
+    "d": "Michael Angelakos' euphoric synth-pop; 'Sleepyhead' nostalgia in This Tent.",
+    "id": "7gjAu1qr5C2grXeQFFOGeh",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb6273d3707ef2fc8a53922068"
+  },
+  "kesha-presents-superjam-the-alchemy-of-pop": {
+    "g": "superjam",
+    "d": "Kesha's all-star pop ritual: Chromeo, Grouplove, Margo Price, RKS, Wyatt Flores, Blondshell & more.",
+    "id": "6LqNN22kT3074XbTVUrhzX",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb1c43cbfb50d7ac393df96ae5"
+  },
+  "osees": {
+    "g": "garage psych",
+    "d": "John Dwyer's hyper-prolific garage-psych machine; two drummers, zero letup.",
+    "id": "0Ynh5WKqwbdYqJUpVpfEGS",
+    "img": "https://i.scdn.co/image/ab6772690000c46cfacff4e534e0ea572fe7da46"
+  },
+  "snow-strippers": {
+    "g": "electroclash",
+    "d": "Detroit duo's lo-fi electroclash; the internet's favorite after-dark act.",
+    "id": "6TsAG8Ve1icEC8ydeHm3C8",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb2949c67f381d533010389d6a"
+  },
+  "the-stews": {
+    "g": "garage rock",
+    "d": "Southern garage rockers with beachy riffs and festival-honed live energy.",
+    "id": "4yUYrN1PFyzwUDSzEpYYEi",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb06c1077c7e91d2597c636ab8"
+  },
+  "confidence-man": {
+    "g": "dance pop",
+    "d": "Aussie dance-pop absurdists; choreography, costumes, and pure camp euphoria.",
+    "id": "0RwXnFrEoI8tltFvYpJgP6",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb8cb8fe9483451962ad649d16"
+  },
+  "trixie-mattel": {
+    "g": "pop dj",
+    "d": "Drag superstar spinning a high-camp party set—expect hits, gags, and glamour.",
+    "id": "33hAj1SghVYxDAxZxNDcyc",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb555f68ddea459146e29f2728"
+  },
+  "wyatt-flores": {
+    "g": "red dirt country",
+    "d": "Oklahoma red-dirt phenom; tearjerker anthems plus a SuperJam guest spot.",
+    "id": "46lEQmDJLJeyltECJYJv1Y",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb2abc182980206c7854e6c7e7"
+  },
+  "sg-lewis": {
+    "g": "disco house",
+    "d": "UK producer of glossy disco-house; nonstop feel-good grooves.",
+    "id": "0GG2cWaonE4JPrjcCCQ1EG",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebe902aac7237fe43f1fb6bdfe"
+  },
+  "flipturn": {
+    "g": "indie rock",
+    "d": "Florida indie rockers; 'August' euphoria built for the evening slot.",
+    "id": "7FKTg75ADVMZgY3P9ZMRtH",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb724cced4ad8949fd70698843"
+  },
+  "freddie-gibbs-the-alchemist": {
+    "g": "rap",
+    "d": "Gangsta Gibbs and Uncle Al run back Alfredo: coke-rap poetry over velvet loops.",
+    "id": "0Y4inQK6OespitzD6ijMwb",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb499def7bd0369aa26a22273c"
+  },
+  "nikita-the-wicked": {
+    "g": "bass",
+    "d": "Theatrical dark-bass riser; commanding vocals over wicked drops.",
+    "id": "0Kc65Qv0ju9H2cMNnP3Tqd",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb8664d4425ee5869d67718c3d"
+  },
+  "juelz": {
+    "g": "trap bass",
+    "d": "Vancouver-bred Sable Valley star; emotional trap anthems with hard-hitting drops.",
+    "id": "04p1jV00pBnrmh2rKl0jnT",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb06f226a390f9014005c7196a"
+  },
+  "deathpact": {
+    "g": "midtempo bass",
+    "d": "Masked mystery project delivering sinister mid-tempo and surgical bass.",
+    "id": "09C3CKFxKEw1n1Z7kvT3jb",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb627ea1e93b4c25cdf41d4a6b"
+  },
+  "boys-noize": {
+    "g": "electro techno",
+    "d": "Berlin electro-techno icon; grimy warehouse energy all night.",
+    "id": "62k5LKMhymqlDNo2DWOvvv",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb1fc195ac5c1868725eced009"
+  },
+  "sub-focus": {
+    "g": "drum and bass",
+    "d": "UK D&B heavyweight; euphoric, high-velocity festival drum & bass.",
+    "id": "0QaSiI5TLA4N7mcsdxShDO",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb26fd464ae2464f49024dfdbd"
+  },
+  "sara-landry": {
+    "g": "hard techno",
+    "d": "The high priestess of hard techno; pummeling industrial kicks.",
+    "id": "7eILArMiTFTQf8SEh5fFHK",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb708646b1b7df2b176f8a585f"
+  },
+  "chase-status": {
+    "g": "drum and bass",
+    "d": "UK D&B institution; 'Baddadan' chaos after midnight.",
+    "id": "3jNkaOXasoc7RsxdchvEVq",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb68fe0c11b39d593ba7dfab2e"
+  },
+  "gorgon-city-sunrise-set": {
+    "g": "house",
+    "d": "UK deep-house duo Gorgon City steering a 3-hour marathon from 2 a.m. to sunrise.",
+    "id": "4VNQWV2y1E97Eqo2D5UTjx",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb0df42ada486ac2efa66ca66e"
+  },
+  "steve-cory-are-dead": {
+    "g": "mystery bass",
+    "d": "Mystery billing on the Where Stage—show up and find out who Steve and Cory are."
+  },
+  "costa": {
+    "g": "dubstep",
+    "d": "Viral flipper CØSTA, whose 'Bass Cannon' and Timbaland edits broke dubstep TikTok."
+  },
+  "clozee": {
+    "g": "world bass",
+    "d": "French world-bass voyager; lush global textures, also half of LSZEE.",
+    "id": "1496XxkytEk26FUJLfpVZr",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb8e22016330d27232741e4d4d"
+  },
+  "big-gigantic": {
+    "g": "livetronica",
+    "d": "Sax-and-drums livetronica vets playing twice: a woods sunrise set and a Sunday banger.",
+    "id": "7o7mC95EDbJKTcPAAs8C3r",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb19d6d5201fdd72ad20dac3db"
+  },
+  "smoakland": {
+    "g": "bass",
+    "d": "Oakland bass duo; heavyweight wubs engineered for the woods.",
+    "id": "6409kgOB4tZEkNZci6BiUs",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebfb5a6b6ad46e5379112acb7c"
+  },
+  "effin": {
+    "g": "dubstep",
+    "d": "New Jersey dubstep riser with filthy, technical sound design.",
+    "id": "6l0u1oM2imxw0isrGcXpmH",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebce94b6e86109ddb7a7830b63"
+  },
+  "aly-aj": {
+    "g": "pop rock",
+    "d": "Disney-era icons turned synth-pop sophisticates; 'Potential Breakup Song' forever.",
+    "id": "5wugb0kaq0J6nyQ5Xgd17i",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb7e26f7010ee2568a6016dd03"
+  },
+  "trombone-shorty": {
+    "g": "funk",
+    "d": "New Orleans brass dynamo; a horn-fueled Sunday funk celebration.",
+    "id": "37ZvFp654tY74Z1D2TLOGR",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebf5766ec59cd303160964927e"
+  },
+  "tedeschi-trucks-band": {
+    "g": "blues rock",
+    "d": "Susan and Derek's 12-piece blues-rock revue; the farm's finest musicianship.",
+    "id": "2gFsmDBM0hkoZPmrO5EdyO",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebe3ac95b46386a5ddd3dc68a8"
+  },
+  "role-model": {
+    "g": "pop",
+    "d": "Tucker Pillsbury's heartthrob pop; 'Sally, When the Wine Runs Out' dance party.",
+    "id": "1dy5WNgIKQU6ezkpZs4y8z",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebfe9486c9ef6d86b4f39805c8"
+  },
+  "noah-kahan": {
+    "g": "folk pop",
+    "d": "Vermont's stick-season superstar closes the fest with shout-along folk-pop catharsis.",
+    "id": "2RQXRUsr4IW1f3mKyKsy4B",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb5b141d30d14fb78458dac5ce"
+  },
+  "little-stranger": {
+    "g": "alt hip-hop",
+    "d": "Charleston alt-hip-hop duo; breezy, funny beach-rap grooves.",
+    "id": "6nheJ1XoAkaKOLIgHzMbTq",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebdabad4771f795aecf4e14e5d"
+  },
+  "spacey-jane": {
+    "g": "indie rock",
+    "d": "Perth indie rockers; 'Booster Seat' melancholy wrapped in jangly hooks.",
+    "id": "6V70yeZQCoSR2M3fyW8qiA",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebf5864abfed7a8d4b9334a7a0"
+  },
+  "japanese-breakfast": {
+    "g": "indie pop",
+    "d": "Michelle Zauner's shimmering art-pop; joy, grief, and one triumphant gong.",
+    "id": "7MoIc5s9KXolCBH1fy9kkw",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb679cee0110b7cc128a496431"
+  },
+  "clipse": {
+    "g": "hip-hop",
+    "d": "Pusha T and Malice, reunited and razor-sharp; precision luxury rap, brick by brick.",
+    "id": "2J257euzcjnDLipsyJH3F2",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb7d6973a4df776665c9852f26"
+  },
+  "kesha": {
+    "g": "pop",
+    "d": "Pop's glitter-punk survivor with wall-to-wall hits, fresh off Saturday's SuperJam.",
+    "id": "6LqNN22kT3074XbTVUrhzX",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb1c43cbfb50d7ac393df96ae5"
+  },
+  "nat-myers": {
+    "g": "country blues",
+    "d": "Korean-American blues howler reviving 1930s bottleneck stomp.",
+    "id": "2QMlNryks9wyxBCsBGciTS",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb2f32ced200ebf7a8f6047377"
+  },
+  "buffalo-traffic-jam": {
+    "g": "folk americana",
+    "d": "Bozeman, Montana folk duo gone supernova; intimate harmonies, sold-out tours.",
+    "id": "22LEPYRDhoThnbpShy6fV7",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb24ce7b0da6ec113469c9f9b3"
+  },
+  "hemlocke-springs": {
+    "g": "synth pop",
+    "d": "The 'girlfriend' viral star; giddy, off-kilter 80s synth-pop with zero posing.",
+    "id": "52PdgUJOjvS6Mpmjy1SAlx",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebc5e5b1f3af48b7cc12719eb6"
+  },
+  "fcukers": {
+    "g": "indie dance",
+    "d": "NYC indie-dance trio; 'Bon Bon' turned every club into their house party.",
+    "id": "3UtzOHYm3lQALkKzVD4wyO",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb257b47af6ca3a62995dfef9a"
+  },
+  "turnover": {
+    "g": "dream pop",
+    "d": "Virginia Beach emo-turned-dream-pop romantics; 'Peripheral Vision' favorites.",
+    "id": "0gLjJuczGWhqKVMmVpIT52",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb848d27ab5fb5fa7bf05c3f15"
+  },
+  "modest-mouse": {
+    "g": "indie rock",
+    "d": "Isaac Brock's indie-rock institution; 'Float On' plus decades of jagged classics.",
+    "id": "1yAwtBaoHLEDWAnWR87hBT",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebbd6e4e38554eab93c75311eb"
+  },
+  "soupless": {
+    "g": "indie pop",
+    "d": "Nashville roommate duo making fuzzy, pretty-guitar indie pop; an early-bird gem.",
+    "id": "2jsNsVoGyeXCDDki5kbJc8",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb1faa2476f9837d49d6c9f6ce"
+  },
+  "girl-tones": {
+    "g": "garage rock",
+    "d": "Bowling Green sister duo; classically trained, volcano-loud garage rock.",
+    "id": "1Tq0nryXkwLARcHDMIZbY6",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb6824693e586a1f2766d4c533"
+  },
+  "blondshell": {
+    "g": "alt rock",
+    "d": "Sabrina Teitelbaum's 90s-leaning alt-rock; razor lyrics, huge choruses, SuperJam guest.",
+    "id": "7qrEXiLLnWkkYHhadZ1Oij",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb2f4f885f06758d73ba4fc5a7"
+  },
+  "audrey-hobert": {
+    "g": "pop",
+    "d": "The 'Sue Me' singer (and Gracie Abrams co-writer) stepping into her own spotlight.",
+    "id": "4N0TAwz9vhnQtjCqS65aKS",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb4fc78e354b19324810f1e933"
+  },
+  "del-water-gap": {
+    "g": "indie pop",
+    "d": "S. Holden Jaffe's heart-on-sleeve indie pop; also moonlighting in the SuperJam.",
+    "id": "0xPoVNPnxIIUS1vrxAYV00",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb756c9f2be6294d04107ae215"
+  },
+  "mariah-the-scientist": {
+    "g": "r&b",
+    "d": "Atlanta R&B romantic; slow-burning, starry-eyed ballads like 'Burning Blue'.",
+    "id": "7HO5fOXE4gh3lzZn64tX2E",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb6e0ad52899974a169ab69c88"
+  },
+  "motifv": {
+    "g": "melodic bass",
+    "d": "Dreamy, starlit melodic bass from producer Motifv.",
+    "id": "3Q3g3xC2lDdLo3a04uK3Wp",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb2c5dafc0464765d36e9222aa"
+  },
+  "a-hundred-drums": {
+    "g": "deep bass",
+    "d": "Gabrielle Watson's tribal, meditative deep-bass shamanism.",
+    "id": "1dUCaUhp2RZRXrwOyUnHxQ",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb414d141a64d29d7fb5df37b6"
+  },
+  "san-holo": {
+    "g": "melodic bass",
+    "d": "Dutch future-bass auteur of 'Light'; guitar-laced euphoria via his bitbird label.",
+    "id": "0jNDKefhfSbLR9sFvcPLHo",
+    "img": "https://i.scdn.co/image/ab6761610000e5eb83d104b036ea35dd4aa8b820"
+  },
+  "daily-bread": {
+    "g": "electro soul",
+    "d": "Atlanta's electro-soul beatsmith; dusty soul samples over fat bass.",
+    "id": "4IsiG6RpDyRq6Frd2CvddW",
+    "img": "https://i.scdn.co/image/ab6761610000e5ebd5b5af49dc8fa5c3c2445093"
+  },
+  "lszee": {
+    "g": "cosmic bass",
+    "d": "CloZee x LSDREAM joint project; double the cosmic bass dreamscape."
+  }
+}

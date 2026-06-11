@@ -28,15 +28,15 @@ const desc =
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={desc} />
 		<meta property="og:type" content="website" />
+		<meta property="og:image" content="https://cade.io/roo26-icon-512.png" />
 		<meta name="theme-color" content="#120d1d" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="apple-mobile-web-app-title" content="Roo '26" />
 		<meta name="robots" content="index,follow" />
 		<link rel="manifest" href="/roo26.webmanifest" />
-		<link
-			rel="icon"
-			href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌈</text></svg>"
-		/>
+		<link rel="apple-touch-icon" href="/roo26-icon-180.png" />
+		<link rel="icon" href="/roo26-icon-192.png" type="image/png" />
 	</head>
 
 	<body>
@@ -45,8 +45,16 @@ const desc =
 				<span class="brand-roo">ROO</span><span class="brand-yr">’26</span>
 				<span class="brand-sub">The Farm · Manchester, TN · Jun 11–14</span>
 			</div>
-			<div class="live-pill" id="livePill">…</div>
+			<div class="topbar-right">
+				<div class="live-pill" id="livePill">…</div>
+				<button class="help-btn" id="helpBtn" aria-label="Help & install">?</button>
+			</div>
 		</header>
+
+		<div class="wx-alert" id="wxAlert" hidden>
+			<span id="wxAlertText"></span>
+			<button id="wxAlertClose" aria-label="Dismiss alert">✕</button>
+		</div>
 
 		<main>
 			<!-- ════════════ SCHEDULE ════════════ -->
@@ -81,14 +89,16 @@ const desc =
 					<div id="map"></div>
 					<div class="map-fabs">
 						<button class="fab" id="fabLayers" title="Toggle satellite / street">🛰️</button>
-						<button class="fab" id="fabTent" title="Drop a pin on your tent">⛺</button>
+						<button class="fab" id="fabOmap" title="Official festival map">📜</button>
+						<button class="fab" id="fabPin" title="Mark a camp or meetup spot">⛺</button>
 						<button class="fab fab-locate" id="fabLocate" title="Show my location">📍</button>
 					</div>
-					<div class="map-banner" id="tentBanner" hidden>Tap the map to mark your tent ⛺</div>
+					<div class="map-banner" id="tentBanner" hidden>Tap the map to place the pin</div>
 				</div>
 				<div class="nearest" id="nearestPanel">
 					<div class="nearest-hint" id="nearestHint">
-						Tap 📍 to see how far you are from every stage.
+						Tap 📍 to see your distance to every stage, water station and camp. Tap ⛺ to mark
+						your camp and friends' camps.
 					</div>
 					<div class="nearest-list" id="nearestList"></div>
 				</div>
@@ -263,6 +273,85 @@ const desc =
 			<button class="nav-btn" data-nav="info"><span class="nav-ico">🧭</span>Guide</button>
 		</nav>
 
+		<!-- artist detail sheet -->
+		<div class="sheet-wrap" id="sheetWrap" hidden>
+			<div class="sheet">
+				<div class="sheet-img" id="sheetImg">
+					<button class="sheet-close" id="sheetClose" aria-label="Close">✕</button>
+				</div>
+				<div class="sheet-body">
+					<div class="sheet-title">
+						<h3 id="sheetArtist"></h3>
+						<span class="genre-tag big" id="sheetGenre"></span>
+					</div>
+					<p class="sheet-desc" id="sheetDesc"></p>
+					<p class="sheet-when"><span id="sheetWhen"></span> · <b id="sheetStage"></b></p>
+					<div class="sheet-actions">
+						<button class="sheet-btn" id="sheetFav">☆ Add to My Roo</button>
+						<a class="sheet-btn sheet-spotify" id="sheetSpotify" href="#" target="_blank" rel="noopener">▶ Spotify</a>
+						<button class="sheet-btn" id="sheetMap">🗺️ Stage</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- pin creation sheet -->
+		<div class="sheet-wrap" id="pinSheetWrap" hidden>
+			<div class="sheet pin-sheet">
+				<div class="sheet-body">
+					<h3>Drop a pin</h3>
+					<p class="pin-hint">Mark your camp, your friends' camps, the car, a meetup spot…</p>
+					<div class="pin-emojis" id="pinEmojis"></div>
+					<input type="text" id="pinName" placeholder="Name it — “Jake's camp”, “our car”…" maxlength="40" />
+					<div class="sheet-actions">
+						<button class="sheet-btn sheet-primary" id="pinPlace">Tap map to place</button>
+						<button class="sheet-btn" id="pinHere">📍 Place at my location</button>
+						<button class="sheet-btn" id="pinCancel">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- official map viewer -->
+		<div class="omap-wrap" id="omapWrap" hidden>
+			<div class="omap-top">
+				<div class="omap-tabs" id="omapTabs">
+					<button data-omap="centeroo" class="active">Centeroo</button>
+					<button data-omap="outeroo">Campgrounds</button>
+				</div>
+				<button class="omap-close" id="omapClose" aria-label="Close">✕</button>
+			</div>
+			<div id="omapMap"></div>
+			<div class="omap-note" id="omapNote"></div>
+		</div>
+
+		<!-- help & install -->
+		<div class="sheet-wrap" id="helpWrap" hidden>
+			<div class="sheet help-sheet">
+				<div class="sheet-body">
+					<div class="help-head">
+						<h3>How to Roo with this app 🌈</h3>
+						<button class="sheet-close static" id="helpClose" aria-label="Close">✕</button>
+					</div>
+					<ul class="help-list">
+						<li><b>🎸 Schedule</b> — every Centeroo set with live <i>NOW</i> badges. Tap a set for the artist's photo, genre, blurb and Spotify. Tap ☆ to save it. Filter by stage, search by name, hit <b>Now</b> to jump to the current moment.</li>
+						<li><b>🗺️ Map</b> — satellite map of the Farm. 📍 shows your live location and how far you are from every stage, water refill and medical tent (it reconnects automatically if signal drops). ⛺ drops custom pins — your camp, friends' camps, the car — drag to move, tap to rename or remove. 📜 opens the official festival maps. 🛰️ switches satellite/street.</li>
+						<li><b>⭐ My Roo</b> — your starred sets as a day-by-day plan, with overlap warnings. Share it with your crew.</li>
+						<li><b>🧭 Guide</b> — live forecast + storm alerts, gate rules, what you can bring, water/medical info, and official links.</li>
+						<li><b>Works offline-ish</b> — once loaded, the app and official maps keep working with no signal; only live tiles and weather need a connection. Everything you save stays on your phone.</li>
+					</ul>
+					<div class="help-install">
+						<button class="sheet-btn sheet-primary" id="installBtn" hidden>📲 Install as an app</button>
+						<p id="iosInstall" hidden>
+							<b>Add to your home screen:</b> tap the Share button <span class="ios-share">⎋</span> in
+							Safari, then “Add to Home Screen”. You get a real app icon and full-screen mode.
+						</p>
+					</div>
+					<p class="help-foot">Unofficial &amp; fan-made. Set times can change — the official Festiverse app has the final word.</p>
+				</div>
+			</div>
+		</div>
+
 		<div class="toast" id="toast" hidden></div>
 
 		<script
@@ -400,6 +489,42 @@ const desc =
 		50% {
 			opacity: 0.75;
 		}
+	}
+	.topbar-right {
+		display: flex;
+		align-items: center;
+		gap: 0.45rem;
+		flex-shrink: 0;
+	}
+	.help-btn {
+		width: 1.9rem;
+		height: 1.9rem;
+		border-radius: 50%;
+		background: var(--bg-3);
+		border: 1px solid var(--line);
+		color: var(--mut);
+		font-weight: 900;
+		font-size: 0.95rem;
+	}
+	.wx-alert {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.5rem 0.9rem;
+		background: linear-gradient(90deg, #8a1d2d, #b3541e);
+		color: #fff;
+		font-size: 0.8rem;
+		font-weight: 700;
+		line-height: 1.3;
+	}
+	.wx-alert span {
+		flex: 1;
+	}
+	.wx-alert button {
+		flex-shrink: 0;
+		font-size: 1rem;
+		color: rgba(255, 255, 255, 0.8);
+		padding: 0.2rem 0.4rem;
 	}
 
 	main {
@@ -738,6 +863,22 @@ const desc =
 		color: var(--sc, var(--mut));
 		letter-spacing: 0.06em;
 	}
+	.genre-tag {
+		color: var(--dim);
+		font-weight: 600;
+		font-size: 0.68rem;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.genre-tag.big {
+		font-size: 0.78rem;
+		color: var(--roo-purple);
+		background: rgba(176, 139, 255, 0.12);
+		border: 1px solid rgba(176, 139, 255, 0.35);
+		border-radius: 999px;
+		padding: 0.15rem 0.6rem;
+	}
 	.live-tag {
 		color: #fff;
 		background: var(--live);
@@ -942,19 +1083,302 @@ const desc =
 		border: 3px solid #fff;
 		box-shadow: 0 0 0 6px rgba(70, 179, 255, 0.35), 0 2px 10px rgba(0, 0, 0, 0.6);
 	}
-	.tent-pin {
+	.camp-pin {
 		font-size: 1.7rem;
 		filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+	}
+	.user-dot.stale {
+		background: #8fa3ad;
+		box-shadow: 0 0 0 6px rgba(143, 163, 173, 0.3);
 	}
 	.pop-btn {
 		display: inline-block;
 		margin-top: 0.4rem;
 		padding: 0.3rem 0.7rem;
 		border-radius: 8px;
-		background: var(--roo-pink);
+		background: var(--roo-blue);
+		border: none;
 		color: #fff;
 		font-weight: 700;
 		font-size: 0.78rem;
+	}
+	.pop-btn-danger {
+		background: var(--roo-pink);
+	}
+	.pop-desc {
+		color: var(--mut);
+		font-size: 0.78rem;
+		margin-top: 0.15rem;
+	}
+	.pop-now {
+		margin-top: 0.35rem;
+		color: var(--roo-pink);
+		font-weight: 800;
+		font-size: 0.8rem;
+	}
+	.pop-next {
+		color: var(--mut);
+		font-size: 0.76rem;
+		font-weight: 600;
+	}
+
+	/* ── bottom sheets (artist detail / pin / help) ── */
+	.sheet-wrap {
+		position: fixed;
+		inset: 0;
+		z-index: 3000;
+		background: rgba(8, 5, 16, 0.65);
+		backdrop-filter: blur(3px);
+		-webkit-backdrop-filter: blur(3px);
+		display: flex;
+		align-items: flex-end;
+		justify-content: center;
+	}
+	.sheet {
+		width: 100%;
+		max-width: 560px;
+		max-height: 88dvh;
+		overflow-y: auto;
+		background: var(--bg-2);
+		border: 1px solid var(--line);
+		border-bottom: none;
+		border-radius: 22px 22px 0 0;
+		animation: sheet-up 0.22s ease-out;
+	}
+	@keyframes sheet-up {
+		from {
+			transform: translateY(40px);
+			opacity: 0.5;
+		}
+	}
+	.sheet-img {
+		position: relative;
+		height: 11rem;
+		background: var(--bg-3) center/cover no-repeat;
+		border-radius: 22px 22px 0 0;
+	}
+	.sheet-img.no-img {
+		height: 3.2rem;
+	}
+	.sheet-img::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(transparent 40%, var(--bg-2));
+	}
+	.sheet-close {
+		position: absolute;
+		top: 0.6rem;
+		right: 0.6rem;
+		z-index: 2;
+		width: 2.1rem;
+		height: 2.1rem;
+		border-radius: 50%;
+		background: rgba(8, 5, 16, 0.6);
+		color: #fff;
+		font-size: 0.95rem;
+	}
+	.sheet-close.static {
+		position: static;
+		flex-shrink: 0;
+	}
+	.sheet-body {
+		padding: 0.4rem 1.1rem 1.3rem;
+	}
+	.sheet-title {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		flex-wrap: wrap;
+	}
+	.sheet-title h3 {
+		margin: 0.3rem 0;
+		font-size: 1.35rem;
+		font-weight: 900;
+	}
+	.sheet-desc {
+		margin: 0.25rem 0 0.4rem;
+		color: var(--mut);
+		font-size: 0.92rem;
+	}
+	.sheet-when {
+		margin: 0.2rem 0 0.8rem;
+		color: var(--mut);
+		font-size: 0.85rem;
+		font-weight: 600;
+	}
+	.sheet-actions {
+		display: flex;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+	.sheet-btn {
+		flex: 1;
+		min-width: 8rem;
+		text-align: center;
+		padding: 0.65rem 0.6rem;
+		border-radius: 12px;
+		background: var(--bg-3);
+		border: 1px solid var(--line);
+		color: var(--txt);
+		font-weight: 800;
+		font-size: 0.88rem;
+		text-decoration: none;
+	}
+	.sheet-btn.faved {
+		color: var(--roo-orange);
+		border-color: rgba(255, 176, 46, 0.5);
+	}
+	.sheet-spotify {
+		background: #1db954;
+		border-color: transparent;
+		color: #06150b;
+	}
+	.sheet-primary {
+		background: var(--rainbow);
+		border-color: transparent;
+		color: #14101f;
+	}
+	/* pin sheet */
+	.pin-sheet h3,
+	.help-sheet h3 {
+		margin: 0.5rem 0 0.2rem;
+		font-size: 1.15rem;
+		font-weight: 900;
+	}
+	.pin-hint {
+		color: var(--dim);
+		font-size: 0.82rem;
+		margin: 0.1rem 0 0.6rem;
+	}
+	.pin-emojis {
+		display: grid;
+		grid-template-columns: repeat(6, 1fr);
+		gap: 0.4rem;
+		margin-bottom: 0.7rem;
+	}
+	.pin-emoji {
+		font-size: 1.5rem;
+		padding: 0.45rem 0;
+		border-radius: 12px;
+		background: var(--bg-3);
+		border: 1px solid var(--line);
+	}
+	.pin-emoji.active {
+		border-color: var(--roo-orange);
+		box-shadow: 0 0 0 2px rgba(255, 176, 46, 0.4);
+	}
+	#pinName {
+		width: 100%;
+		padding: 0.6rem 0.85rem;
+		margin-bottom: 0.8rem;
+		border-radius: 10px;
+		border: 1px solid var(--line);
+		background: var(--bg);
+		color: var(--txt);
+		font-size: 0.95rem;
+		outline: none;
+	}
+	#pinName:focus {
+		border-color: var(--roo-purple);
+	}
+	/* help sheet */
+	.help-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.6rem;
+	}
+	.help-list {
+		margin: 0.5rem 0;
+		padding-left: 1.1rem;
+		color: var(--mut);
+		font-size: 0.86rem;
+	}
+	.help-list li {
+		margin: 0.55rem 0;
+	}
+	.help-list b {
+		color: var(--txt);
+	}
+	.help-install {
+		margin-top: 0.8rem;
+	}
+	.help-install p {
+		color: var(--mut);
+		font-size: 0.84rem;
+		background: var(--bg-3);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 0.6rem 0.8rem;
+	}
+	.ios-share {
+		display: inline-block;
+		transform: rotate(-90deg);
+		font-weight: 900;
+	}
+	.help-foot {
+		margin: 0.9rem 0 0;
+		color: var(--dim);
+		font-size: 0.72rem;
+		text-align: center;
+	}
+
+	/* ── official map viewer ── */
+	.omap-wrap {
+		position: fixed;
+		inset: 0;
+		z-index: 3000;
+		background: #0b0814;
+		display: flex;
+		flex-direction: column;
+	}
+	.omap-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.6rem;
+		padding: 0.55rem 0.8rem;
+		padding-top: calc(0.55rem + env(safe-area-inset-top, 0px));
+		border-bottom: 1px solid var(--line);
+	}
+	.omap-tabs {
+		display: flex;
+		gap: 0.4rem;
+	}
+	.omap-tabs button {
+		padding: 0.4rem 0.95rem;
+		border-radius: 999px;
+		background: var(--bg-2);
+		border: 1px solid var(--line);
+		color: var(--mut);
+		font-weight: 700;
+		font-size: 0.85rem;
+	}
+	.omap-tabs button.active {
+		background: var(--rainbow);
+		border-color: transparent;
+		color: #14101f;
+	}
+	.omap-close {
+		width: 2.2rem;
+		height: 2.2rem;
+		border-radius: 50%;
+		background: var(--bg-3);
+		border: 1px solid var(--line);
+		color: var(--txt);
+	}
+	#omapMap {
+		flex: 1;
+		background: #0b0814;
+	}
+	.omap-note {
+		padding: 0.45rem 0.9rem calc(0.45rem + env(safe-area-inset-bottom, 0px));
+		font-size: 0.74rem;
+		color: var(--roo-orange);
+		font-weight: 700;
+		text-align: center;
+		border-top: 1px solid var(--line);
 	}
 
 	/* ───────────────────────── plan ───────────────────────── */

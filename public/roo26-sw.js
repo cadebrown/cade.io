@@ -1,9 +1,19 @@
 // roo26-sw.js — tiny offline helper for cade.io/roo26.
 // Cell service on the Farm is rough: network-first for pages (so updates land
-// when there IS signal), cache-fallback when there isn't. CDN libs and built
-// assets are cached as they're fetched.
-const CACHE = 'roo26-v1'
-const PRECACHE = ['/roo26', '/roo26/map', '/roo26/plan', '/roo26/info']
+// when there IS signal), cache-fallback when there isn't. Built assets and the
+// official festival maps are cached so the app + maps work with zero signal.
+const CACHE = 'roo26-v2'
+const PRECACHE = [
+	'/roo26/',
+	'/roo26/map/',
+	'/roo26/plan/',
+	'/roo26/info/',
+	'/roo26-map-centeroo.webp',
+	'/roo26-map-outeroo.webp',
+	'/roo26-icon-192.png',
+	'/roo26-icon-512.png',
+	'/roo26.webmanifest',
+]
 
 self.addEventListener('install', (e) => {
 	e.waitUntil(
@@ -18,21 +28,22 @@ self.addEventListener('activate', (e) => {
 	e.waitUntil(
 		caches
 			.keys()
-			.then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k.startsWith('roo26')).map((k) => caches.delete(k))))
+			.then((keys) =>
+				Promise.all(keys.filter((k) => k !== CACHE && k.startsWith('roo26')).map((k) => caches.delete(k))),
+			)
 			.then(() => self.clients.claim()),
 	)
 })
 
 self.addEventListener('fetch', (e) => {
 	const url = new URL(e.request.url)
-	if (e.request.method !== 'GET') return
+	if (e.request.method !== 'GET' || url.origin !== location.origin) return
 
+	const path = url.pathname
 	// app pages: network-first, fall back to cache when offline
-	const isPage = url.origin === location.origin && url.pathname.replace(/\/$/, '').startsWith('/roo26')
-	// hashed build assets + leaflet CDN: cache-first (they're immutable-ish)
-	const isAsset =
-		(url.origin === location.origin && url.pathname.startsWith('/_astro/')) ||
-		url.hostname === 'unpkg.com'
+	const isPage = path.replace(/\/$/, '').startsWith('/roo26') && !path.includes('.')
+	// hashed build assets + roo26 static files: cache-first (immutable-ish)
+	const isAsset = path.startsWith('/_astro/') || /^\/roo26[-.].+\.(webp|png|webmanifest)$/.test(path)
 
 	if (isPage) {
 		e.respondWith(
@@ -42,7 +53,11 @@ self.addEventListener('fetch', (e) => {
 					caches.open(CACHE).then((c) => c.put(e.request, copy))
 					return res
 				})
-				.catch(() => caches.match(e.request, { ignoreSearch: true }).then((m) => m || caches.match('/roo26'))),
+				.catch(() =>
+					caches
+						.match(e.request, { ignoreSearch: true })
+						.then((m) => m || caches.match('/roo26/')),
+				),
 		)
 	} else if (isAsset) {
 		e.respondWith(
@@ -57,5 +72,5 @@ self.addEventListener('fetch', (e) => {
 			),
 		)
 	}
-	// map tiles & weather API: let the network handle it (too big / too live to cache)
+	// map tiles & weather API: live network only
 })
