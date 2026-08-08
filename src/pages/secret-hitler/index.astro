@@ -82,14 +82,15 @@ const desc =
 				<details class="card how">
 					<summary>How “no information leaks” works</summary>
 					<p>
-						When you join, your phone makes a private key that never leaves the device and hands
-						the server only the matching public key. When the host deals, the edge shuffles the
-						roles in memory and encrypts each player’s card <em>to that player’s public key</em>.
-						The server stores only ciphertext and never sees a readable role afterward — not
-						yours, not anyone’s. Every phone can download the whole pile of encrypted cards, but
-						each can open only its own. Fascists still learn their teammates (and Hitler, per the
-						official rules) because that intel is inside <em>their</em> encrypted card — nobody
-						else’s.
+						When you join, your phone makes a private key that never leaves the device and shares
+						only the matching public key. Phones find each other over a public relay — there’s no
+						server storing your game. When the host deals, everyone’s public keys go to a
+						<em>stateless</em> shuffler that assigns roles and encrypts each player’s card
+						<em>to that player’s own public key</em>, then forgets everything. It hands back only
+						ciphertext, so even the <em>host</em> can’t see who got what — they just pass the
+						sealed cards along. Each card can be opened by exactly one phone. Fascists still learn
+						their teammates and Hitler (per the official rules) because that intel is sealed inside
+						<em>their</em> card — nobody else’s.
 					</p>
 				</details>
 			</section>

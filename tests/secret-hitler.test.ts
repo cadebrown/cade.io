@@ -1,37 +1,13 @@
-// Integration test for the secret-hitler-api Pages Function: it drives the real
-// onRequest handler through create → join → deal → fetch-card against a mock KV,
-// then decrypts each card the way a player's phone would. It asserts the two
-// properties that matter: (1) every player gets exactly the role info they're
-// entitled to, and (2) no player can open another player's card.
+// Integration test for the stateless secret-hitler-api dealer. It drives the
+// real onRequest handler with a submitted roster, then decrypts each returned
+// card the way a player's phone would. It asserts the two properties that
+// matter: (1) every player gets exactly the role info they're entitled to, and
+// (2) a card is openable only with its owner's private key — not the host's,
+// not anyone else's.
 
 import { describe, expect, it } from 'vitest'
 // @ts-expect-error — Pages Function file has a bracketed name and no types
 import { onRequest } from '../functions/secret-hitler-api/[[path]].js'
-
-// Minimal in-memory stand-in for a Cloudflare KV namespace.
-function mockKV() {
-	const store = new Map<string, string>()
-	return {
-		async get(key: string, type?: string) {
-			const v = store.get(key)
-			if (v == null) return null
-			return type === 'json' ? JSON.parse(v) : v
-		},
-		async put(key: string, value: string) {
-			store.set(key, value)
-		},
-		async delete(key: string) {
-			store.delete(key)
-		},
-		async list({ prefix }: { prefix: string }) {
-			return {
-				keys: [...store.keys()]
-					.filter((k) => k.startsWith(prefix))
-					.map((name) => ({ name })),
-			}
-		},
-	}
-}
 
 const RSA = { name: 'RSA-OAEP', hash: 'SHA-256' } as const
 const b64ToBuf = (s: string) => new Uint8Array(Buffer.from(s, 'base64'))
@@ -61,86 +37,69 @@ async function decryptCard(blob: any, privJwk: JsonWebKey) {
 	return JSON.parse(new TextDecoder().decode(pt))
 }
 
-// Drive the handler like the router would: split the path into params.path[].
-async function call(kv: any, method: string, path: string, body?: any) {
+async function call(method: string, path: string, body?: any) {
 	const request = new Request('https://x/secret-hitler-api/' + path, {
 		method,
 		...(body
 			? { headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }
 			: {}),
 	})
-	const res = await onRequest({ request, env: { SH_KV: kv }, params: { path: path.split('/') } })
+	const res = await onRequest({ request, params: { path: path.split('/') } })
 	return { status: res.status, data: await res.json() }
 }
 
-async function playThrough(n: number) {
-	const kv = mockKV()
-	const created = await call(kv, 'POST', 'game')
-	expect(created.status).toBe(200)
-	const { code, hostToken } = created.data
-
-	const players: any[] = []
+async function makePlayers(n: number) {
+	const players = []
 	for (let i = 0; i < n; i++) {
 		const kp = await makeKeypair()
-		const joined = await call(kv, 'POST', `game/${code}/join`, {
+		players.push({
+			pid: 'player' + i,
 			name: 'Player' + i,
 			pubKey: kp.pubJwk,
+			privJwk: kp.privJwk,
 		})
-		expect(joined.status).toBe(200)
-		players.push({ pid: joined.data.pid, name: 'Player' + i, privJwk: kp.privJwk })
 	}
-
-	const dealt = await call(kv, 'POST', `game/${code}/deal`, { hostToken })
-	expect(dealt.status).toBe(200)
-
-	// each player fetches + decrypts their own card
-	const cards: Record<string, any> = {}
-	for (const p of players) {
-		const got = await call(kv, 'GET', `game/${code}/card/${p.pid}`)
-		expect(got.status).toBe(200)
-		cards[p.pid] = await decryptCard(got.data.blob, p.privJwk)
-	}
-	return { kv, code, players, cards }
+	return players
 }
 
-describe('secret-hitler role dealer', () => {
-	it('reports health and player bounds', async () => {
-		const kv = mockKV()
-		const { status, data } = await call(kv, 'GET', 'health')
+async function dealTo(players: any[]) {
+	const roster = players.map((p) => ({ pid: p.pid, name: p.name, pubKey: p.pubKey }))
+	const res = await call('POST', 'deal', { players: roster })
+	expect(res.status).toBe(200)
+	const cards: Record<string, any> = {}
+	for (const p of players) cards[p.pid] = await decryptCard(res.data.cards[p.pid], p.privJwk)
+	return { dealId: res.data.dealId, raw: res.data.cards, cards }
+}
+
+describe('secret-hitler stateless dealer', () => {
+	it('reports health with no bindings required', async () => {
+		const { status, data } = await call('GET', 'health')
 		expect(status).toBe(200)
 		expect(data.ok).toBe(true)
-		expect(data.minPlayers).toBe(5)
-		expect(data.maxPlayers).toBe(10)
+		expect(data.stateless).toBe(true)
 	})
 
-	it('refuses to deal with too few players', async () => {
-		const kv = mockKV()
-		const { data: g } = await call(kv, 'POST', 'game')
-		for (let i = 0; i < 4; i++)
-			await call(kv, 'POST', `game/${g.code}/join`, {
-				name: 'P' + i,
-				pubKey: (await makeKeypair()).pubJwk,
-			})
-		const res = await call(kv, 'POST', `game/${g.code}/deal`, { hostToken: g.hostToken })
+	it('rejects a roster that is too small', async () => {
+		const players = await makePlayers(4)
+		const res = await call('POST', 'deal', {
+			players: players.map((p) => ({ pid: p.pid, name: p.name, pubKey: p.pubKey })),
+		})
 		expect(res.status).toBe(400)
 	})
 
-	it('rejects a deal from a non-host', async () => {
-		const kv = mockKV()
-		const { data: g } = await call(kv, 'POST', 'game')
-		for (let i = 0; i < 5; i++)
-			await call(kv, 'POST', `game/${g.code}/join`, {
-				name: 'P' + i,
-				pubKey: (await makeKeypair()).pubJwk,
-			})
-		const res = await call(kv, 'POST', `game/${g.code}/deal`, { hostToken: 'not-the-host' })
-		expect(res.status).toBe(403)
+	it('rejects a roster with a bad public key', async () => {
+		const players = await makePlayers(5)
+		const roster = players.map((p) => ({ pid: p.pid, name: p.name, pubKey: p.pubKey }))
+		roster[0].pubKey = { kty: 'oops' } as any
+		const res = await call('POST', 'deal', { players: roster })
+		expect(res.status).toBe(400)
 	})
 
 	// Exhaustively check every supported table size.
 	for (let n = 5; n <= 10; n++) {
 		it(`deals a correct, leak-free ${n}-player game`, async () => {
-			const { players, cards } = await playThrough(n)
+			const players = await makePlayers(n)
+			const { cards } = await dealTo(players)
 			const expectFasc = n <= 6 ? 1 : n <= 8 ? 2 : 3
 			const hitlerKnows = n <= 6
 
@@ -158,25 +117,23 @@ describe('secret-hitler role dealer', () => {
 					expect(c.knows.hitler).toBe(hitler.name) // fascists know Hitler
 					expect(c.knows.fascists).not.toContain(p.name) // and never themselves
 				} else {
-					// Hitler sees Fascists only in 5–6 player games
 					if (hitlerKnows) expect(c.knows.fascists.length).toBe(expectFasc)
-					else expect(c.knows).toBeNull()
+					else expect(c.knows).toBeNull() // Hitler is blind in 7–10 player games
 				}
 			}
 		})
 	}
 
-	it('never lets one player open another player’s card', async () => {
-		const { kv, code, players } = await playThrough(7)
+	it('never lets one player (or the host) open another player’s card', async () => {
+		const players = await makePlayers(7)
+		const { raw } = await dealTo(players)
 		const attacker = players[0]
 		const victim = players[1]
-		// The card endpoint is intentionally public — anyone can pull the ciphertext.
-		const stolen = await call(kv, 'GET', `game/${code}/card/${victim.pid}`)
-		expect(stolen.status).toBe(200)
-		// But it's useless without the victim's private key: decryption must throw.
-		await expect(decryptCard(stolen.data.blob, attacker.privJwk)).rejects.toThrow()
-		// Sanity: the victim CAN open it.
-		const opened = await decryptCard(stolen.data.blob, victim.privJwk)
+		// The host relays raw ciphertext for everyone — but it's useless without
+		// the victim's private key.
+		await expect(decryptCard(raw[victim.pid], attacker.privJwk)).rejects.toThrow()
+		// Sanity: the victim can open their own.
+		const opened = await decryptCard(raw[victim.pid], victim.privJwk)
 		expect(['liberal', 'fascist', 'hitler']).toContain(opened.role)
 	})
 })
