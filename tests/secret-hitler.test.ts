@@ -124,6 +124,32 @@ describe('secret-hitler stateless dealer', () => {
 		})
 	}
 
+	it('honors a host-chosen distribution (extra Fascists, Hitler blind)', async () => {
+		const players = await makePlayers(6)
+		const roster = players.map((p) => ({ pid: p.pid, name: p.name, pubKey: p.pubKey }))
+		const res = await call('POST', 'deal', {
+			players: roster,
+			setup: { fascists: 2, hitlerKnowsFascists: false },
+		})
+		expect(res.status).toBe(200)
+		const cards: Record<string, any> = {}
+		for (const p of players) cards[p.pid] = await decryptCard(res.data.cards[p.pid], p.privJwk)
+		const roles = players.map((p) => cards[p.pid].role)
+		expect(roles.filter((r) => r === 'fascist').length).toBe(2) // overrode official 1
+		expect(roles.filter((r) => r === 'liberal').length).toBe(3) // 6 - 2 - 1
+		expect(roles.filter((r) => r === 'hitler').length).toBe(1)
+		const hitlerCard = Object.values(cards).find((c: any) => c.role === 'hitler') as any
+		expect(hitlerCard.knows).toBeNull() // forced blind even in a 6-player game
+	})
+
+	it('rejects an out-of-range Fascist count', async () => {
+		const players = await makePlayers(5)
+		const roster = players.map((p) => ({ pid: p.pid, name: p.name, pubKey: p.pubKey }))
+		// 5 players leaves room for at most 3 Fascists (need ≥1 Liberal); 4 is invalid
+		const res = await call('POST', 'deal', { players: roster, setup: { fascists: 4 } })
+		expect(res.status).toBe(400)
+	})
+
 	it('never lets one player (or the host) open another player’s card', async () => {
 		const players = await makePlayers(7)
 		const { raw } = await dealTo(players)

@@ -92,6 +92,29 @@ const randId = (n, alphabet) => {
 const newCode = () => randId(6, 'ABCDEFGHJKMNPQRSTUVWXYZ23456789')
 const newPid = () => randId(10, 'abcdefghijklmnopqrstuvwxyz0123456789')
 
+// Official Secret Hitler distribution by player count (ordinary Fascists,
+// excluding the single Hitler). The host can override this before dealing.
+const OFFICIAL = {
+	5: { fascists: 1, hitlerKnowsFascists: true },
+	6: { fascists: 1, hitlerKnowsFascists: true },
+	7: { fascists: 2, hitlerKnowsFascists: false },
+	8: { fascists: 2, hitlerKnowsFascists: false },
+	9: { fascists: 3, hitlerKnowsFascists: false },
+	10: { fascists: 3, hitlerKnowsFascists: false },
+}
+const officialSetup = (n) => OFFICIAL[n] || { fascists: 1, hitlerKnowsFascists: n <= 6 }
+
+// Resolve the distribution the host will deal, given the current player count.
+// null fields fall back to the official value for that count; a host-set
+// Fascist count is clamped so at least one Liberal always remains.
+function resolvedSetup(count) {
+	const off = officialSetup(count)
+	let fascists = state.setup.fascists ?? off.fascists
+	fascists = Math.max(1, Math.min(fascists, Math.max(1, count - 2)))
+	const hitlerKnowsFascists = state.setup.hitlerKnowsFascists ?? off.hitlerKnowsFascists
+	return { fascists, hitlerKnowsFascists }
+}
+
 // ── screen routing ───────────────────────────────────────────
 const SCREENS = ['home', 'lobby', 'card']
 function show(screen) {
@@ -114,6 +137,8 @@ const state = {
 	card: null,
 	client: null, // mqtt client
 	connected: false,
+	setup: { fascists: null, hitlerKnowsFascists: null }, // host's overrides (null = official)
+	remoteSetup: null, // distribution the host published, for everyone to see
 }
 
 function setError(sel, msg) {
@@ -213,7 +238,12 @@ function publishPresence() {
 	pub('presence/' + state.pid, { pid: state.pid, name: state.name, pubKey: state.pubJwk })
 }
 function publishState() {
-	pub('state', { status: state.status, dealId: state.dealId, host: state.pid })
+	pub('state', {
+		status: state.status,
+		dealId: state.dealId,
+		host: state.pid,
+		setup: resolvedSetup(rosterList().length),
+	})
 }
 
 function onMessage(t, payloadBuf) {
@@ -243,6 +273,8 @@ function onMessage(t, payloadBuf) {
 		}
 		state.status = st.status
 		state.dealId = st.dealId
+		if (st.setup) state.remoteSetup = st.setup
+		if (!state.isHost) renderLobby()
 		if (st.status === 'lobby') {
 			state.card = null
 			state.seenDealId = null
@@ -415,22 +447,58 @@ function renderLobby() {
 		}
 		list.append(li)
 	}
-	$('#countPill').textContent = players.length
+	const count = players.length
+	$('#countPill').textContent = count
 	$('#playersHint').textContent = '5–10 players'
 
+	// distribution everyone can see: the host's is authoritative; others show
+	// what the host published (falling back to official for the current count)
+	const dist = state.isHost
+		? resolvedSetup(count)
+		: state.remoteSetup || officialSetup(Math.max(5, Math.min(10, count)))
+	const libs = count - dist.fascists - 1
+	$('#planLine').textContent =
+		count >= 5
+			? `This game: ${libs} Liberal · ${dist.fascists} Fascist · 1 Hitler${dist.hitlerKnowsFascists ? '' : ' · Hitler hidden'}`
+			: ''
+
 	if (state.isHost) {
-		const count = players.length
+		// sync the setup controls to the resolved distribution
+		$('#fascCount').textContent = dist.fascists
+		$('#fascMinus').disabled = dist.fascists <= 1
+		$('#fascPlus').disabled = dist.fascists >= Math.max(1, count - 2)
+		$('#hitlerKnows').checked = dist.hitlerKnowsFascists
+
 		const withKeys = players.filter((p) => p.pubKey).length
 		const ok = count >= 5 && count <= 10 && withKeys === count
-		const dealBtn = $('#dealBtn')
-		dealBtn.disabled = !ok
+		$('#dealBtn').disabled = !ok
 		$('#dealHint').textContent =
 			count < 5
 				? `Need at least 5 players (have ${count}).`
 				: count > 10
 					? `Too many players (max 10).`
-					: `Ready — deal roles to all ${count} players.`
+					: `Ready — deal ${libs} Liberal / ${dist.fascists} Fascist / 1 Hitler to ${count} players.`
 	}
+}
+
+// Host adjusts the distribution, re-renders, and republishes so everyone's
+// lobby updates.
+function bumpFascists(delta) {
+	const count = rosterList().length
+	const cur = resolvedSetup(count).fascists
+	state.setup.fascists = Math.max(1, Math.min(cur + delta, Math.max(1, count - 2)))
+	renderLobby()
+	publishState()
+}
+function setHitlerKnows(on) {
+	state.setup.hitlerKnowsFascists = on
+	renderLobby()
+	publishState()
+}
+function resetSetup() {
+	state.setup = { fascists: null, hitlerKnowsFascists: null }
+	renderLobby()
+	publishState()
 }
 
 // ── dealing (host) ───────────────────────────────────────────
@@ -442,7 +510,8 @@ async function deal() {
 		const players = rosterList()
 			.filter((p) => p.pubKey)
 			.map((p) => ({ pid: p.pid, name: p.name, pubKey: p.pubKey }))
-		const { dealId, cards } = await postJSON('/deal', { players })
+		const setup = resolvedSetup(players.length)
+		const { dealId, cards } = await postJSON('/deal', { players, setup })
 		// relay each encrypted card to its player (retained so it's there for them)
 		for (const [pid, blob] of Object.entries(cards)) pub('card/' + pid, { dealId, blob })
 		state.status = 'dealt'
@@ -501,7 +570,7 @@ function buildCardFace(card) {
 		if (card.knows && card.knows.fascists) {
 			intel = `<div class="intel"><h4>Your Fascist${card.knows.fascists.length > 1 ? 's' : ''}</h4><div class="names">${card.knows.fascists.map(esc).join(', ')}</div></div>`
 		} else {
-			intel = `<div class="intel blind">You don't know who your Fascists are — this is a ${c.players}-player game. Keep your head down and get elected Chancellor.</div>`
+			intel = `<div class="intel blind">You don't know who your Fascists are. Keep your head down and get elected Chancellor.</div>`
 		}
 	}
 
@@ -565,6 +634,10 @@ function wire() {
 	$('#redealBtn').addEventListener('click', deal)
 	$('#backLobbyBtn').addEventListener('click', backToLobby)
 	$('#leaveBtn').addEventListener('click', leaveGame)
+	$('#fascMinus').addEventListener('click', () => bumpFascists(-1))
+	$('#fascPlus').addEventListener('click', () => bumpFascists(1))
+	$('#hitlerKnows').addEventListener('change', (e) => setHitlerKnows(e.target.checked))
+	$('#resetSetup').addEventListener('click', resetSetup)
 
 	$('#copyBtn').addEventListener('click', async () => {
 		const url = `${location.origin}/secret-hitler?g=${state.code}`

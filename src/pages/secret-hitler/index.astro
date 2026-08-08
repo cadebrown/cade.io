@@ -114,9 +114,27 @@ const desc =
 						<span class="muted small" id="playersHint"></span>
 					</div>
 					<ul class="players" id="playersList"></ul>
+					<p class="plan-line" id="planLine"></p>
 				</div>
 
 				<div class="card host-only" id="hostControls" hidden>
+					<div class="setup">
+						<div class="setup-row">
+							<span class="setup-label">Fascists <span class="muted small">(besides Hitler)</span></span>
+							<div class="stepper">
+								<button type="button" id="fascMinus" aria-label="Fewer fascists">−</button>
+								<span id="fascCount">1</span>
+								<button type="button" id="fascPlus" aria-label="More fascists">+</button>
+							</div>
+						</div>
+						<label class="setup-toggle">
+							<input type="checkbox" id="hitlerKnows" />
+							<span>Hitler sees the Fascists</span>
+						</label>
+						<button type="button" class="btn btn-ghost small" id="resetSetup">
+							Reset to standard rules
+						</button>
+					</div>
 					<button class="btn btn-primary big" id="dealBtn" disabled>Deal roles</button>
 					<p class="muted small" id="dealHint"></p>
 				</div>
@@ -445,6 +463,72 @@ const desc =
 					opacity: 0;
 					transform: translateY(4px);
 				}
+			}
+			.plan-line {
+				margin: 12px 2px 0;
+				font-size: 0.82rem;
+				color: var(--gold);
+				text-align: center;
+			}
+			.setup {
+				display: flex;
+				flex-direction: column;
+				gap: 12px;
+				margin-bottom: 16px;
+			}
+			.setup-row {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 10px;
+			}
+			.setup-label {
+				font-weight: 600;
+			}
+			.stepper {
+				display: flex;
+				align-items: center;
+				gap: 4px;
+			}
+			.stepper button {
+				width: 40px;
+				height: 40px;
+				border-radius: 10px;
+				border: 1px solid var(--line);
+				background: var(--panel-2);
+				color: var(--ink);
+				font-size: 1.4rem;
+				line-height: 1;
+				cursor: pointer;
+			}
+			.stepper button:disabled {
+				opacity: 0.4;
+				cursor: not-allowed;
+			}
+			.stepper span {
+				min-width: 34px;
+				text-align: center;
+				font-size: 1.2rem;
+				font-weight: 800;
+				font-variant-numeric: tabular-nums;
+			}
+			.setup-toggle {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				font-size: 0.9rem;
+				cursor: pointer;
+			}
+			.setup-toggle input {
+				width: 20px;
+				height: 20px;
+				accent-color: var(--red);
+			}
+			.setup .btn.small {
+				width: auto;
+				align-self: flex-start;
+				padding: 7px 12px;
+				font-size: 0.8rem;
 			}
 			.waiting {
 				text-align: center;
