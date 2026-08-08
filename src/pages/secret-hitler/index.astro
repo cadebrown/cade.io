@@ -1,0 +1,579 @@
+---
+// Advanced Secret Hitler — a standalone, leak-free digital role dealer.
+// Everyone opens cade.io/secret-hitler on their phone, one person creates a
+// game, the rest join by code, and the host deals. Each phone generates its own
+// keypair; roles are encrypted to each player individually, so no one — not
+// other players, not the host, not the server — can see a card that isn't
+// theirs. The whole app lives in this page + ./_app.js + the secret-hitler-api
+// Pages Function. See functions/secret-hitler-api for the trust model.
+const title = 'Advanced Secret Hitler — Leak-Free Card Dealer'
+const desc =
+	'Deal Secret Hitler roles from your phones with no dealer and no peeking. Everyone joins a game by code; each player privately gets their secret role and only the night-phase info they’re entitled to. Roles are end-to-end encrypted per player, so nothing leaks.'
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<title>{title}</title>
+		<meta name="description" content={desc} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={desc} />
+		<meta property="og:type" content="website" />
+		<meta name="theme-color" content="#0d0b12" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="apple-mobile-web-app-title" content="Secret Hitler" />
+		<meta name="robots" content="index,follow" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+	</head>
+
+	<body>
+		<main class="wrap">
+			<header class="masthead">
+				<div class="mark">SH</div>
+				<div class="mast-text">
+					<h1>Advanced Secret Hitler</h1>
+					<p class="tag">Leak-free card dealer · no moderator · no peeking</p>
+				</div>
+				<div class="live-pill" id="livePill" title="backend status">…</div>
+			</header>
+
+			<!-- ── HOME ─────────────────────────────────────────── -->
+			<section class="screen" id="screen-home">
+				<div class="card">
+					<h2>Start a table</h2>
+					<p class="muted">
+						One person creates the game and shares the code. Everyone else joins on their own
+						phone. When 5–10 players are in, the host deals and each phone privately reveals its
+						role.
+					</p>
+					<button class="btn btn-primary big" id="createBtn">Create a game</button>
+				</div>
+
+				<div class="card">
+					<h2>Join a game</h2>
+					<form id="joinForm" class="join-form">
+						<input
+							id="joinCode"
+							class="code-input"
+							inputmode="text"
+							autocapitalize="characters"
+							autocomplete="off"
+							spellcheck="false"
+							maxlength="6"
+							placeholder="CODE"
+							aria-label="Game code"
+						/>
+						<input
+							id="joinName"
+							class="text-input"
+							maxlength="24"
+							autocomplete="off"
+							placeholder="Your name"
+							aria-label="Your name"
+						/>
+						<button class="btn btn-primary" type="submit">Join</button>
+					</form>
+					<p class="err" id="joinErr" hidden></p>
+				</div>
+
+				<details class="card how">
+					<summary>How “no information leaks” works</summary>
+					<p>
+						When you join, your phone makes a private key that never leaves the device and hands
+						the server only the matching public key. When the host deals, the edge shuffles the
+						roles in memory and encrypts each player’s card <em>to that player’s public key</em>.
+						The server stores only ciphertext and never sees a readable role afterward — not
+						yours, not anyone’s. Every phone can download the whole pile of encrypted cards, but
+						each can open only its own. Fascists still learn their teammates (and Hitler, per the
+						official rules) because that intel is inside <em>their</em> encrypted card — nobody
+						else’s.
+					</p>
+				</details>
+			</section>
+
+			<!-- ── LOBBY ────────────────────────────────────────── -->
+			<section class="screen" id="screen-lobby" hidden>
+				<div class="card lobby-code">
+					<span class="muted small">Game code</span>
+					<div class="code-row">
+						<span class="code-big" id="lobbyCode">------</span>
+						<button class="btn btn-ghost" id="copyBtn">Copy link</button>
+					</div>
+					<canvas id="qr" class="qr" width="240" height="240" aria-label="QR code to join"
+					></canvas>
+					<p class="muted small">Others scan this or enter the code at this same page.</p>
+				</div>
+
+				<div class="card">
+					<div class="players-head">
+						<h2>Players <span class="count-pill" id="countPill">0</span></h2>
+						<span class="muted small" id="playersHint"></span>
+					</div>
+					<ul class="players" id="playersList"></ul>
+				</div>
+
+				<div class="card host-only" id="hostControls" hidden>
+					<button class="btn btn-primary big" id="dealBtn" disabled>Deal roles</button>
+					<p class="muted small" id="dealHint"></p>
+				</div>
+				<p class="muted small waiting" id="waitingHost" hidden>Waiting for the host to deal…</p>
+
+				<button class="btn btn-ghost leave" id="leaveBtn">Leave game</button>
+				<p class="err" id="lobbyErr" hidden></p>
+			</section>
+
+			<!-- ── CARD REVEAL ──────────────────────────────────── -->
+			<section class="screen" id="screen-card" hidden>
+				<div class="reveal-warn">
+					<strong>Your secret role.</strong> Make sure nobody can see your screen, then hold the
+					card to reveal.
+				</div>
+
+				<button class="rolecard" id="roleCard" aria-live="polite">
+					<div class="rolecard-hidden" id="roleHidden">
+						<span class="tap-icon">👁️</span>
+						<span>Hold to reveal</span>
+					</div>
+					<div class="rolecard-face" id="roleFace" hidden></div>
+				</button>
+
+				<div class="card host-only" id="hostControlsCard" hidden>
+					<button class="btn btn-primary" id="redealBtn">Deal again (re-shuffle)</button>
+					<button class="btn btn-ghost" id="backLobbyBtn">Back to lobby</button>
+					<p class="muted small" id="staleHint" hidden>
+						⚠️ The roster changed since this deal — re-deal to include everyone.
+					</p>
+				</div>
+				<p class="muted small waiting" id="waitingRedeal" hidden></p>
+			</section>
+
+			<footer class="foot">
+				<span
+					>An open-source party tool · not affiliated with the makers of Secret Hitler. The game
+					is a trademark of its creators; bring your own board.</span
+				>
+			</footer>
+		</main>
+
+		<script src="./_app.js"></script>
+
+		<style is:global>
+			:root {
+				--bg: #0d0b12;
+				--panel: #17141f;
+				--panel-2: #1f1b2b;
+				--line: #2c2740;
+				--ink: #ece9f5;
+				--muted: #9a93b0;
+				--red: #e5484d;
+				--red-deep: #b5121b;
+				--blue: #4c7dff;
+				--gold: #e8b93b;
+				--radius: 16px;
+			}
+			* {
+				box-sizing: border-box;
+			}
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+			}
+			body {
+				background: radial-gradient(120% 90% at 50% -10%, #1a1526 0%, var(--bg) 55%) fixed;
+				color: var(--ink);
+				font: 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+					sans-serif;
+				-webkit-font-smoothing: antialiased;
+				min-height: 100vh;
+			}
+			.wrap {
+				max-width: 520px;
+				margin: 0 auto;
+				padding: max(16px, env(safe-area-inset-top)) 16px calc(48px + env(safe-area-inset-bottom));
+			}
+			.masthead {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				padding: 12px 4px 20px;
+			}
+			.mark {
+				width: 44px;
+				height: 44px;
+				flex: 0 0 44px;
+				display: grid;
+				place-items: center;
+				border-radius: 12px;
+				background: linear-gradient(135deg, var(--red) 0%, var(--red-deep) 100%);
+				color: #fff;
+				font-weight: 800;
+				letter-spacing: 0.02em;
+				box-shadow: 0 6px 18px -6px var(--red-deep);
+			}
+			.mast-text h1 {
+				margin: 0;
+				font-size: 1.15rem;
+				letter-spacing: -0.01em;
+			}
+			.tag {
+				margin: 2px 0 0;
+				font-size: 0.78rem;
+				color: var(--muted);
+			}
+			.live-pill {
+				margin-left: auto;
+				font-size: 0.68rem;
+				padding: 4px 9px;
+				border-radius: 999px;
+				background: var(--panel-2);
+				border: 1px solid var(--line);
+				color: var(--muted);
+				white-space: nowrap;
+			}
+			.live-pill.ok {
+				color: #7ee08a;
+				border-color: #285c34;
+			}
+			.live-pill.bad {
+				color: var(--red);
+				border-color: #5c2830;
+			}
+
+			.card {
+				background: var(--panel);
+				border: 1px solid var(--line);
+				border-radius: var(--radius);
+				padding: 18px;
+				margin-bottom: 14px;
+			}
+			.card h2 {
+				margin: 0 0 8px;
+				font-size: 1.02rem;
+			}
+			.muted {
+				color: var(--muted);
+			}
+			.small {
+				font-size: 0.8rem;
+			}
+			.err {
+				color: var(--red);
+				font-size: 0.85rem;
+				margin: 10px 2px 0;
+			}
+
+			.btn {
+				appearance: none;
+				border: 1px solid transparent;
+				border-radius: 12px;
+				padding: 12px 16px;
+				font-size: 1rem;
+				font-weight: 650;
+				cursor: pointer;
+				width: 100%;
+				transition:
+					transform 0.06s ease,
+					filter 0.15s ease,
+					background 0.15s ease;
+				color: var(--ink);
+				background: var(--panel-2);
+			}
+			.btn:active {
+				transform: translateY(1px) scale(0.995);
+			}
+			.btn-primary {
+				background: linear-gradient(135deg, var(--red) 0%, var(--red-deep) 100%);
+				color: #fff;
+				box-shadow: 0 8px 22px -10px var(--red-deep);
+			}
+			.btn-primary:disabled {
+				background: var(--panel-2);
+				color: var(--muted);
+				box-shadow: none;
+				cursor: not-allowed;
+			}
+			.btn-ghost {
+				background: transparent;
+				border-color: var(--line);
+				color: var(--ink);
+			}
+			.btn.big {
+				padding: 15px 16px;
+				font-size: 1.05rem;
+			}
+			.btn + .btn {
+				margin-top: 10px;
+			}
+
+			.join-form {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 10px;
+			}
+			.join-form .btn {
+				grid-column: 1 / -1;
+			}
+			.text-input,
+			.code-input {
+				width: 100%;
+				padding: 12px 14px;
+				border-radius: 12px;
+				border: 1px solid var(--line);
+				background: var(--panel-2);
+				color: var(--ink);
+				font-size: 1rem;
+			}
+			.code-input {
+				text-transform: uppercase;
+				letter-spacing: 0.24em;
+				text-align: center;
+				font-weight: 800;
+				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+			}
+			.text-input::placeholder,
+			.code-input::placeholder {
+				color: #6a6383;
+				letter-spacing: normal;
+			}
+
+			.how summary {
+				cursor: pointer;
+				font-weight: 650;
+				font-size: 0.92rem;
+			}
+			.how p {
+				margin: 10px 0 0;
+				font-size: 0.86rem;
+				color: var(--muted);
+			}
+			.how em {
+				color: var(--ink);
+				font-style: normal;
+				font-weight: 600;
+			}
+
+			/* lobby */
+			.lobby-code {
+				text-align: center;
+			}
+			.code-row {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 12px;
+				margin: 4px 0 14px;
+			}
+			.code-big {
+				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+				font-size: 2.1rem;
+				font-weight: 800;
+				letter-spacing: 0.16em;
+				color: var(--gold);
+			}
+			.code-row .btn {
+				width: auto;
+				padding: 8px 12px;
+				font-size: 0.82rem;
+			}
+			.qr {
+				width: 240px;
+				height: 240px;
+				max-width: 70vw;
+				aspect-ratio: 1;
+				border-radius: 12px;
+				background: #fff;
+				padding: 10px;
+			}
+			.players-head {
+				display: flex;
+				align-items: baseline;
+				justify-content: space-between;
+				gap: 8px;
+			}
+			.count-pill {
+				display: inline-grid;
+				place-items: center;
+				min-width: 26px;
+				height: 22px;
+				padding: 0 7px;
+				border-radius: 999px;
+				background: var(--panel-2);
+				border: 1px solid var(--line);
+				font-size: 0.8rem;
+				color: var(--gold);
+			}
+			.players {
+				list-style: none;
+				margin: 12px 0 0;
+				padding: 0;
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+			}
+			.players li {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 10px 12px;
+				background: var(--panel-2);
+				border: 1px solid var(--line);
+				border-radius: 11px;
+				animation: pop 0.2s ease;
+			}
+			.players li .dot {
+				width: 8px;
+				height: 8px;
+				border-radius: 50%;
+				background: #7ee08a;
+				flex: 0 0 8px;
+			}
+			.players li .me {
+				margin-left: auto;
+				font-size: 0.72rem;
+				color: var(--gold);
+				border: 1px solid var(--line);
+				border-radius: 999px;
+				padding: 2px 8px;
+			}
+			@keyframes pop {
+				from {
+					opacity: 0;
+					transform: translateY(4px);
+				}
+			}
+			.waiting {
+				text-align: center;
+				padding: 6px 0;
+			}
+			.leave {
+				margin-top: 6px;
+			}
+
+			/* reveal */
+			.reveal-warn {
+				background: #2a1220;
+				border: 1px solid #5c2436;
+				color: #ffd7c9;
+				border-radius: 12px;
+				padding: 12px 14px;
+				font-size: 0.86rem;
+				margin-bottom: 14px;
+			}
+			.rolecard {
+				appearance: none;
+				display: block;
+				width: 100%;
+				border: none;
+				cursor: pointer;
+				border-radius: 20px;
+				min-height: 340px;
+				padding: 24px;
+				color: #fff;
+				position: relative;
+				overflow: hidden;
+				text-align: center;
+				user-select: none;
+				-webkit-user-select: none;
+				-webkit-touch-callout: none;
+				margin-bottom: 14px;
+				background:
+					repeating-linear-gradient(45deg, #201b2e 0 14px, #1a1626 14px 28px);
+				border: 1px solid var(--line);
+			}
+			.rolecard-hidden {
+				position: absolute;
+				inset: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 12px;
+				font-size: 1.05rem;
+				color: var(--muted);
+			}
+			.rolecard-hidden .tap-icon {
+				font-size: 2.6rem;
+			}
+			.rolecard-face {
+				position: relative;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 6px;
+				min-height: 292px;
+			}
+			.rolecard.revealed {
+				border-color: transparent;
+			}
+			.rolecard.lib {
+				background: radial-gradient(120% 90% at 50% 0%, #3157b8 0%, #1c3a86 60%, #142a63 100%);
+			}
+			.rolecard.fasc {
+				background: radial-gradient(120% 90% at 50% 0%, #e5484d 0%, #a5121b 60%, #6f0a12 100%);
+			}
+			.rolecard .party-label {
+				font-size: 0.9rem;
+				text-transform: uppercase;
+				letter-spacing: 0.22em;
+				opacity: 0.85;
+			}
+			.rolecard .role-name {
+				font-size: 2.5rem;
+				font-weight: 850;
+				line-height: 1.05;
+				margin: 2px 0;
+			}
+			.rolecard .role-emoji {
+				font-size: 3.4rem;
+				margin-bottom: 2px;
+			}
+			.rolecard .intel {
+				margin-top: 14px;
+				background: rgba(0, 0, 0, 0.28);
+				border: 1px solid rgba(255, 255, 255, 0.18);
+				border-radius: 12px;
+				padding: 12px 14px;
+				font-size: 0.9rem;
+				width: 100%;
+			}
+			.rolecard .intel h4 {
+				margin: 0 0 6px;
+				font-size: 0.72rem;
+				text-transform: uppercase;
+				letter-spacing: 0.14em;
+				opacity: 0.85;
+			}
+			.rolecard .intel .names {
+				font-weight: 750;
+				font-size: 1.05rem;
+			}
+			.rolecard .intel.blind {
+				opacity: 0.92;
+				font-style: italic;
+			}
+			.rolecard .counts {
+				margin-top: 12px;
+				font-size: 0.76rem;
+				opacity: 0.8;
+			}
+			.rolecard .release-hint {
+				margin-top: 14px;
+				font-size: 0.74rem;
+				opacity: 0.72;
+			}
+
+			.foot {
+				margin-top: 26px;
+				text-align: center;
+				font-size: 0.72rem;
+				color: #6a6383;
+				padding: 0 6px;
+			}
+		</style>
+	</body>
+</html>
