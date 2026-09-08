@@ -22,7 +22,7 @@ type Props = {
 const { author: author_ } = Astro.props
 const { name, blurb, image, socials } = author_.data
 
-// get posts by this name, sorted by most recent
+// get posts by this author, sorted by most recent
 const posts = (await getPublishedPosts({ includeDrafts: import.meta.env.DEV })).filter((post) =>
   post.data.authors.some((author) => author.id === author_.id)
 )
@@ -31,13 +31,13 @@ const title = `${name}`
 ---
 
 <Base title={title} blurb={blurb} image={image}>
-  <center class='name-top' slot='header-after'>
-    {image && <Image class='name-top-image' src={image} alt={title} />}
-    <h1 class='name-top-title'>{title}</h1>
-    <span class='name-top-socials'>
+  <center class='author-top' slot='header-after'>
+    {image && <Image class='author-top-image' src={image} alt={title} />}
+    <h1 class='author-top-title'>{title}</h1>
+    <span class='author-top-socials'>
       <Socials socials={socials} />
     </span>
-    {blurb && <p class='name-top-blurb'>{blurb}</p>}
+    {blurb && <p class='author-top-blurb'>{blurb}</p>}
   </center>
 
   <center>
@@ -47,23 +47,23 @@ const title = `${name}`
 </Base>
 
 <style>
-  center.name-top {
+  center.author-top {
     /* width: 80%; */
     margin: 1em auto;
   }
 
-  h1.name-top-title {
+  h1.author-top-title {
     font-size: 2.5em;
   }
 
-  span.name-top-socials {
+  span.author-top-socials {
     font-size: 1.2em;
   }
 
-  p.name-top-blurb {
+  p.author-top-blurb {
     font-size: 1.4em;
   }
-  img.name-top-image {
+  img.author-top-image {
     display: block;
     /* float: left; */
     max-height: 50vh;
@@ -72,7 +72,7 @@ const title = `${name}`
     /* border: 1px solid black; */
   }
 
-  center.name-top img.asdf {
+  center.author-top img.asdf {
     /* width: 100%; */
     max-height: 40vh;
     border-radius: 0.5em;

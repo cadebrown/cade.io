@@ -490,7 +490,7 @@ double my_zeta(double x) {
 
 Note that our zeta function may call the gamma function we defined; this is neccessary due to the fact that the summation will not converge for negative values of $x$
 
-For complex inputs; we need to realize that the maximum error term increases as the imaginary component; for example, the name estimates that it is required that $n \geq 1.3d + 0.9\Im(x)$, if $d$ digits are required for accuracy. However; for $x$ with small imaginary components, we should use the smallest $n$ that will work:
+For complex inputs; we need to realize that the maximum error term increases as the imaginary component; for example, the author estimates that it is required that $n \geq 1.3d + 0.9\Im(x)$, if $d$ digits are required for accuracy. However; for $x$ with small imaginary components, we should use the smallest $n$ that will work:
 
 ```python
 

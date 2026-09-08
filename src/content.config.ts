@@ -27,7 +27,7 @@ const posts = defineCollection({
       // the cover image (preview/thumbnail), resolved by Astro's image pipeline
       // NOTE: https://docs.astro.build/en/guides/images/#images-in-content-collections
       image: image(),
-      // default to the site's owner as the name
+      // default to the site's owner as the author
       authors: z.array(reference('authors')).default([{ collection: 'authors', id: 'cade-brown' }]),
       files: z
         .record(
