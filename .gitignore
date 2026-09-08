@@ -24,3 +24,9 @@ pnpm-debug.log*
 
 # claude code local state
 .claude/
+
+# Local validation artifacts
+artifacts/
+.wrangler/
+playwright-report/
+test-results/

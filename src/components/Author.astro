@@ -1,84 +1,26 @@
 ---
-// Author.astro - a component for a plain-text author entry with a link to their page, and a popup infobox that displays when you hover over the author's name.
-import { type CollectionEntry } from 'astro:content'
-import { Icon } from 'astro-icon/components'
-import Hover from './Hover.astro'
-import Social from './Social.astro'
-import Image from './Image.astro'
-import { getEntry } from 'astro:content'
-
-// TODO: add mail icon
+import { getEntry, type CollectionEntry } from 'astro:content'
+import { authorUrl } from '../lib/urls'
 
 type Props = {
-	name: CollectionEntry<'authors'> | string
+  author: CollectionEntry<'authors'> | { collection: 'authors'; id: string } | string
 }
 
-// extract, but it may be a string or an object...
-const { author: author_ } = Astro.props
-
-// so, detect and fetch the entry if needed
-const author = author_ && author_.data ? author_ : await getEntry('authors', author_.id || author_)
-
-// generate the URL for the name
-const href = `/authors/${author.id}`
+const { author: reference } = Astro.props
+const author =
+  typeof reference !== 'string' && 'data' in reference
+    ? reference
+    : await getEntry('authors', typeof reference === 'string' ? reference : reference.id)
+if (!author)
+  throw new Error(`Unknown author: ${typeof reference === 'string' ? reference : reference.id}`)
+const href = authorUrl(author.id)
 ---
 
 <a class='author-name' href={href}>{author.data.name}</a>
 
-<!-- <Hover class='name-hover'>
-	<a slot='text' href={href} class='name-name'>{author.data.name}</a>
-	<Image src={name.data.image} alt={'alt text'} />
-	<span class='name-hover-info'>
-		<span class='name-hover-socials'>
-			{Object.entries(author.data.socials).map(([social, tag]) => <Social social={social} tag={tag} />)}
-		</span>
-
-		<span class='name-hover-blurb'>
-			{author.data.blurb}
-		</span>
-	</span>
-</Hover> -->
-
 <style>
-	a.author-name {
-		font-weight: bold;
-		color: inherit;
-	}
+  .author-name {
+    font-weight: bold;
+    color: inherit;
+  }
 </style>
-
-<!-- <style>
-	a.author-name {
-		font-weight: bold;
-		color: inherit;
-	}
-
-	.author-hover > span {
-		/* padding: 0.25em; */
-		font-size: 0.9em;
-		display: inline-flex;
-		flex-direction: column;
-	}
-	.author-hover span.author-hover-info {
-		height: 100%;
-		padding: 0.5em;
-		/* center the text */
-		justify-content: center;
-		align-items: center;
-	}
-
-	.author-hover span.author-hover-socials {
-		font-size: 1.1em;
-		/* margin-top: 0.25em; */
-		/* center icons */
-		display: inline-flex;
-		/* justify-content: center; */
-		/* vertical-align: middle; */
-		/* align-items: center; */
-		width: 100%;
-	}
-
-	span.author-hover-blurb {
-		width: 100%;
-		/* margin: 0 0.5em; */
-	}
-</style> -->

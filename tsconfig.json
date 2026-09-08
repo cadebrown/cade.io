@@ -5,45 +5,40 @@
     "**/*"
   ],
   "exclude": [
-    "dist"
+    "dist",
+    "artifacts"
   ],
   "compilerOptions": {
     "resolveJsonModule": true,
     "strictNullChecks": true,
-    "baseUrl": ".",
     "paths": {
       "@components/*": [
-        "src/components/*"
+        "./src/components/*"
       ],
       "@layouts/*": [
-        "src/layouts/*"
+        "./src/layouts/*"
       ],
       "@styles/*": [
-        "src/styles/*"
+        "./src/styles/*"
       ],
       "@public/*": [
-        "public/*"
+        "./public/*"
       ],
       "@assets/*": [
-        "public/assets/*"
+        "./src/assets/*"
       ],
       "@site": [
-        "src/site.ts"
+        "./src/site.ts"
       ],
       "@format": [
-        "src/format.ts"
+        "./src/format.ts"
       ],
       "@themes": [
-        "src/themes.ts"
+        "./src/themes.ts"
       ],
       "@katex": [
-        "src/katex.ts"
+        "./src/katex.ts"
       ]
-    },
-    "plugins": [
-      {
-        "name": "@astrojs/ts-plugin"
-      }
-    ]
+    }
   }
 }

@@ -3,18 +3,18 @@ import { type CollectionEntry } from 'astro:content'
 import Author from './Author.astro'
 
 type Props = {
-	authors: (string | CollectionEntry<'authors'>)[]
+  authors: (string | { collection: 'authors'; id: string } | CollectionEntry<'authors'>)[]
 }
 
 const { authors } = Astro.props
-
 ---
 
 {
-	authors && authors.map((author, index) => (
-		<>
-			{index > 0 && ', '}
-			<Author author={author} />
-		</>
-	))
+  authors &&
+    authors.map((author, index) => (
+      <>
+        {index > 0 && ', '}
+        <Author author={author} />
+      </>
+    ))
 }

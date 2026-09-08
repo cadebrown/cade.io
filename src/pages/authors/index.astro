@@ -1,9 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
 
-import Page from '@layouts/Page.astro'
-
-import Image from '@components/Image.astro'
+import Base from '@layouts/Base.astro'
 
 import CardListAuthors from '@components/CardListAuthors.astro'
 
@@ -15,8 +13,8 @@ const title = 'All authors'
 const blurb = 'A list of all the authors on the site.'
 ---
 
-<Page title={title} blurb={blurb}>
-	<center>
-		<CardListAuthors authors={authors} />
-	</center>
-</Page>
+<Base title={title} blurb={blurb}>
+  <center>
+    <CardListAuthors authors={authors} />
+  </center>
+</Base>

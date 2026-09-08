@@ -1,6 +1,5 @@
 ---
-import type { ImageMetadata, MarkdownLayoutProps } from 'astro'
-import { getEntry } from 'astro:content'
+import type { LayoutProps } from './types'
 
 import Head from '@components/Head.astro'
 import Header from '@components/Header.astro'
@@ -9,124 +8,88 @@ import Footer from '@components/Footer.astro'
 import Image from '@components/Image.astro'
 import Dated from '@components/Dated.astro'
 import Authors from '@components/Authors.astro'
-import type { CollectionEntry } from 'astro:content'
+type Props = LayoutProps
 
-type Props = MarkdownLayoutProps<{
-	title: string
-	blurb: string
-	dated?: Date
-	authors?: (string | CollectionEntry<'authors'>)[]
-	image?: ImageMetadata | string
-	reading?: { words: number; minutes: number }
-}>
-
-// destructure the props so it works from MDX fronmatter or props directly
-const { dated, title, blurb, image, authors, reading, ...rest } = Astro.props.frontmatter || Astro.props
+const { kind, dated, title, blurb, image, authors, reading } =
+  'frontmatter' in Astro.props ? Astro.props.frontmatter : Astro.props
 ---
 
 <!doctype html>
 <html lang='en' data-theme='blackboard'>
-	<head>
-		<Head title={title} blurb={blurb} image={image} />
-	</head>
-	<body>
-		<Header />
+  <head>
+    <Head kind={kind} title={title} blurb={blurb} image={image} />
+  </head>
+  <body>
+    <Header />
 
-		{image && <Image src={image} alt={title} />}
+    {image && <Image src={image} alt={title} priority />}
 
-		<main>
-			<slot name='intro'>
-				<section class='intro'>
-					<center>
-						<h1 class='intro-title'>{title}</h1>
-						<p class='intro-subtitle'>
-							{
-								dated && (
-									<>
-										on <Dated dated={dated} />
-									</>
-								)
-							}
-							{
-								authors && (
-									<>
-										by <Authors authors={authors} />
-									</>
-								)
-							}
-							{
-								reading && (
-									<>
-										&middot; <span class='intro-reading'>{reading.minutes} min read &middot; {reading.words.toLocaleString()} words</span>
-									</>
-								)
-							}
-						</p>
-						<hr />
+    <main>
+      <slot name='intro'>
+        <section class='intro'>
+          <div class='intro-content'>
+            <h1 class='intro-title'>{title}</h1>
+            <p class='intro-subtitle'>
+              {
+                dated && (
+                  <>
+                    on <Dated dated={dated} />
+                  </>
+                )
+              }
+              {
+                authors && (
+                  <>
+                    by <Authors authors={authors} />
+                  </>
+                )
+              }
+              {
+                reading && (
+                  <>
+                    &middot;{' '}
+                    <span class='intro-reading'>
+                      {reading.minutes} min read &middot; {reading.words.toLocaleString()} words
+                    </span>
+                  </>
+                )
+              }
+            </p>
+            <hr />
 
-						{blurb && <p class='intro-blurb'>{blurb}</p>}
-					</center>
-				</section>
-			</slot>
+            {blurb && <p class='intro-blurb'>{blurb}</p>}
+          </div>
+        </section>
+      </slot>
 
-			<slot />
-		</main>
+      <slot />
+    </main>
 
-		<Footer />
-	</body>
+    <Footer />
+  </body>
 </html>
 
 <style>
-	section.intro {
-		max-width: 1200px;
-		margin: 0 auto;
-	}
-	img {
-		display: block;
-		object-fit: cover;
-		height: 33vh;
-		width: 100%;
-		border-bottom: 1px solid var(--wow-border);
-	}
+  .intro-content {
+    text-align: center;
+  }
+  section.intro {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  img {
+    display: block;
+    object-fit: cover;
+    height: 33vh;
+    width: 100%;
+    border-bottom: 1px solid var(--wow-border);
+  }
 
-	section.intro .intro-blurb {
-		font-style: italic;
-	}
+  section.intro .intro-blurb {
+    font-style: italic;
+  }
 
-	section.intro p {
-		margin: 0.5em 0;
-	}
+  section.intro p {
+    margin: 0.5em 0;
+  }
 </style>
-
-<script>
-	// ApexCharts is dynamically imported only when chart elements are present on the page.
-	// This avoids loading ~600KB of JS on pages that don't use charts.
-
-	function applyTheme(opts: any, darkMode: boolean) {
-		return {
-			...opts,
-			chart: { ...opts.chart, background: 'transparent', fontFamily: 'inherit' },
-			theme: { ...opts.theme, mode: darkMode ? 'dark' : 'light' },
-			tooltip: { ...opts.tooltip, theme: darkMode ? 'dark' : 'light' },
-		}
-	}
-
-	// astro:page-load fires on initial load AND after each view transition,
-	// so charts render correctly on direct navigation and on client-side nav.
-	document.addEventListener('astro:page-load', async () => {
-		const charts = document.querySelectorAll('.rehype-apexcharts-container')
-		if (charts.length === 0) return
-
-		const { default: ApexCharts } = await import('apexcharts')
-		const isDarkMode = document.documentElement.getAttribute('data-theme') === 'blackboard'
-
-		charts.forEach((chartDiv) => {
-			const raw = chartDiv.getAttribute('data-rehype-apexcharts')
-			if (!raw) return
-			// Chart config is a JS object literal (may include arrow functions for formatters),
-			// so we use Function() rather than JSON.parse(). Source is trusted (build-time markdown).
-			const config = new Function('return (' + raw + ')')()
-			new ApexCharts(chartDiv, applyTheme(config, isDarkMode)).render()
-		})
-	})
-</script>

@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content'
+import { postUrl } from '../lib/content'
 
 import CardList from '@components/CardList.astro'
 import Card from '@components/Card.astro'
@@ -7,20 +8,20 @@ import Authors from '@components/Authors.astro'
 import Dated from '@components/Dated.astro'
 
 type Props = {
-    posts: CollectionEntry<'posts'>[]
+  posts: CollectionEntry<'posts'>[]
 }
 
 const { posts } = Astro.props
 ---
 
-<CardList items={posts}>
-    {
-        ({ id, data: { dated, title, blurb, image, authors } }: CollectionEntry<'posts'>) => (
-            <Card href={`/posts/${id}`} image={image} title={title} blurb={blurb}>
-                <span slot='subtitle'>
-                    by <Authors authors={authors} /> on <Dated dated={dated} />
-                </span>
-            </Card>
-        )
-    }
+<CardList>
+  {
+    posts.map(({ id, data: { dated, title, blurb, image, authors } }) => (
+      <Card href={postUrl(id)} image={image} title={title} blurb={blurb}>
+        <span slot='subtitle'>
+          by <Authors authors={authors} /> on <Dated dated={dated} />
+        </span>
+      </Card>
+    ))
+  }
 </CardList>

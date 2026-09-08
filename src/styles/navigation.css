@@ -1,0 +1,10 @@
+/* Browsers without this API keep ordinary document navigation. */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}

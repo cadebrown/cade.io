@@ -1,0 +1,1242 @@
+{
+  "capturedAt": "2026-09-08T15:16:59.134Z",
+  "sourceCommit": "b5964ad94c5310c53cedac86d31f219cec9e58b8",
+  "origin": "https://cade.io",
+  "evidence": "Live sitemap + tracked public files + local dist; this is not a complete historical access-log inventory.",
+  "pages": [
+    {
+      "current": "/",
+      "proposed": "/",
+      "action": "keep"
+    },
+    {
+      "current": "/authors",
+      "proposed": "/authors",
+      "action": "keep"
+    },
+    {
+      "current": "/authors/cade-brown",
+      "proposed": "/authors/cade-brown",
+      "action": "keep"
+    },
+    {
+      "current": "/links",
+      "proposed": "/links",
+      "action": "keep"
+    },
+    {
+      "current": "/posts",
+      "proposed": "/blog",
+      "action": "301"
+    },
+    {
+      "current": "/posts/dataset-smcefr",
+      "proposed": "/blog/dataset-smcefr",
+      "action": "301",
+      "draft": false
+    },
+    {
+      "current": "/posts/diy-gamma-zeta",
+      "proposed": "/blog/diy-gamma-zeta",
+      "action": "301",
+      "draft": false
+    },
+    {
+      "current": "/posts/diy-miller-rabin",
+      "proposed": "/blog/diy-miller-rabin",
+      "action": "301",
+      "draft": false
+    },
+    {
+      "current": "/posts/game-pikurn",
+      "proposed": "/blog/game-pikurn",
+      "action": "withhold-until-published",
+      "draft": true
+    },
+    {
+      "current": "/posts/hwsw-setup",
+      "proposed": "/blog/hwsw-setup",
+      "action": "withhold-until-published",
+      "draft": true
+    },
+    {
+      "current": "/posts/langjam-kardinality",
+      "proposed": "/blog/langjam-kardinality",
+      "action": "withhold-until-published",
+      "draft": true
+    },
+    {
+      "current": "/posts/machine-knuth",
+      "proposed": "/blog/machine-knuth",
+      "action": "301",
+      "draft": false
+    },
+    {
+      "current": "/posts/machine-kolmogorov",
+      "proposed": "/blog/machine-kolmogorov",
+      "action": "withhold-until-published",
+      "draft": true
+    },
+    {
+      "current": "/posts/magma-paper",
+      "proposed": "/blog/magma-paper",
+      "action": "301",
+      "draft": false
+    },
+    {
+      "current": "/posts/my-writing-environment",
+      "proposed": "/blog/my-writing-environment",
+      "action": "withhold-until-published",
+      "draft": true
+    },
+    {
+      "current": "/posts/posters-diffusion",
+      "proposed": "/blog/posters-diffusion",
+      "action": "301",
+      "draft": false
+    },
+    {
+      "current": "/posts/rendering-fractals",
+      "proposed": "/blog/rendering-fractals",
+      "action": "301",
+      "draft": false
+    },
+    {
+      "current": "/posts/rust-poker-0",
+      "proposed": "/blog/rust-poker-0",
+      "action": "withhold-until-published",
+      "draft": true
+    },
+    {
+      "current": "/posts/sequence-a267263",
+      "proposed": "/blog/sequence-a267263",
+      "action": "301",
+      "draft": false
+    },
+    {
+      "current": "/posts/vqgan-clip",
+      "proposed": "/blog/vqgan-clip",
+      "action": "301",
+      "draft": false
+    },
+    {
+      "current": "/posts/wow-css",
+      "proposed": "/blog/wow-css",
+      "action": "withhold-until-published",
+      "draft": true
+    },
+    {
+      "current": "/testpage",
+      "proposed": "/testpage",
+      "action": "keep"
+    }
+  ],
+  "posts": [
+    {
+      "source": "posts/dataset-smcefr/index.mdx",
+      "slug": "dataset-smcefr",
+      "draft": false,
+      "current": "/posts/dataset-smcefr",
+      "proposed": "/blog/dataset-smcefr",
+      "action": "301"
+    },
+    {
+      "source": "posts/diy-gamma-zeta/index.mdx",
+      "slug": "diy-gamma-zeta",
+      "draft": false,
+      "current": "/posts/diy-gamma-zeta",
+      "proposed": "/blog/diy-gamma-zeta",
+      "action": "301"
+    },
+    {
+      "source": "posts/diy-miller-rabin/index.mdx",
+      "slug": "diy-miller-rabin",
+      "draft": false,
+      "current": "/posts/diy-miller-rabin",
+      "proposed": "/blog/diy-miller-rabin",
+      "action": "301"
+    },
+    {
+      "source": "posts/game-pikurn/index.mdx",
+      "slug": "game-pikurn",
+      "draft": true,
+      "current": "/posts/game-pikurn",
+      "proposed": "/blog/game-pikurn",
+      "action": "withhold-until-published"
+    },
+    {
+      "source": "posts/hwsw-setup/index.mdx",
+      "slug": "hwsw-setup",
+      "draft": true,
+      "current": "/posts/hwsw-setup",
+      "proposed": "/blog/hwsw-setup",
+      "action": "withhold-until-published"
+    },
+    {
+      "source": "posts/langjam-kardinality/index.mdx",
+      "slug": "langjam-kardinality",
+      "draft": true,
+      "current": "/posts/langjam-kardinality",
+      "proposed": "/blog/langjam-kardinality",
+      "action": "withhold-until-published"
+    },
+    {
+      "source": "posts/machine-knuth/index.mdx",
+      "slug": "machine-knuth",
+      "draft": false,
+      "current": "/posts/machine-knuth",
+      "proposed": "/blog/machine-knuth",
+      "action": "301"
+    },
+    {
+      "source": "posts/machine-kolmogorov/index.mdx",
+      "slug": "machine-kolmogorov",
+      "draft": true,
+      "current": "/posts/machine-kolmogorov",
+      "proposed": "/blog/machine-kolmogorov",
+      "action": "withhold-until-published"
+    },
+    {
+      "source": "posts/magma-paper/index.mdx",
+      "slug": "magma-paper",
+      "draft": false,
+      "current": "/posts/magma-paper",
+      "proposed": "/blog/magma-paper",
+      "action": "301"
+    },
+    {
+      "source": "posts/my-writing-environment/index.mdx",
+      "slug": "my-writing-environment",
+      "draft": true,
+      "current": "/posts/my-writing-environment",
+      "proposed": "/blog/my-writing-environment",
+      "action": "withhold-until-published"
+    },
+    {
+      "source": "posts/posters-diffusion/index.mdx",
+      "slug": "posters-diffusion",
+      "draft": false,
+      "current": "/posts/posters-diffusion",
+      "proposed": "/blog/posters-diffusion",
+      "action": "301"
+    },
+    {
+      "source": "posts/rendering-fractals/index.mdx",
+      "slug": "rendering-fractals",
+      "draft": false,
+      "current": "/posts/rendering-fractals",
+      "proposed": "/blog/rendering-fractals",
+      "action": "301"
+    },
+    {
+      "source": "posts/rust-poker-0/index.mdx",
+      "slug": "rust-poker-0",
+      "draft": true,
+      "current": "/posts/rust-poker-0",
+      "proposed": "/blog/rust-poker-0",
+      "action": "withhold-until-published"
+    },
+    {
+      "source": "posts/sequence-a267263/index.mdx",
+      "slug": "sequence-a267263",
+      "draft": false,
+      "current": "/posts/sequence-a267263",
+      "proposed": "/blog/sequence-a267263",
+      "action": "301"
+    },
+    {
+      "source": "posts/vqgan-clip/index.mdx",
+      "slug": "vqgan-clip",
+      "draft": false,
+      "current": "/posts/vqgan-clip",
+      "proposed": "/blog/vqgan-clip",
+      "action": "301"
+    },
+    {
+      "source": "posts/wow-css/index.mdx",
+      "slug": "wow-css",
+      "draft": true,
+      "current": "/posts/wow-css",
+      "proposed": "/blog/wow-css",
+      "action": "withhold-until-published"
+    }
+  ],
+  "publicFiles": [
+    {
+      "source": "public/CNAME",
+      "current": "/CNAME",
+      "proposed": "/CNAME",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 7,
+      "sha256": "8f7fbd07cbdb1a663b52a2e00115d387896a664f67a8ae7006ad76535d3e5ce3"
+    },
+    {
+      "source": "public/apple-touch-icon.png",
+      "current": "/apple-touch-icon.png",
+      "proposed": "/apple-touch-icon.png",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 2389,
+      "sha256": "c3e6ecd2f5901872d87bafe2a6b753e5b2fee6fad4f3cfbc8183ce2428eec011"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-codetn-2016.webp",
+      "current": "/assets/cade-pics/cade-codetn-2016.webp",
+      "proposed": "/assets/cade-pics/cade-codetn-2016.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 305900,
+      "sha256": "fc46558db5dc6b3ee17bd751f94c6396070df64c4f1d3b11481066e61c1ca8b7"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-face-0.webp",
+      "current": "/assets/cade-pics/cade-face-0.webp",
+      "proposed": "/assets/cade-pics/cade-face-0.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 282740,
+      "sha256": "ef3957638bfb4c6a8c0f076ad3ffbf8d31059c22229ac93550ca5f754360d787"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-face-grad.webp",
+      "current": "/assets/cade-pics/cade-face-grad.webp",
+      "proposed": "/assets/cade-pics/cade-face-grad.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 54262,
+      "sha256": "fab7592618881ab4f9799bbe348f812c78537fe325a78e041ff84a47a0b85820"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-fractal.webp",
+      "current": "/assets/cade-pics/cade-fractal.webp",
+      "proposed": "/assets/cade-pics/cade-fractal.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 177316,
+      "sha256": "acf0a6b57e58127113e187dc5b609b3e134938606d9468155e181bd2111e78f1"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-frc-0.webp",
+      "current": "/assets/cade-pics/cade-frc-0.webp",
+      "proposed": "/assets/cade-pics/cade-frc-0.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 60344,
+      "sha256": "4cb7c43496041915e6a5bcf472dda7834b275c6c1567d1296417ad89677f7cc6"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-frc-1.webp",
+      "current": "/assets/cade-pics/cade-frc-1.webp",
+      "proposed": "/assets/cade-pics/cade-frc-1.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 10950,
+      "sha256": "f076a1a222ad99ad549f637b63b4bd9538d11fcb017f5899d869174582f1243b"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-isef-0.webp",
+      "current": "/assets/cade-pics/cade-isef-0.webp",
+      "proposed": "/assets/cade-pics/cade-isef-0.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 153656,
+      "sha256": "3375b1d69b21e938a84da7f1ca1e6a347d3c50abb86e269d34a150b660162ffb"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-isef-1.webp",
+      "current": "/assets/cade-pics/cade-isef-1.webp",
+      "proposed": "/assets/cade-pics/cade-isef-1.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 144780,
+      "sha256": "07510e3ab388e13126b76d7dff55ae35405ec4cb9b9fef3612b0ab3c3f688be4"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-quantum.webp",
+      "current": "/assets/cade-pics/cade-quantum.webp",
+      "proposed": "/assets/cade-pics/cade-quantum.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 166376,
+      "sha256": "560f59cc8229228dc93ee019d375c633ff5877cb417d47eb37f0dd9fc0bc6488"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-record.webp",
+      "current": "/assets/cade-pics/cade-record.webp",
+      "proposed": "/assets/cade-pics/cade-record.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 144848,
+      "sha256": "fd41e89a3d16d73e73a819b75061ac5602e2e056df907e1e6ce0ce3d603aceba"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-sasef-1.webp",
+      "current": "/assets/cade-pics/cade-sasef-1.webp",
+      "proposed": "/assets/cade-pics/cade-sasef-1.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 536128,
+      "sha256": "98727867092fe4004ed1c57ff60a224ff0e1979ba42ecbc25c0f3e8899e78d20"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-sasef.webp",
+      "current": "/assets/cade-pics/cade-sasef.webp",
+      "proposed": "/assets/cade-pics/cade-sasef.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 255238,
+      "sha256": "5f77eaa156af2a3f2fa4a5234f72a422fe452d0c5b200ea21bbbd67db4bfba9d"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-thumbs-0.webp",
+      "current": "/assets/cade-pics/cade-thumbs-0.webp",
+      "proposed": "/assets/cade-pics/cade-thumbs-0.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 60344,
+      "sha256": "4cb7c43496041915e6a5bcf472dda7834b275c6c1567d1296417ad89677f7cc6"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-thumbs-1.webp",
+      "current": "/assets/cade-pics/cade-thumbs-1.webp",
+      "proposed": "/assets/cade-pics/cade-thumbs-1.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 10950,
+      "sha256": "f076a1a222ad99ad549f637b63b4bd9538d11fcb017f5899d869174582f1243b"
+    },
+    {
+      "source": "public/assets/cade-pics/cade-titan.webp",
+      "current": "/assets/cade-pics/cade-titan.webp",
+      "proposed": "/assets/cade-pics/cade-titan.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 199126,
+      "sha256": "9d89edb79ef281f5e9fc3b06016217014806282b3204304ef9e773f7a38f43a7"
+    },
+    {
+      "source": "public/assets/dysdemi/DDAYHFP.webp",
+      "current": "/assets/dysdemi/DDAYHFP.webp",
+      "proposed": "/assets/dysdemi/DDAYHFP.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 328736,
+      "sha256": "a0e44deb301405323626a5d2c5637d56a0e476e177eaf6460a580c48bd0eca61"
+    },
+    {
+      "source": "public/assets/dysdemi/DDD.webp",
+      "current": "/assets/dysdemi/DDD.webp",
+      "proposed": "/assets/dysdemi/DDD.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 355940,
+      "sha256": "70d5a2e71765bcebafe949dd9239ca6c5761f8e963d28acfba2ff1e0f319b31a"
+    },
+    {
+      "source": "public/assets/dysdemi/DDTGATW.webp",
+      "current": "/assets/dysdemi/DDTGATW.webp",
+      "proposed": "/assets/dysdemi/DDTGATW.webp",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 336397,
+      "sha256": "245b7a094bf1d7bba018d533be5f3adde455ec78e4e15a0e68b7df884b0e3b1a"
+    },
+    {
+      "source": "public/assets/favicon.dev.svg",
+      "current": "/assets/favicon.dev.svg",
+      "proposed": "/assets/favicon.dev.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 6984,
+      "sha256": "0dd369512a5bb9191e43d3aa01e4f2a39bcc8c2252138a308f1e6e1535d3a163"
+    },
+    {
+      "source": "public/assets/magma-paper/magma-paper.pdf",
+      "current": "/assets/magma-paper/magma-paper.pdf",
+      "proposed": "/blog/magma-paper/dense-linear-algebra-amd-gpus-hpec-2020.pdf",
+      "action": "301",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 487795,
+      "sha256": "0656203d78f947d73d70ccc57c63fe501104efb3308905131bbd279512feb7ce"
+    },
+    {
+      "source": "public/assets/sprites.svg",
+      "current": "/assets/sprites.svg",
+      "proposed": "/assets/sprites.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 766,
+      "sha256": "3e7cf0dcfbd6260ebe87b85c452c317284002e5bc12a2490b519c42a437efcdf"
+    },
+    {
+      "source": "public/assets/test.png",
+      "current": "/assets/test.png",
+      "proposed": "/assets/test.png",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 74056,
+      "sha256": "93705e2f6555fc734b70885402b024d1342597ed822edd2de9f5b9ea3b2ac023"
+    },
+    {
+      "source": "public/assets/testpage_boxdrawing.svg",
+      "current": "/assets/testpage_boxdrawing.svg",
+      "proposed": "/assets/testpage_boxdrawing.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 88049,
+      "sha256": "afa4aa39ced8b900415ce9e9bc13f9c5935a47349c80bcc4257f581cc438e380"
+    },
+    {
+      "source": "public/bones/CadeBrown-2021-ICL-MAGMA-AI.pdf",
+      "current": "/bones/CadeBrown-2021-ICL-MAGMA-AI.pdf",
+      "proposed": "/bones/CadeBrown-2021-ICL-MAGMA-AI.pdf",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 2506890,
+      "sha256": "7038cb09dde74b387457ebb927ece2f45f69cb43608ce52e9c71ab68725a2d4c"
+    },
+    {
+      "source": "public/bones/cv-CadeBrown.pdf",
+      "current": "/bones/cv-CadeBrown.pdf",
+      "proposed": "/bones/cv-CadeBrown.pdf",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 55574,
+      "sha256": "ef2db67f7cb5c335e102b3fea1f8b93788a908b7e84ca06dd7002e34cf170d53"
+    },
+    {
+      "source": "public/bones/favicon-512-alpha.png",
+      "current": "/bones/favicon-512-alpha.png",
+      "proposed": "/bones/favicon-512-alpha.png",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 14112,
+      "sha256": "e49062996d39135439f3146b4bc9d6e287b62eda07bf8c11db7d08c52d699fe9"
+    },
+    {
+      "source": "public/bones/favicon-512-blue.png",
+      "current": "/bones/favicon-512-blue.png",
+      "proposed": "/bones/favicon-512-blue.png",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 15531,
+      "sha256": "3b3fa47275d1b6af63ec882ed0e12e1cb4523c7d2b57008fd035a1c6dab13f4b"
+    },
+    {
+      "source": "public/bones/favicon-512-green.png",
+      "current": "/bones/favicon-512-green.png",
+      "proposed": "/bones/favicon-512-green.png",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 15361,
+      "sha256": "3bdbb1a010d3649cd6e2c718416780061ad2f4a7e638386a59c58eadb659e3e3"
+    },
+    {
+      "source": "public/bones/favicon-512-red.png",
+      "current": "/bones/favicon-512-red.png",
+      "proposed": "/bones/favicon-512-red.png",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 14855,
+      "sha256": "b68395f1b6d07279f1998b8df8be009ce344605e58f1de5a3ffd5551d97169a3"
+    },
+    {
+      "source": "public/bones/favicon-512-white.png",
+      "current": "/bones/favicon-512-white.png",
+      "proposed": "/bones/favicon-512-white.png",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 12315,
+      "sha256": "d4d438e2b08b09a9e980197bb6cb0519dfbfdbaecc24bfb8f3aa294d11343d4c"
+    },
+    {
+      "source": "public/bones/machine-god.webp",
+      "current": "/bones/machine-god.webp",
+      "proposed": "/blog/vqgan-clip/machine-god.webp",
+      "action": "301",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 381148,
+      "sha256": "7687da9ceee61a357de2fe55a941259b56317d97c1661d00a270882b3de71f35"
+    },
+    {
+      "source": "public/bones/resume-CadeBrown.pdf",
+      "current": "/bones/resume-CadeBrown.pdf",
+      "proposed": "/bones/resume-CadeBrown.pdf",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 51567,
+      "sha256": "3f44c0e85d4134038a22644176fc63b59615959384bc3161d7be73d3153db801"
+    },
+    {
+      "source": "public/favicon-96x96.png",
+      "current": "/favicon-96x96.png",
+      "proposed": "/favicon-96x96.png",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 1162,
+      "sha256": "373974db03570cc47dbeb32997eb0742aa6721a8c117e5e3c0ee50e8646deaf7"
+    },
+    {
+      "source": "public/favicon.ico",
+      "current": "/favicon.ico",
+      "proposed": "/favicon.ico",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 15086,
+      "sha256": "663394eadbfac40a48c380102cb11fcf7d0f247ff4578583e25bd14260edd819"
+    },
+    {
+      "source": "public/favicon.svg",
+      "current": "/favicon.svg",
+      "proposed": "/favicon.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 6642,
+      "sha256": "84270a2520ed34b8d570490920254d4d12a30c8b2cd85c941049c173f123b54b"
+    },
+    {
+      "source": "public/fonts/Ubuntu-Bold.woff2",
+      "current": "/fonts/Ubuntu-Bold.woff2",
+      "proposed": "/fonts/Ubuntu-Bold.woff2",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 100364,
+      "sha256": "15a2f87a9fd3b5d48f22a8b8e89704c3ba335c5671d7c696943e48712a65f8c4"
+    },
+    {
+      "source": "public/fonts/Ubuntu-BoldItalic.woff2",
+      "current": "/fonts/Ubuntu-BoldItalic.woff2",
+      "proposed": "/fonts/Ubuntu-BoldItalic.woff2",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 107752,
+      "sha256": "9e349f1e256d14d183d23c5ebb35f8f22178d6be0c274653a5a260bf33f9196b"
+    },
+    {
+      "source": "public/fonts/Ubuntu-Italic.woff2",
+      "current": "/fonts/Ubuntu-Italic.woff2",
+      "proposed": "/fonts/Ubuntu-Italic.woff2",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 123324,
+      "sha256": "eef53b0b350a48d24da8ddfafecca626ad8ebdefe049801b087d4fbeba320629"
+    },
+    {
+      "source": "public/fonts/Ubuntu-Light.woff2",
+      "current": "/fonts/Ubuntu-Light.woff2",
+      "proposed": "/fonts/Ubuntu-Light.woff2",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 130984,
+      "sha256": "32d7921a6f2f7e543dd8901a026b54ec395064d4c976137f9e01a257f7fc0290"
+    },
+    {
+      "source": "public/fonts/Ubuntu-LightItalic.woff2",
+      "current": "/fonts/Ubuntu-LightItalic.woff2",
+      "proposed": "/fonts/Ubuntu-LightItalic.woff2",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 129224,
+      "sha256": "ab67858073b190d780613591b3292a64927a7731365c8457810581af2c489f57"
+    },
+    {
+      "source": "public/fonts/Ubuntu-Medium.woff2",
+      "current": "/fonts/Ubuntu-Medium.woff2",
+      "proposed": "/fonts/Ubuntu-Medium.woff2",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 105844,
+      "sha256": "3dbc3044beea7f77bc35f88a76f73b153c53b7a339539bd919970c69ba39762f"
+    },
+    {
+      "source": "public/fonts/Ubuntu-MediumItalic.woff2",
+      "current": "/fonts/Ubuntu-MediumItalic.woff2",
+      "proposed": "/fonts/Ubuntu-MediumItalic.woff2",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 118624,
+      "sha256": "9652211d98dfcb7a36a6d8abfd25145657028c6c079feae442f6d74992301061"
+    },
+    {
+      "source": "public/fonts/Ubuntu-Regular.woff2",
+      "current": "/fonts/Ubuntu-Regular.woff2",
+      "proposed": "/fonts/Ubuntu-Regular.woff2",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 114668,
+      "sha256": "1463d9c2bc4e38c1355fa86692518b6024ce9b612eb03ea1c5455466d449ac24"
+    },
+    {
+      "source": "public/fonts/UbuntuMono-Bold.woff2",
+      "current": "/fonts/UbuntuMono-Bold.woff2",
+      "proposed": "/fonts/UbuntuMono-Bold.woff2",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 78856,
+      "sha256": "154d5dd89b637657dda350a474a5d2914932673bbff58944a62b6ec5384a0d11"
+    },
+    {
+      "source": "public/fonts/UbuntuMono-BoldItalic.woff2",
+      "current": "/fonts/UbuntuMono-BoldItalic.woff2",
+      "proposed": "/fonts/UbuntuMono-BoldItalic.woff2",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 96736,
+      "sha256": "9c9491b84ea8bdca9bc49b19343ee0bcbeab7a8e45540bcc7cdd2f41cdd553de"
+    },
+    {
+      "source": "public/fonts/UbuntuMono-Italic.woff2",
+      "current": "/fonts/UbuntuMono-Italic.woff2",
+      "proposed": "/fonts/UbuntuMono-Italic.woff2",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 82888,
+      "sha256": "ac137cac27e8de847955f66a5809dd4ea00e4d2f3e35ffedd7aeaaf53618c994"
+    },
+    {
+      "source": "public/fonts/UbuntuMono-Regular.woff2",
+      "current": "/fonts/UbuntuMono-Regular.woff2",
+      "proposed": "/fonts/UbuntuMono-Regular.woff2",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 81412,
+      "sha256": "794e2777cdfc22bccc4fb99e55172634af58b6a40c1785a1e8c165f8fc33dcf4"
+    },
+    {
+      "source": "public/icons/cadeio-icons/autolink.svg",
+      "current": "/icons/cadeio-icons/autolink.svg",
+      "proposed": "/icons/cadeio-icons/autolink.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 371,
+      "sha256": "4333685315826b15412c3332ece9bebfd3a48e97d44cf1f2bd8a4b52d19ac983"
+    },
+    {
+      "source": "public/icons/cadeio-icons/autolink2.svg",
+      "current": "/icons/cadeio-icons/autolink2.svg",
+      "proposed": "/icons/cadeio-icons/autolink2.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 371,
+      "sha256": "4333685315826b15412c3332ece9bebfd3a48e97d44cf1f2bd8a4b52d19ac983"
+    },
+    {
+      "source": "public/icons/cadeio-icons/misc/box-plus.svg",
+      "current": "/icons/cadeio-icons/misc/box-plus.svg",
+      "proposed": "/icons/cadeio-icons/misc/box-plus.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 269,
+      "sha256": "a3cca2d491375c3876da4c2b10ea984e2b93ac3c7fbf8cdb770f1738b72a3d78"
+    },
+    {
+      "source": "public/icons/cadeio-icons/misc/box-x.svg",
+      "current": "/icons/cadeio-icons/misc/box-x.svg",
+      "proposed": "/icons/cadeio-icons/misc/box-x.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 374,
+      "sha256": "2da1156bd77d409ad7e692cc2dace97b5fce1b1ef17715d0d99732475944e543"
+    },
+    {
+      "source": "public/icons/cadeio-icons/misc/chevrons-down.svg",
+      "current": "/icons/cadeio-icons/misc/chevrons-down.svg",
+      "proposed": "/icons/cadeio-icons/misc/chevrons-down.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 344,
+      "sha256": "2d93903cb5f36399d96cc008d4b0eb798010417055e5e8ca2bf30ef97e9e03f9"
+    },
+    {
+      "source": "public/icons/cadeio-icons/misc/chevrons-left.svg",
+      "current": "/icons/cadeio-icons/misc/chevrons-left.svg",
+      "proposed": "/icons/cadeio-icons/misc/chevrons-left.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 348,
+      "sha256": "6651d6f1702d8c001b7cc1959dd4b1b1a8380bbc6d24aeaa53a3403361d03a23"
+    },
+    {
+      "source": "public/icons/cadeio-icons/misc/chevrons-right.svg",
+      "current": "/icons/cadeio-icons/misc/chevrons-right.svg",
+      "proposed": "/icons/cadeio-icons/misc/chevrons-right.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 349,
+      "sha256": "7abdbc7ba5f66e8ef244eb4e459d84533b694492d21ef30d62f86654ec2e1542"
+    },
+    {
+      "source": "public/icons/cadeio-icons/misc/chevrons-up.svg",
+      "current": "/icons/cadeio-icons/misc/chevrons-up.svg",
+      "proposed": "/icons/cadeio-icons/misc/chevrons-up.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 350,
+      "sha256": "7014f9c945a4eb8e47e4d35723cd6e86d5c062e55eed3c1d83eb73a581c77634"
+    },
+    {
+      "source": "public/icons/cadeio-icons/misc/circle-close.svg",
+      "current": "/icons/cadeio-icons/misc/circle-close.svg",
+      "proposed": "/icons/cadeio-icons/misc/circle-close.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 429,
+      "sha256": "f6bae3c60898b1308ccd99edeb407f6eb18ebe477778dab21b4e3fa779f3e51e"
+    },
+    {
+      "source": "public/icons/cadeio-icons/misc/circle-plus.svg",
+      "current": "/icons/cadeio-icons/misc/circle-plus.svg",
+      "proposed": "/icons/cadeio-icons/misc/circle-plus.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 304,
+      "sha256": "753a9687e8f4e42ff32e3a705789f9c22fa3103c39dbabfb69d6402689c26994"
+    },
+    {
+      "source": "public/icons/cadeio-icons/misc/eye-closed.svg",
+      "current": "/icons/cadeio-icons/misc/eye-closed.svg",
+      "proposed": "/icons/cadeio-icons/misc/eye-closed.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 778,
+      "sha256": "a2c51be20b81618cd4bd7418e13405c5d6e0c25a3dc4ff794aab728ec95e653c"
+    },
+    {
+      "source": "public/icons/cadeio-icons/misc/eye.svg",
+      "current": "/icons/cadeio-icons/misc/eye.svg",
+      "proposed": "/icons/cadeio-icons/misc/eye.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 382,
+      "sha256": "b02d95cbb9c3bcd3ce26079ebb510d7943f8a998100adf98c71d1b3e05010d5c"
+    },
+    {
+      "source": "public/icons/cadeio-icons/misc/plus.svg",
+      "current": "/icons/cadeio-icons/misc/plus.svg",
+      "proposed": "/icons/cadeio-icons/misc/plus.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 206,
+      "sha256": "8ebaefcc2a854e3827aa89c23eaea33b7bd9e2938e89e68d5e20a440520323c8"
+    },
+    {
+      "source": "public/icons/cadeio-icons/socials/email.svg",
+      "current": "/icons/cadeio-icons/socials/email.svg",
+      "proposed": "/icons/cadeio-icons/socials/email.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 314,
+      "sha256": "3f332eb888241cd1363eb04c7e6c0faa6eeba1ee27beceac0e5b6f08a66d3140"
+    },
+    {
+      "source": "public/icons/cadeio-icons/socials/facebook.svg",
+      "current": "/icons/cadeio-icons/socials/facebook.svg",
+      "proposed": "/icons/cadeio-icons/socials/facebook.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 303,
+      "sha256": "cd753f04695d46b6faef262b33477bffc6a5449e80e35cae60f4bcc152ea4761"
+    },
+    {
+      "source": "public/icons/cadeio-icons/socials/github.svg",
+      "current": "/icons/cadeio-icons/socials/github.svg",
+      "proposed": "/icons/cadeio-icons/socials/github.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 527,
+      "sha256": "2f80c3367c46f586f8195640b78cd3cb5b343307f1ee6e768cd3b6bb7c470d62"
+    },
+    {
+      "source": "public/icons/cadeio-icons/socials/instagram.svg",
+      "current": "/icons/cadeio-icons/socials/instagram.svg",
+      "proposed": "/icons/cadeio-icons/socials/instagram.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 400,
+      "sha256": "19c74f468a21802769265fd69adbaac0a9fee78dc3020ea833b4f0578b4daac8"
+    },
+    {
+      "source": "public/icons/cadeio-icons/socials/linkedin.svg",
+      "current": "/icons/cadeio-icons/socials/linkedin.svg",
+      "proposed": "/icons/cadeio-icons/socials/linkedin.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 400,
+      "sha256": "2ca1d3eb5011d7b73ffc9ad142f44835e344cab93bca281d3f7bdcbd43a02727"
+    },
+    {
+      "source": "public/icons/cadeio-icons/socials/twitch.svg",
+      "current": "/icons/cadeio-icons/socials/twitch.svg",
+      "proposed": "/icons/cadeio-icons/socials/twitch.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 277,
+      "sha256": "5d5c1d88cb661eef1008faf85b23294dd482cdff9bb3c944f7254cf63b87c9f2"
+    },
+    {
+      "source": "public/icons/cadeio-icons/socials/twitter.svg",
+      "current": "/icons/cadeio-icons/socials/twitter.svg",
+      "proposed": "/icons/cadeio-icons/socials/twitter.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 408,
+      "sha256": "c04462ad3d9e3f3055193ea3c89f3b48184e0945c841c766f29f48e3d174540b"
+    },
+    {
+      "source": "public/icons/cadeio-icons/socials/website.svg",
+      "current": "/icons/cadeio-icons/socials/website.svg",
+      "proposed": "/icons/cadeio-icons/socials/website.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 332,
+      "sha256": "79ddbe9a0464b5948844b4361512c4ada4afc0a8066e94f42a9f9445c3779146"
+    },
+    {
+      "source": "public/icons/cadeio-icons/socials/youtube.svg",
+      "current": "/icons/cadeio-icons/socials/youtube.svg",
+      "proposed": "/icons/cadeio-icons/socials/youtube.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 565,
+      "sha256": "ce16e93a9c7da8a21099a64517e3c8159c5248be6eb938d49189f54ffa2f4ab6"
+    },
+    {
+      "source": "public/icons/cadeio-icons/uiux/arrow-right.svg",
+      "current": "/icons/cadeio-icons/uiux/arrow-right.svg",
+      "proposed": "/icons/cadeio-icons/uiux/arrow-right.svg",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 370,
+      "sha256": "33a6a26f470709710c1927dad6e76ac35b31179da702f7e993393b96123b142e"
+    },
+    {
+      "source": "public/site.webmanifest",
+      "current": "/site.webmanifest",
+      "proposed": "/site.webmanifest",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 435,
+      "sha256": "de2bb8c4b5dec96aa65e5476e381ccc534bfbfaabcc019507d8779c12f4aeaea"
+    },
+    {
+      "source": "public/web-app-manifest-192x192.png",
+      "current": "/web-app-manifest-192x192.png",
+      "proposed": "/web-app-manifest-192x192.png",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 2732,
+      "sha256": "75066e584069f3351fb7866c996086eddf4448883e7f4b398ef3a0620c8f9149"
+    },
+    {
+      "source": "public/web-app-manifest-512x512.png",
+      "current": "/web-app-manifest-512x512.png",
+      "proposed": "/web-app-manifest-512x512.png",
+      "action": "keep-until-ownership-migration",
+      "evidence": "tracked public file; individual live HTTP status not checked",
+      "bytes": 11176,
+      "sha256": "5fd099be9cf32791bbe0300f02811cd9465d986885e38bf9b1a805e05d8b144d"
+    }
+  ],
+  "knownBrokenInternalLinks": [
+    {
+      "current": "/2020/08/05/diy-gamma-zeta",
+      "from": [
+        "/links/"
+      ]
+    },
+    {
+      "current": "/posts/dataset-smcefr/smcefr-mini.tar.gz",
+      "from": [
+        "/posts/dataset-smcefr/"
+      ]
+    },
+    {
+      "current": "/posts/magma-paper/magma-paper.pdf",
+      "from": [
+        "/posts/magma-paper/"
+      ]
+    },
+    {
+      "current": "/blog",
+      "from": [
+        "/posts/my-writing-environment/"
+      ]
+    }
+  ],
+  "legacyAliases": [
+    {
+      "current": "/2020/08/05/diy-gamma-zeta",
+      "proposed": "/blog/diy-gamma-zeta",
+      "action": "301",
+      "evidence": "existing internal link"
+    },
+    {
+      "current": "/posts/magma-paper/magma-paper.pdf",
+      "proposed": "/blog/magma-paper/dense-linear-algebra-amd-gpus-hpec-2020.pdf",
+      "action": "301",
+      "evidence": "broken internal link; genuine PDF exists in public assets"
+    },
+    {
+      "current": "/posts/dataset-smcefr/smcefr-mini.tar.gz",
+      "proposed": null,
+      "action": "recover-file-or-repair-reference",
+      "evidence": "broken internal link; dataset archive absent from tracked source"
+    }
+  ],
+  "generatedBuildAssets": [
+    "/_astro/Base.astro_astro_type_script_index_0_lang.DC_75Q_Z.js",
+    "/_astro/ClientRouter.astro_astro_type_script_index_0_lang.j56hQv-j.js",
+    "/_astro/KaTeX_AMS-Regular.BQhdFMY1.woff2",
+    "/_astro/KaTeX_AMS-Regular.DMm9YOAa.woff",
+    "/_astro/KaTeX_AMS-Regular.DRggAlZN.ttf",
+    "/_astro/KaTeX_Caligraphic-Bold.ATXxdsX0.ttf",
+    "/_astro/KaTeX_Caligraphic-Bold.BEiXGLvX.woff",
+    "/_astro/KaTeX_Caligraphic-Bold.Dq_IR9rO.woff2",
+    "/_astro/KaTeX_Caligraphic-Regular.CTRA-rTL.woff",
+    "/_astro/KaTeX_Caligraphic-Regular.Di6jR-x-.woff2",
+    "/_astro/KaTeX_Caligraphic-Regular.wX97UBjC.ttf",
+    "/_astro/KaTeX_Fraktur-Bold.BdnERNNW.ttf",
+    "/_astro/KaTeX_Fraktur-Bold.BsDP51OF.woff",
+    "/_astro/KaTeX_Fraktur-Bold.CL6g_b3V.woff2",
+    "/_astro/KaTeX_Fraktur-Regular.CB_wures.ttf",
+    "/_astro/KaTeX_Fraktur-Regular.CTYiF6lA.woff2",
+    "/_astro/KaTeX_Fraktur-Regular.Dxdc4cR9.woff",
+    "/_astro/KaTeX_Main-Bold.Cx986IdX.woff2",
+    "/_astro/KaTeX_Main-Bold.Jm3AIy58.woff",
+    "/_astro/KaTeX_Main-Bold.waoOVXN0.ttf",
+    "/_astro/KaTeX_Main-BoldItalic.DxDJ3AOS.woff2",
+    "/_astro/KaTeX_Main-BoldItalic.DzxPMmG6.ttf",
+    "/_astro/KaTeX_Main-BoldItalic.SpSLRI95.woff",
+    "/_astro/KaTeX_Main-Italic.3WenGoN9.ttf",
+    "/_astro/KaTeX_Main-Italic.BMLOBm91.woff",
+    "/_astro/KaTeX_Main-Italic.NWA7e6Wa.woff2",
+    "/_astro/KaTeX_Main-Regular.B22Nviop.woff2",
+    "/_astro/KaTeX_Main-Regular.Dr94JaBh.woff",
+    "/_astro/KaTeX_Main-Regular.ypZvNtVU.ttf",
+    "/_astro/KaTeX_Math-BoldItalic.B3XSjfu4.ttf",
+    "/_astro/KaTeX_Math-BoldItalic.CZnvNsCZ.woff2",
+    "/_astro/KaTeX_Math-BoldItalic.iY-2wyZ7.woff",
+    "/_astro/KaTeX_Math-Italic.DA0__PXp.woff",
+    "/_astro/KaTeX_Math-Italic.flOr_0UB.ttf",
+    "/_astro/KaTeX_Math-Italic.t53AETM-.woff2",
+    "/_astro/KaTeX_SansSerif-Bold.CFMepnvq.ttf",
+    "/_astro/KaTeX_SansSerif-Bold.D1sUS0GD.woff2",
+    "/_astro/KaTeX_SansSerif-Bold.DbIhKOiC.woff",
+    "/_astro/KaTeX_SansSerif-Italic.C3H0VqGB.woff2",
+    "/_astro/KaTeX_SansSerif-Italic.DN2j7dab.woff",
+    "/_astro/KaTeX_SansSerif-Italic.YYjJ1zSn.ttf",
+    "/_astro/KaTeX_SansSerif-Regular.BNo7hRIc.ttf",
+    "/_astro/KaTeX_SansSerif-Regular.CS6fqUqJ.woff",
+    "/_astro/KaTeX_SansSerif-Regular.DDBCnlJ7.woff2",
+    "/_astro/KaTeX_Script-Regular.C5JkGWo-.ttf",
+    "/_astro/KaTeX_Script-Regular.D3wIWfF6.woff2",
+    "/_astro/KaTeX_Script-Regular.D5yQViql.woff",
+    "/_astro/KaTeX_Size1-Regular.C195tn64.woff",
+    "/_astro/KaTeX_Size1-Regular.Dbsnue_I.ttf",
+    "/_astro/KaTeX_Size1-Regular.mCD8mA8B.woff2",
+    "/_astro/KaTeX_Size2-Regular.B7gKUWhC.ttf",
+    "/_astro/KaTeX_Size2-Regular.Dy4dx90m.woff2",
+    "/_astro/KaTeX_Size2-Regular.oD1tc_U0.woff",
+    "/_astro/KaTeX_Size3-Regular.CTq5MqoE.woff",
+    "/_astro/KaTeX_Size3-Regular.DgpXs0kz.ttf",
+    "/_astro/KaTeX_Size4-Regular.BF-4gkZK.woff",
+    "/_astro/KaTeX_Size4-Regular.DWFBv043.ttf",
+    "/_astro/KaTeX_Size4-Regular.Dl5lxZxV.woff2",
+    "/_astro/KaTeX_Typewriter-Regular.C0xS9mPB.woff",
+    "/_astro/KaTeX_Typewriter-Regular.CO6r4hn1.woff2",
+    "/_astro/KaTeX_Typewriter-Regular.D3Ib7_Hf.ttf",
+    "/_astro/Page.CagvRA7N.css",
+    "/_astro/_baseUniq.CphoIVhZ.js",
+    "/_astro/apexcharts.esm.CfSzfZrp.js",
+    "/_astro/arc.D7OxG42S.js",
+    "/_astro/architectureDiagram-Q4EWVU46.DSF1gKKY.js",
+    "/_astro/azh-shower-thought.RfcpSMJX.webp",
+    "/_astro/azh-shower-thought.RfcpSMJX_Z1DMDYq.webp",
+    "/_astro/blockDiagram-DXYQGD6D.CmFXc-Sn.js",
+    "/_astro/c4Diagram-AHTNJAMY.BrrUolWU.js",
+    "/_astro/cade-brown.DTIRuHYU.webp",
+    "/_astro/cade-brown.DTIRuHYU_2c36m9.webp",
+    "/_astro/cade-isef-0.BP6H3faE_Z1MfRf9.webp",
+    "/_astro/cade-isef-1._dNj3Avu_ZwxfL.webp",
+    "/_astro/channel.BXuNqIx0.js",
+    "/_astro/chunk-4BX2VUAB.Dz8cwuqP.js",
+    "/_astro/chunk-4TB4RGXK.D_aIXbEy.js",
+    "/_astro/chunk-55IACEB6.NoxG0LQu.js",
+    "/_astro/chunk-EDXVE4YY.22ODvNH5.js",
+    "/_astro/chunk-FMBD7UC4.B37d0Vc9.js",
+    "/_astro/chunk-OYMX7WX6.DK2V3-JS.js",
+    "/_astro/chunk-QZHKN3VN.Dyr0tZgW.js",
+    "/_astro/chunk-YZCP3GAM.D91lL6ET.js",
+    "/_astro/classDiagram-6PBFFD2Q.Dzti6EJZ.js",
+    "/_astro/classDiagram-v2-HSJHXN6E.Dzti6EJZ.js",
+    "/_astro/clone.DbkLkiUL.js",
+    "/_astro/cose-bilkent-S5V4N54A.CP2SS0Mc.js",
+    "/_astro/cytoscape.esm.DH6-wILU.js",
+    "/_astro/dagre-KV5264BT.Cinrdh20.js",
+    "/_astro/defaultLocale.DX6XiGOO.js",
+    "/_astro/demo-lps.lBCAsd4C_ZKHWAa.webp",
+    "/_astro/diagram-5BDNPKRD.1weRx4Aa.js",
+    "/_astro/diagram-G4DWMVQ6.BfMMJjW5.js",
+    "/_astro/diagram-MMDJMWI5.DpV7V59T.js",
+    "/_astro/diagram-TYMM5635.BIWkmGb_.js",
+    "/_astro/diffusion-posters.CPsJj2Tl.webp",
+    "/_astro/diffusion-posters.CPsJj2Tl_1Ywd4g.webp",
+    "/_astro/diy-gamma-zeta.4G15ptyQ.webp",
+    "/_astro/diy-gamma-zeta.4G15ptyQ_Zq2nQl.webp",
+    "/_astro/diy-miller-rabin.DnqvmE4u.webp",
+    "/_astro/diy-miller-rabin.DnqvmE4u_ggtXf.webp",
+    "/_astro/ec.0vx5m.js",
+    "/_astro/ec.l2uu0.css",
+    "/_astro/elephant-0.CdbtFLFg_Z1kHDKx.webp",
+    "/_astro/elephant-1.XCXbJW4J_ZBykm0.webp",
+    "/_astro/erDiagram-SMLLAGMA.rk6jvCdR.js",
+    "/_astro/flowDiagram-DWJPFMVM.ByyLuG2T.js",
+    "/_astro/ganttDiagram-T4ZO3ILL.BSH-9bxq.js",
+    "/_astro/gitGraphDiagram-UUTBAWPF.k-vR59Ps.js",
+    "/_astro/graph.Do0722Xx.js",
+    "/_astro/infoDiagram-42DDH7IO.CYp49FpH.js",
+    "/_astro/init.Gi6I4Gst.js",
+    "/_astro/ishikawaDiagram-UXIWVN3A.B8V5Y48x.js",
+    "/_astro/journeyDiagram-VCZTEJTY.BX-ck0OF.js",
+    "/_astro/kanban-definition-6JOO6SKY.b1d8gafd.js",
+    "/_astro/kardinality-test.bpryyPBh.png",
+    "/_astro/kardinality-test.bpryyPBh_ZMepeU.webp",
+    "/_astro/katex.DHMw6HUq.js",
+    "/_astro/layout.DMEuobQb.js",
+    "/_astro/linear.B2RodK5u.js",
+    "/_astro/machine-god.Cyy7M1tJ.webp",
+    "/_astro/machine-god.Cyy7M1tJ_AM3f6.webp",
+    "/_astro/machine-knuth-boxes.DuJhDAXS_1pRj0d.webp",
+    "/_astro/machine-knuth.DO_h3L40.webp",
+    "/_astro/machine-knuth.DO_h3L40_1Ow4DT.webp",
+    "/_astro/machine-kolmogorov.3SwdwMtj.webp",
+    "/_astro/machine-kolmogorov.3SwdwMtj_KRLHT.webp",
+    "/_astro/magma-paper.BajOsIt3.webp",
+    "/_astro/magma-paper.BajOsIt3_ZuyW1A.webp",
+    "/_astro/mandelbrot-3d.DD5hXTuf_1Wzucg.webp",
+    "/_astro/mandelbrot.C9r99pXD.webp",
+    "/_astro/mandelbrot.C9r99pXD_1QcjyU.webp",
+    "/_astro/mermaid-layout-elk.core.4QpZqzmv.js",
+    "/_astro/mermaid.core.BcIOxEph.js",
+    "/_astro/min.DjratxNf.js",
+    "/_astro/mindmap-definition-QFDTVHPH.BsrVdobR.js",
+    "/_astro/on-calc.C0FOHfKx_Z1k17ox.webp",
+    "/_astro/ordinal.BYWQX77i.js",
+    "/_astro/page.T4WdQbxf.js",
+    "/_astro/phone-0.CD8wIqvE.webp",
+    "/_astro/phone-0.CD8wIqvE_ZqGRmh.webp",
+    "/_astro/phone-1.BHHyY0zH.webp",
+    "/_astro/phone-1.BHHyY0zH_2sOIiC.webp",
+    "/_astro/phone-2.Bkadelhr.webp",
+    "/_astro/phone-2.Bkadelhr_9EQB6.webp",
+    "/_astro/phone-3.CC83dGvM.webp",
+    "/_astro/phone-3.CC83dGvM_Z1lVJra.webp",
+    "/_astro/phone-4.mwAY2TeW.webp",
+    "/_astro/phone-4.mwAY2TeW_ZtjpE8.webp",
+    "/_astro/phone-5._jKQPU6L.webp",
+    "/_astro/phone-5._jKQPU6L_j14uC.webp",
+    "/_astro/phone-6.CSXj_1yw.webp",
+    "/_astro/phone-6.CSXj_1yw_Z1AlOP0.webp",
+    "/_astro/phone-7.DnshkxvP.webp",
+    "/_astro/phone-7.DnshkxvP_Z27n4YA.webp",
+    "/_astro/phonecase.D6jxsnLc_2pcQ9.webp",
+    "/_astro/pieDiagram-DEJITSTG.CTell08V.js",
+    "/_astro/poster-36x24-0.COFg6zE0.webp",
+    "/_astro/poster-36x24-0.COFg6zE0_Zf3REb.webp",
+    "/_astro/poster-36x24-1.Dgx-tCkA.webp",
+    "/_astro/poster-36x24-1.Dgx-tCkA_29Nc4q.webp",
+    "/_astro/poster-36x24-10.C1EuScFo.webp",
+    "/_astro/poster-36x24-10.C1EuScFo_2aqbef.webp",
+    "/_astro/poster-36x24-11.Ccz99ob3.webp",
+    "/_astro/poster-36x24-11.Ccz99ob3_Z2jM53P.webp",
+    "/_astro/poster-36x24-12.B3CM5V0Z.webp",
+    "/_astro/poster-36x24-12.B3CM5V0Z_Z10aUlJ.webp",
+    "/_astro/poster-36x24-13.aV7c-zxD.webp",
+    "/_astro/poster-36x24-13.aV7c-zxD_ZrnV4v.webp",
+    "/_astro/poster-36x24-14._3hr-RG6.webp",
+    "/_astro/poster-36x24-14._3hr-RG6_1HSgfc.webp",
+    "/_astro/poster-36x24-15.y6KFXh2m.webp",
+    "/_astro/poster-36x24-15.y6KFXh2m_22qFDX.webp",
+    "/_astro/poster-36x24-16.d35_wgIz.webp",
+    "/_astro/poster-36x24-16.d35_wgIz_XDDqI.webp",
+    "/_astro/poster-36x24-17.BlGbZA4J.webp",
+    "/_astro/poster-36x24-17.BlGbZA4J_caGms.webp",
+    "/_astro/poster-36x24-18.CXjhEQLN.webp",
+    "/_astro/poster-36x24-18.CXjhEQLN_2qaB3C.webp",
+    "/_astro/poster-36x24-19.DGEqROQM.webp",
+    "/_astro/poster-36x24-19.DGEqROQM_1Q7GHp.webp",
+    "/_astro/poster-36x24-2.B2LDyq19.webp",
+    "/_astro/poster-36x24-2.B2LDyq19_Z1VTHo.webp",
+    "/_astro/poster-36x24-20.Cs2KFNN7.webp",
+    "/_astro/poster-36x24-20.Cs2KFNN7_Z2kh5xx.webp",
+    "/_astro/poster-36x24-21.DaVQwR6m.webp",
+    "/_astro/poster-36x24-21.DaVQwR6m_RAb5Q.webp",
+    "/_astro/poster-36x24-22.CDcs-Jcx.webp",
+    "/_astro/poster-36x24-22.CDcs-Jcx_Z2pDdKm.webp",
+    "/_astro/poster-36x24-23.DIAUVVOW.webp",
+    "/_astro/poster-36x24-23.DIAUVVOW_29cHiq.webp",
+    "/_astro/poster-36x24-3.B0ezGDvZ.webp",
+    "/_astro/poster-36x24-3.B0ezGDvZ_gPAbR.webp",
+    "/_astro/poster-36x24-4.DajaZxFZ.webp",
+    "/_astro/poster-36x24-4.DajaZxFZ_Z26RxS8.webp",
+    "/_astro/poster-36x24-5.C5VAHWZm.webp",
+    "/_astro/poster-36x24-5.C5VAHWZm_ZP76gk.webp",
+    "/_astro/poster-36x24-6.DxU7Q4Kd.webp",
+    "/_astro/poster-36x24-6.DxU7Q4Kd_Z2miIA4.webp",
+    "/_astro/poster-36x24-7.DcY7zol6.webp",
+    "/_astro/poster-36x24-7.DcY7zol6_1E29O1.webp",
+    "/_astro/poster-36x24-8.CjzfY0el.webp",
+    "/_astro/poster-36x24-8.CjzfY0el_1KSjp6.webp",
+    "/_astro/poster-36x24-9.te1lL3dZ.webp",
+    "/_astro/poster-36x24-9.te1lL3dZ_ZRbdej.webp",
+    "/_astro/preload-helper.CVfkMyKi.js",
+    "/_astro/quadrantDiagram-34T5L4WZ.DdAViGmc.js",
+    "/_astro/render-TAZW7USW.DOLkzgk1.js",
+    "/_astro/requirementDiagram-MS252O5E.BMI-F-Wh.js",
+    "/_astro/rust-poker-0.DTpigm4m.webp",
+    "/_astro/rust-poker-0.DTpigm4m_1ezEcL.webp",
+    "/_astro/sankeyDiagram-XADWPNL6.DnLaQXrO.js",
+    "/_astro/scepter-0.J4Gp-hxq_Z24QpYb.webp",
+    "/_astro/sequence-a267263.lI1WHyog.webp",
+    "/_astro/sequence-a267263.lI1WHyog_1RMSVC.webp",
+    "/_astro/sequenceDiagram-FGHM5R23.BPh98sJt.js",
+    "/_astro/smcefr-dataset-schema.BHRtWFW7_Z1UJmf1.webp",
+    "/_astro/smcefr-dataset.CX9T0sCG.webp",
+    "/_astro/smcefr-dataset.CX9T0sCG_1thDuY.webp",
+    "/_astro/stateDiagram-FHFEXIEX.CXQYYu11.js",
+    "/_astro/stateDiagram-v2-QKLJ7IA2.DRzo0M9f.js",
+    "/_astro/test.CpXnP3kG.png",
+    "/_astro/test.CpXnP3kG_ZUltnh.webp",
+    "/_astro/timeline-definition-GMOUNBTQ.Cqvf8YLp.js",
+    "/_astro/transform.D_260NPj.js",
+    "/_astro/vennDiagram-DHZGUBPP.C8QzaAUq.js",
+    "/_astro/vision-0.2E0c3b-b.webp",
+    "/_astro/vision-0.2E0c3b-b_294KvB.webp",
+    "/_astro/vision-1.Cs30rYkw.webp",
+    "/_astro/vision-1.Cs30rYkw_1DvsBS.webp",
+    "/_astro/vision-10.Cjhiu1Mp.webp",
+    "/_astro/vision-10.Cjhiu1Mp_RtFyw.webp",
+    "/_astro/vision-11.rU78vO4Y.webp",
+    "/_astro/vision-11.rU78vO4Y_Z8JxnU.webp",
+    "/_astro/vision-2.C94Fngaw.webp",
+    "/_astro/vision-2.C94Fngaw_1xm1y9.webp",
+    "/_astro/vision-3.DPB4wBrO.webp",
+    "/_astro/vision-3.DPB4wBrO_ybKoT.webp",
+    "/_astro/vision-4.BHUfrVU-.webp",
+    "/_astro/vision-4.BHUfrVU-_soQ0G.webp",
+    "/_astro/vision-5.C31dB9Ec.webp",
+    "/_astro/vision-5.C31dB9Ec_Z1lNeRA.webp",
+    "/_astro/vision-6.CndZyq05.webp",
+    "/_astro/vision-6.CndZyq05_Z1CzLV7.webp",
+    "/_astro/vision-7.BXEsFENu.webp",
+    "/_astro/vision-7.BXEsFENu_Sl9L3.webp",
+    "/_astro/vision-8.DT6omFmL.webp",
+    "/_astro/vision-8.DT6omFmL_1WiVdx.webp",
+    "/_astro/vision-9.C52Nn8Zf.webp",
+    "/_astro/vision-9.C52Nn8Zf_LjPaj.webp",
+    "/_astro/wardley-RL74JXVD.BnHTWcuJ.js",
+    "/_astro/wardleyDiagram-NUSXRM2D.C0nywlfI.js",
+    "/_astro/xychartDiagram-5P7HB3ND.BaMDPB2b.js"
+  ]
+}

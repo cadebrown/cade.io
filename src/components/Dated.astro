@@ -2,7 +2,7 @@
 import { formatDate } from '@format'
 
 type Props = {
-	dated: Date
+  dated: Date
 }
 
 const { dated } = Astro.props
@@ -11,7 +11,7 @@ const { dated } = Astro.props
 <time datetime={dated.toISOString()}>{formatDate(dated)}</time>
 
 <style>
-	time {
-		font-weight: bold;
-	}
+  time {
+    font-weight: bold;
+  }
 </style>

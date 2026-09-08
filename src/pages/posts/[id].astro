@@ -1,36 +1,53 @@
 ---
-import { type CollectionEntry, getCollection, getEntry, render } from 'astro:content'
+import { type CollectionEntry, getEntries, render } from 'astro:content'
 import Post from '@layouts/Post.astro'
 import StructuredData from '@components/StructuredData.astro'
 import { readingStats } from '@format'
+import { getPublishedPosts } from '../../lib/content'
+import { discoverPostFiles } from '../../lib/post-files'
+import PostFiles from '@components/PostFiles.astro'
 
 export async function getStaticPaths() {
-	const posts = await getCollection('posts')
-	return posts.map((post) => ({
-		params: { id: post.id },
-		props: { post: post },
-	}))
+  const posts = await getPublishedPosts({ includeDrafts: import.meta.env.DEV })
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post: post },
+  }))
 }
 
 type Props = {
-	post: CollectionEntry<'posts'>
+  post: CollectionEntry<'posts'>
 }
 
 const { post } = Astro.props
 const {
-	data: { dated, title, blurb, image, authors, ...rest },
+  data: { dated, title, blurb, image, authors, ...rest },
 } = post
 
-// In Astro 6, references in collection data are bare strings (the IDs).
-const authorEntries = (await Promise.all(authors.map((id) => getEntry('authors', id)))).filter(
-	(e): e is CollectionEntry<'authors'> => e !== undefined,
-)
+const authorEntries = await getEntries(authors)
 const reading = readingStats(post.body ?? '')
 
 const { Content } = await render(post)
+const files = await discoverPostFiles(post.id, post.data.files)
 ---
 
-<Post title={title} blurb={blurb} image={image} authors={authors} dated={dated} reading={reading} {...rest}>
-	<StructuredData title={title} blurb={blurb} dated={dated} image={image} authors={authorEntries} />
-	<Content />
+<Post
+  title={title}
+  blurb={blurb}
+  image={image}
+  authors={authors}
+  dated={dated}
+  reading={reading}
+  {...rest}
+>
+  <StructuredData
+    title={title}
+    blurb={blurb}
+    dated={dated}
+    updated={post.data.updated}
+    image={image}
+    authors={authorEntries}
+  />
+  <Content />
+  <PostFiles id={post.id} files={files} />
 </Post>

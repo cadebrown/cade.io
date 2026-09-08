@@ -52,7 +52,7 @@ variable "github_repo" {
 variable "pages_build_command" {
   description = "Build command used by Cloudflare Pages. Build first, then test — the build smoke tests in tests/build.test.ts assert against dist/, so dist/ must exist before tests run. Failing tests still cause the whole command to exit non-zero, which blocks the deploy."
   type        = string
-  default     = "npm run build && npm test"
+  default     = "npm run validate:ci"
 }
 
 variable "pages_destination_dir" {

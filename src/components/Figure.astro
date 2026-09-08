@@ -9,6 +9,7 @@ type Props = {
   style?: string
   class?: string
   href?: string
+  original?: string
   imgStyle?: string
   imgClass?: string
 }
@@ -20,6 +21,7 @@ const {
   style,
   class: className,
   href,
+  original,
   imgStyle,
   imgClass,
   ...rest
@@ -27,7 +29,22 @@ const {
 ---
 
 <figure class:list={[className]} style={style} {...rest}>
-    <slot />
-    <Image src={src} alt={alt} style={imgStyle} class={imgClass} />
-    {caption && <figcaption>{caption}</figcaption>}
+  <slot />
+  {
+    href ? (
+      <a href={href}>
+        <Image src={src} alt={alt} style={imgStyle} class={imgClass} />
+      </a>
+    ) : (
+      <Image src={src} alt={alt} style={imgStyle} class={imgClass} />
+    )
+  }
+  {caption && <figcaption>{caption}</figcaption>}
+  {
+    original && (
+      <a href={original} download>
+        Download original
+      </a>
+    )
+  }
 </figure>

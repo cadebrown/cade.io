@@ -29,8 +29,8 @@ html[data-theme="blackboard"] {
 
 html[data-theme="whiteboard"] {
     --wow-text: #000;
-    --wow-link: #5af;
-    --wow-link-visited: #a5f;
+    --wow-link: #075ca8;
+    --wow-link-visited: #7133a6;
 
     --wow-high: #ccc;
 
@@ -232,11 +232,7 @@ html[data-theme="whiteboard"] {
     margin: 0 auto;
 }
 
-:where(svg) {
-    /* by default, SVGs should be the same color (i.e. for icons) */
-    fill: currentColor;
-    stroke: currentColor;
-}
+/* SVG artwork and icons carry their own fill/stroke attributes. */
 
 /* for inline SVGs, this helps with alignment */
 /* TODO: should this be enabled? */
@@ -768,43 +764,37 @@ html[data-theme="whiteboard"] {
 /* Autolink Headings (markdown extensions) */
 
 a.autolink-headings-link {
-    /* hidden by default */
-    display: none;
-    /* display: inline; */
-
-    /* center in parent */
-    /* justify-content: center; */
-    /* align-items: center; */
-    /* vertical-align: text-bottom; */
-
-    /* fine tune position and spacing */
-    position: relative;
-    /* bottom: 0.08em; */
-    margin: 0 0.2em;
-
-    /* bold, but no underline */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5em;
+    min-height: 1.5em;
+    margin-inline-start: 0.15em;
+    vertical-align: middle;
     text-decoration: none;
-    font-weight: bold;
 }
 
+/* Preserve the keyboard target without adding visual noise on pointer devices. */
+@media (hover: hover) and (pointer: fine) {
+    a.autolink-headings-link {
+        opacity: 0;
+    }
 
-h1:hover a.autolink-headings-link,
-h2:hover a.autolink-headings-link,
-h3:hover a.autolink-headings-link,
-h4:hover a.autolink-headings-link,
-h5:hover a.autolink-headings-link,
-h6:hover a.autolink-headings-link {
-    /* when hovering over heading, show the link */
-    display: inline;
+    :is(h1, h2, h3, h4, h5, h6):hover a.autolink-headings-link,
+    a.autolink-headings-link:focus-visible {
+        opacity: 1;
+    }
 }
 
+:where(a, button, input, select, textarea, summary):focus-visible {
+    outline: 2px solid var(--wow-link);
+    outline-offset: 3px;
+}
 
 svg.autolink-headings-icon {
-    /* fine tune size */
     width: 0.8em;
     height: 0.8em;
 }
-
 
 /****/
 

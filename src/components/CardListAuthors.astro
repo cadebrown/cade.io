@@ -1,37 +1,35 @@
 ---
 import type { CollectionEntry } from 'astro:content'
+import { authorUrl } from '../lib/urls'
 
 import CardList from '@components/CardList.astro'
 import Card from '@components/Card.astro'
 import Socials from '@components/Socials.astro'
 
 type Props = {
-    authors: CollectionEntry<'authors'>[]
+  authors: CollectionEntry<'authors'>[]
 }
 
 const { authors } = Astro.props
 ---
 
-<CardList items={authors}>
-    {
-        ({ id, data: { name, blurb, image, socials } }) => {
-            const href = `/authors/${id}`
-            return (
-                <Card href={href} image={image} title={name} blurb={blurb}>
-                    <span slot='title' class='cardlist-authors-title'>
-                        <a href={href}>{name}</a>
-                        <Socials socials={socials} />
-                    </span>
-                </Card>
-            )
-        }
-    }
+<CardList>
+  {
+    authors.map(({ id, data: { name, blurb, image, socials } }) => (
+      <Card href={authorUrl(id)} image={image} title={name} blurb={blurb}>
+        <span slot='title' class='cardlist-authors-title'>
+          <a href={authorUrl(id)}>{name}</a>
+          <Socials socials={socials} />
+        </span>
+      </Card>
+    ))
+  }
 </CardList>
 
 <style>
-    span.cardlist-authors-title a {
-        color: inherit;
-        font-weight: bold;
-        font-size: 1.6em;
-    }
+  span.cardlist-authors-title a {
+    color: inherit;
+    font-weight: bold;
+    font-size: 1.6em;
+  }
 </style>

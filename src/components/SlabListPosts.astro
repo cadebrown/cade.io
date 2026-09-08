@@ -2,29 +2,28 @@
 // SlabListPosts.astro - specialized SlabList for posts
 
 import type { CollectionEntry } from 'astro:content'
-import Authors from './Authors.astro'
-import Dated from './Dated.astro'
+import { postUrl } from '../lib/content'
 import Slab from './Slab.astro'
 import SlabList from './SlabList.astro'
 
 type Props = {
-    posts: CollectionEntry<'posts'>[]
+  posts: CollectionEntry<'posts'>[]
 }
 
 const { posts } = Astro.props
 ---
 
-<SlabList items={posts}>
-    {
-        ({ id, data: { dated, title, blurb, image, authors } }: CollectionEntry<'posts'>) => (
-            <>
-                <hr />
-                <Slab href={`/posts/${id}`} image={image} title={title} blurb={blurb} dated={dated} authors={authors}>
-                    {/* <span slot='subtitle'>
-                        on <Dated dated={dated} /> by <Authors authors={authors} />
-                    </span> */}
-                </Slab>
-            </>
-        )
-    }
+<SlabList>
+  {
+    posts.map(({ id, data: { dated, title, blurb, image, authors } }) => (
+      <Slab
+        href={postUrl(id)}
+        image={image}
+        title={title}
+        blurb={blurb}
+        dated={dated}
+        authors={authors}
+      />
+    ))
+  }
 </SlabList>

@@ -1,94 +1,81 @@
 ---
-import Page from '@layouts/Page.astro'
+import Base from '@layouts/Base.astro'
 import Image from '@components/Image.astro'
-import { type CollectionEntry, getCollection, getEntries } from 'astro:content'
+import { type CollectionEntry, getCollection } from 'astro:content'
 import Socials from '@components/Socials.astro'
 import CardListPosts from '@components/CardListPosts.astro'
+import { getPublishedPosts } from '../../lib/content'
 
 // define which paths are valid for this page
 export async function getStaticPaths() {
-	const authors = await getCollection('authors')
-	return authors.map((author) => ({
-		params: { id: author.id },
-		props: { author: author },
-	}))
+  const authors = await getCollection('authors')
+  return authors.map((author) => ({
+    params: { id: author.id },
+    props: { author: author },
+  }))
 }
 
 type Props = {
-	author: CollectionEntry<'authors'>
+  author: CollectionEntry<'authors'>
 }
 
 const { author: author_ } = Astro.props
 const { name, blurb, image, socials } = author_.data
 
 // get posts by this name, sorted by most recent
-const posts = (
-	await getCollection('posts', (post) => {
-		if (import.meta.env.PROD) {
-			// in production, only show published posts (i.e. not drafts)
-			if (post.data.draft) {
-				return false;
-			}
-		}
-
-		for (const other of post.data.authors) {
-			if (other.id === author_.id) {
-				return true
-			}
-		}
-		return false
-	})
-).sort((a, b) => b.data.dated.valueOf() - a.data.dated.valueOf())
+const posts = (await getPublishedPosts({ includeDrafts: import.meta.env.DEV })).filter((post) =>
+  post.data.authors.some((author) => author.id === author_.id)
+)
 
 const title = `${name}`
 ---
 
-<Page title={title} blurb={blurb} image={image}>
-	<center class='name-top' slot='header-after'>
-		{image && <Image class='name-top-image' src={image} alt={title} />}
-		<h1 class='name-top-title'>{title}</h1>
-		<span class='name-top-socials'>
-			<Socials socials={socials} />
-		</span>
-		{blurb && <p class='name-top-blurb'>{blurb}</p>}
-	</center>
+<Base title={title} blurb={blurb} image={image}>
+  <center class='name-top' slot='header-after'>
+    {image && <Image class='name-top-image' src={image} alt={title} />}
+    <h1 class='name-top-title'>{title}</h1>
+    <span class='name-top-socials'>
+      <Socials socials={socials} />
+    </span>
+    {blurb && <p class='name-top-blurb'>{blurb}</p>}
+  </center>
 
-	<center>
-		<h2>View Their Posts</h2>
-		<CardListPosts posts={posts} />
-	</center>
-</Page>
+  <center>
+    <h2>View Their Posts</h2>
+    <CardListPosts posts={posts} />
+  </center>
+</Base>
 
 <style>
-	center.name-top {
-		/* width: 80%; */
-		margin: 1em auto;
-	}
+  center.name-top {
+    /* width: 80%; */
+    margin: 1em auto;
+  }
 
-	h1.name-top-title {
-		font-size: 2.5em;
-	}
+  h1.name-top-title {
+    font-size: 2.5em;
+  }
 
-	span.name-top-socials {
-		font-size: 1.2em;
-	}
+  span.name-top-socials {
+    font-size: 1.2em;
+  }
 
-	p.name-top-blurb {
-		font-size: 1.4em;
-	}
-	img.name-top-image {
-		display: block;
-		/* float: left; */
-		max-height: 50vh;
-		border-radius: 1em;
-		/* border-radius: 0.5em 0 0 0.5em; */
-		/* border: 1px solid black; */
-	}
+  p.name-top-blurb {
+    font-size: 1.4em;
+  }
+  img.name-top-image {
+    display: block;
+    /* float: left; */
+    max-height: 50vh;
+    border-radius: 1em;
+    /* border-radius: 0.5em 0 0 0.5em; */
+    /* border: 1px solid black; */
+  }
 
-	center.name-top img.asdf {
-		/* width: 100%; */
-		max-height: 40vh;
-		border-radius: 0.5em;
-		/* object-fit: cover; */
-	}
+  center.name-top img.asdf {
+    /* width: 100%; */
+    max-height: 40vh;
+    border-radius: 0.5em;
+    /* object-fit: cover; */
+  }
 </style>

@@ -1,0 +1,26 @@
+---
+import type { SvgComponent } from 'astro/types'
+
+type Props = {
+  name: string
+  title?: string
+  class?: string
+}
+
+const icons = import.meta.glob<{ default: SvgComponent }>('../assets/icons/**/*.svg', {
+  eager: true,
+})
+const { name, title, class: className } = Astro.props
+const Icon = icons[`../assets/icons/${name}.svg`]?.default
+if (!Icon) throw new Error(`Unknown icon: ${name}`)
+---
+
+<Icon
+  width='1em'
+  height='1em'
+  class={className}
+  aria-hidden={title ? undefined : 'true'}
+  role={title ? 'img' : undefined}
+  aria-label={title}
+  focusable='false'
+/>

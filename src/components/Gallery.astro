@@ -2,68 +2,92 @@
 import type { ImageMetadata } from 'astro'
 import Image from './Image.astro'
 
-type Props = {
-    images: (string | ImageMetadata)[]
-    alt: string
+type GalleryImage = {
+  src: string | ImageMetadata
+  alt: string
+  caption?: string
+  original?: string
 }
 
-const { images, alt } = Astro.props
+type Props = {
+  images: (string | ImageMetadata | GalleryImage)[]
+  alt?: string
+  originals?: string[]
+}
+
+const { images, alt = 'Gallery image', originals = [] } = Astro.props
+const entries = images.map((image, index): GalleryImage => {
+  if (typeof image === 'object' && 'alt' in image) return image
+  return { src: image, alt: `${alt} (${index + 1})`, original: originals[index] }
+})
 ---
 
 <ol class='gallery-list'>
-    {
-        images.map(
-            (image, index) =>
-                image && (
-                    <li class='gallery-item'>
-                        <a href={typeof image === 'string' ? image : image.src} target='_blank'>
-                            <Image src={image} alt={`${alt} (#${index + 1})`} />
-                        </a>
-                    </li>
-                )
-        )
-    }
+  {
+    entries.map(({ src, alt, caption, original }) => (
+      <li class='gallery-item'>
+        <figure>
+          {original ? (
+            <a href={original} aria-label={`Open original: ${alt}`}>
+              <Image
+                src={src}
+                alt={alt}
+                sizes='(max-width: 600px) calc(100vw - 2rem), (max-width: 1000px) 45vw, 380px'
+              />
+            </a>
+          ) : (
+            <Image
+              src={src}
+              alt={alt}
+              sizes='(max-width: 600px) calc(100vw - 2rem), (max-width: 1000px) 45vw, 380px'
+            />
+          )}
+          {(caption || original) && (
+            <figcaption>
+              {caption && <span>{caption}</span>}
+              {original && (
+                <a href={original} download>
+                  Download original
+                </a>
+              )}
+            </figcaption>
+          )}
+        </figure>
+      </li>
+    ))
+  }
 </ol>
 
 <style>
-    ol.gallery-list {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: row;
-
-        justify-content: center;
-        align-items: center;
-
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 1em;
-        list-style: none;
-        padding: 0;
-
-        margin: 1em;
-    }
-
-    ol.gallery-list li.gallery-item {
-        margin: 0;
-        padding: 0;
-
-        flex: 1 1 1;
-
-        transform: scale(1);
-        transition: all 0.1s ease-in-out;
-    }
-
-    ol.gallery-list li.gallery-item:hover {
-        transform: scale(1.035);
-    }
-
-    ol.gallery-list img {
-        display: block;
-        width: 100%;
-        height: auto;
-        max-width: 25vw;
-        max-height: 40vh;
-        object-fit: cover;
-        border-radius: 0.5em;
-        border: 1px solid var(--wow-border);
-    }
+  .gallery-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+  .gallery-item,
+  .gallery-item figure {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .gallery-item :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 0.5rem;
+    border: 1px solid var(--wow-border);
+  }
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    font-size: 0.85em;
+  }
 </style>

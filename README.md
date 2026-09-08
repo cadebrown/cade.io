@@ -1,199 +1,143 @@
-# cade.io: Near Computronium
+# cade.io — Near Computronium
 
-This is the source code for my personal website ([cade.io](https://cade.io)), which is built using [Astro](https://astro.build) and hosted using [Cloudflare Pages](https://pages.cloudflare.com/). This includes my personal blog posts, prototype projects, and artwork I've made over the years.
+The source for [cade.io](https://cade.io): Cade Brown's research, software,
+artwork, and essays. The site uses Astro 7, MDX, and static Cloudflare Pages
+hosting. Each article is a self-contained folder containing its text, images,
+downloads, and supporting code.
 
-It's quite modularized, so feel free to use it as a template or starting point for your own website.
+## Develop
 
-## Links
+Use Node.js 24, recorded in `.node-version` and `package.json`, and the npm
+version recorded in `packageManager`. Install the locked dependencies:
 
-* [cade.io](https://cade.io) - my personal website (live demo)
-* [GitHub Repository](https://github.com/cadebrown/cade.io) - the source code
-* [Can I Use?](https://caniuse.com/) - check browser compatibility for various web features
-* [Astro Documentation](https://docs.astro.build) - learn more about the Astro framework
-
-## Setup
-
-First, clone this repository and ensure you have [installed Node.js/NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your machine.
-
-Then, you can install the project's dependencies locally:
-
-```shell
-$ npm install
+```sh
+npm ci
+npm run dev
 ```
 
-To make sure everything is working, you can start the development server:
+Open [localhost:4321](http://localhost:4321). The development server includes
+drafts; production builds exclude draft pages, post-file downloads, feed entries,
+and listing entries.
 
-```shell
-$ npm run dev
-```
-
-Now, you should be able to access it via a web browser at [localhost:4321](http://localhost:4321). It will automatically reload and update as you make changes to the source code. Enjoy!
-
-## Usage
-
-All commands are run from the root of the project, from a shell:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-Further documentation can be found at the [Astro CLI Reference](https://docs.astro.build/en/reference/cli-reference/).
-
-## Structure
-
-This project mainly follows the official [Astro project structure guide](https://docs.astro.build/en/basics/project-structure/), which means many of the paths listed are special:
+## Repository layout
 
 ```text
-├── plugins/               # my custom plugins
-├── public/                # static assets, copied verbatim
-├── src/                   # source code for the site
-│   ├── components/        # reusable components
-│   ├── layouts/           # reusable layouts
-│   ├── content/           # markdown content like blog posts
-│   └── pages/             # static pages of content
-├── astro.config.ts        # Astro configuration
-└── tsconfig.json          # TypeScript configuration
+content/
+  posts/<slug>/
+    index.mdx                    # article and frontmatter
+    descriptive-figure.webp      # imported display image and original download
+    descriptive-paper.pdf
+    benchmark.py                 # supporting source; no required subfolders
+  authors/
+    cade-brown.json
+    cade-brown.webp
+src/
+  assets/                        # shared photos, music artwork, icons, fonts, PDFs
+  components/                    # images, galleries, charts, metadata, navigation
+  layouts/
+  pages/                         # page routes and prerendered download endpoints
+  lib/                           # publication queries, file discovery, ZIP creation
+  integrations/                  # native Markdown extensions, shared asset publishing
+  data/                          # asset URL exceptions and legacy URL mappings
+  styles/
+public/                          # root-addressed browser/platform files
+infra/                           # managed Cloudflare Pages infrastructure
+scripts/                         # maintenance utilities
+tests/                          # unit, build-output, and browser checks
+docs/                           # authoring and migration reference
 ```
 
-To add a new blog post, add a new file in the `./src/content/posts` directory (just copy from an existing one).
+`dist/`, `.astro/`, `.wrangler/`, and `artifacts/` are generated output. Edit
+canonical sources instead of these directories. `public/` is intentionally small:
+favicons, the web manifest, touch/app icons, and `CNAME`.
 
-## Utilities
+## Articles and files
 
-### Visual Studio Code: Editor and IDE
+An article at `content/posts/magma-paper/index.mdx` becomes
+`/posts/magma-paper`. Its colocated files are automatically published at
+`/posts/magma-paper/<filename>`, preserving original bytes and meaningful download
+names. HTML source uses a `.html.txt` or `.htm.txt` URL to avoid host page
+normalization, but downloads and ZIP entries retain the original HTML filename.
+The article source is named `magma-paper.mdx`; the complete download is
+`magma-paper-files.zip`.
 
-My personal development setup includes using [Visual Studio Code](https://code.visualstudio.com/), with the following extensions:
+A generated **Files & source** section lists the originals, sizes, download links,
+ZIP, and GitHub source folder. Add a file beside the article and it joins this
+inventory automatically. Optional frontmatter supplies labels, descriptions,
+and exclusions. Hidden files, common filesystem/tool junk, and explicitly excluded
+files do not enter the download package.
 
-* Astro Language Support Extension [astro-build.astro-vscode](https://marketplace.visualstudio.com/items?itemName=astro-build.astro-vscode)
+Astro optimizes imported display images into `/_astro/` variants. Reader-facing
+original links keep their descriptive `/posts/…` names. Shared material has one
+source under `src/assets/`; automatic discovery publishes stable URLs, with explicit exceptions and
+legacy aliases in shared-assets.json.
 
-You can read more about setting up your own environment in the [Astro Editor Setup Guide](https://docs.astro.build/en/editor-setup/).
+See [the authoring guide](docs/authoring.md) for complete examples and
+[the URL overview](docs/url-overview.md) for every migrated and retained URL family,
+all sixteen articles, and the full old public-file mapping.
 
-This uses [Prettier](https://prettier.io/) as the formatting engine. I had to define my configuration options in `.prettierrc.json` for the Astro extension to format properly. You can customize the syntax choices in the [Prettier Configuration Options](https://prettier.io/docs/en/configuration.html).
+## Rendering
 
-### Math Rendering: KaTeX
+- Astro's native Satteri Markdown processor handles Markdown, GFM, footnotes,
+  definition lists, directives, and heading IDs. Small native plugins provide
+  KaTeX rendering, figure captions, heading permalinks, and article-relative links.
+- MDX supports imported Astro components. Native Astro image processing uses
+  Sharp; local SVG icons are native imports.
+- Expressive Code supplies code highlighting, line numbers, collapsible sections,
+  and color chips. Mermaid supplies diagrams.
+- Interactive charts use typed imported ApexCharts configuration and an explicit
+  component lifecycle. Chart strings are not evaluated as JavaScript.
+- Navigation uses ordinary document loads with progressive native view transitions
+  and reduced-motion support. Validated theme controls work even when browser
+  storage is unavailable.
+- The blackboard and whiteboard themes retain the site's monospace design.
+  Preserved Ubuntu font files remain available as shared assets; their presence
+  does not imply the current theme loads them.
 
-[KaTeX](https://katex.org/docs/browser) is a way of writing mathematical equations in LaTeX format (as well as other typesetting and diagrams).
+The old custom image service, remark/rehype pipeline, icon integration, and string
+chart evaluator have been replaced. Site-specific rendering behavior lives in
+`src/integrations/markdown.ts`, rather than a parallel legacy processor.
 
-I used [KaTeX v0.16.21](https://github.com/KaTeX/KaTeX/releases/tag/v0.16.21) and stuck it in `./public/ext/katex/`, since we still have to ship the CSS and some extension JS files apart from the static renderer.
-
-* [KaTeX extension: copy-tex](https://github.com/KaTeX/KaTeX/tree/main/contrib/copy-tex) - allows copying the LaTeX source of an equation
-
-```shell
-$ npm install katex
-```
-
-And to integrate it in Astro (via `astro.config.ts`), it needs remark/rehype plugins:
-
-```shell
-$ npm install remark-math
-$ npm install rehype-katex
-```
-
-### Diagram Rendering: Mermaid and D2
-
-To make diagrams in markdown that are automatically rendered, I use [Mermaid](https://mermaid.js.org/) and [D2](https://d2lang.com/).
-
-```shell
-$ npm install astro-mermaid mermaid
-$ npm install @mermaid-js/layout-elk
-```
-
-### Charts and Plots: ApexCharts
-
-* [Adding Interactive Charts to Astro](https://dteather.com/blogs/astro-interactive-charts/)
-
-```shell
-$ npm install apexcharts
-```
-
-### Expressive Code: Syntax Highlighting
-
-[Expressive Code](https://expressive-code.com/installation/) is hands-down the best syntax highlighting system I've found. It's easy to drop in, but I've customized it quite a lot.
-
-I use the following plugins (or am experimenting with using them):
-
-* [@fujocoded/expressive-code-caption](https://github.com/FujoWebDev/fujocoded-plugins/tree/main/expressive-code-caption)
-* [@fujocoded/expressive-code-output](https://github.com/FujoWebDev/fujocoded-plugins/tree/main/expressive-code-output)
-
-```shell
-$ npx astro add astro-expressive-code
-$ npm i @expressive-code/plugin-collapsible-sections
-$ npm i @expressive-code/plugin-line-numbers
-
-# community
-$ npm i expressive-code-color-chips
-```
-
-### Astro Icon: Icons and SVGs
-
-I use the [Astro Icon](https://www.astroicon.dev/getting-started/) package to manage SVG icons and components. I override the `iconDir` as `./public/icons/` in the `astro.config.ts` file. This way, I will also ship static SVGs for the icons, in case I can't use the component.
+## Validation
 
 ```sh
-npm install astro-icon
+# Install the browser used by the repository's browser checks, once per machine.
+npx playwright install chromium
+
+# Formatting, type checking, production build, unit/build tests, and browser tests.
+npm run validate
 ```
 
-As far as finding icons, I use a variety of sources:
+| Command | Purpose |
+| --- | --- |
+| `npm run check` | Astro and TypeScript diagnostics |
+| `npm run build` | Generate the production site in `dist/` |
+| `npm test` | Unit tests plus assertions against an existing production build |
+| `npm run test:browser` | Desktop/mobile checks against Wrangler's local Pages server |
+| `npm run preview` | Quick Astro preview of the current build |
+| `npm run format:check` | Check the configured source formatting scope |
+| `npm run inventory:urls` | Inventory the current build under `artifacts/`; preserve the historical baseline |
 
-* [feathericons.com](https://feathericons.com/) - super high quality, beautiful, but limited selection (preferred)
-* [remixicon.com](https://remixicon.com/)
+Build before running the build-output or browser tests. Browser tests start their
+own Wrangler server on port 4322 and Astro draft preview on port 4323, and retain traces/screenshots under
+`artifacts/`. This exercises Cloudflare's local serving behavior, including
+slashless article pages beside nested downloads and generated host redirects;
+an Astro preview alone does not establish those host behaviors. Local validation
+is separate from verifying a deployment on `cade.io`.
 
-Also, with more customization and sometimes lower quality:
+## URLs and hosting
 
-* [iconduck.com](https://iconduck.com/)
-* [jam-icons.com](https://jam-icons.com/)
-* [heroicons.dev](https://heroicons.dev/?iconset=v2-20-solid)
+Pages use lowercase, extensionless, slashless paths. Article slugs remain stable
+when titles change. `/posts` and `/posts/<slug>` remain canonical. `/testpage` redirects to `/test`. Existing `/authors`, `/links`,
+RSS, sitemap, robots, and browser icon addresses retain their purposes.
 
-## Processes
+`src/data/legacy-urls.json` and `src/data/shared-assets.json` are the sources for
+legacy aliases. The shared asset integration generates `dist/_redirects`; the injected native
+endpoint in `src/pages/_headers.ts` derives `dist/_headers` from the same post-file
+inventory as downloads. Do not edit those outputs. The pre-migration evidence remains in
+`docs/url-inventory.json`.
 
-## Infrastructure
-
-Cloudflare Pages and the `cade.io` apex domain are managed as code with OpenTofu.
-
-See setup instructions in:
-
-* `infra/README.md`
-
-### Updating the Favicon
-
-I use [Inkscape](https://inkscape.org/) to maintain my site's favicon in the `./public/favicon.dev.svg` file. That includes all the editing layers, text objects, and shapes sources.
-
-After I change it and save the file, the steps to update the site's favicon are:
-
-* Use the [RealFaviconGenerator](https://realfavicongenerator.net/) website and upload `./public/favicon.dev.svg` to it
-* Follow the steps in the workflow configuration
-  * I use the same icon for light/dark mode
-  * I select 'Use the icon as is` for all inputs
-  * I use `cade.io` as the app name for all boxes
-* Download the archive file, and unzip directly into `./public`, overwriting the existing files
-  * For example: `unzip -o ~/Downloads/favicon.zip -d ./public`
-* Insert the generated HTML code into the `./src/components/BaseHead.astro` file
-
-### Managing Themes
-
-
-* [Get Rid of Theme Flicker](https://scottwillsey.com/theme-flicker/)
-
-### Converting Fonts
-
-For this website, I have been using the following fonts:
-
-* [Ubuntu](https://fonts.google.com/specimen/Ubuntu) - for normal prose text, headers, and UI elements
-* [Ubuntu Mono](https://fonts.google.com/specimen/Ubuntu+Mono) - for code blocks and monospaced text
-
-You can download these fonts from Google Fonts, but they will be in TTF format. Instead, we'd like to use WOFF2 format which is more optimized for web loading. To do that, we need to install or build [Google's implementation](https://github.com/google/woff2).
-
-* MacOS: `brew install woff2`
-
-Then, after downloading and extracting the font files, you can use the `./scripts/woff2ify` script to convert them:
-
-```sh
-./scripts/woff2ify.sh ./public/fonts ~/Downloads/Ubuntu/*.ttf ~/Downloads/Ubuntu_Mono/*.ttf
-```
-
-## Scratch Space
-
-* https://pyodide.org/en/stable/ - for JS embedding of Python code
+Cloudflare Pages infrastructure is managed in `infra/cloudflare/`; see
+[the infrastructure guide](infra/README.md). `npm run deploy:pages` is the separate
+manual upload command for an already validated `dist/`. Building or validating
+the repository does not deploy it.

@@ -5,6 +5,6 @@ import theme_whiteboard from './styles/vscodetheme-whiteboard.json'
 import theme_blackboard from './styles/vscodetheme-blackboard.json'
 
 export const vscodeThemes = {
-	whiteboard: theme_whiteboard,
-	blackboard: theme_blackboard,
+  whiteboard: theme_whiteboard,
+  blackboard: theme_blackboard,
 }

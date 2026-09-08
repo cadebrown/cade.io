@@ -1,38 +1,6 @@
 ---
-import type { ImageMetadata, MarkdownLayoutProps } from 'astro'
-
-import Base from '@layouts/Base.astro'
-import type { CollectionEntry } from 'astro:content'
-import Dated from '@components/Dated.astro'
-import Authors from '@components/Authors.astro'
-import Image from '@components/Image.astro'
-import Page from './Page.astro'
+import Base from './Base.astro'
 import { SITE_BLURB, SITE_TITLE } from '@site'
-
-type Props = MarkdownLayoutProps<{
-	title: string
-	blurb: string
-	authors?: (string | CollectionEntry<'authors'>)[]
-	dated?: Date
-	image?: ImageMetadata | string
-}>
-
-const { title, blurb, image, authors, dated, ...rest } = Astro.props.frontmatter || Astro.props
 ---
 
-<Page title={SITE_TITLE} blurb={SITE_BLURB}>
-	<slot />
-</Page>
-
-<style is:global>
-	p {
-		/* on front page, make everything a little bigger and more spaced out */
-		/* font-size: 1.25em; */
-		/* margin: 1em; */
-	}
-
-	/* TODO: fix this... right now, it breaks with floating images */
-	ul {
-		overflow: auto;
-	}
-</style>
+<Base title={SITE_TITLE} blurb={SITE_BLURB}><slot /></Base>

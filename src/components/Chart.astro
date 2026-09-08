@@ -1,0 +1,19 @@
+---
+interface Props {
+  id: string
+  label: string
+}
+const { id, label } = Astro.props
+---
+
+<site-chart id={id} role='img' aria-label={label}>
+  <noscript>Enable JavaScript to explore this chart.</noscript>
+</site-chart>
+
+<style>
+  site-chart {
+    display: block;
+    min-height: 24rem;
+    width: 100%;
+  }
+</style>
