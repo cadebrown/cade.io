@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">Pikurn: three draws, $200 guaranteed</title>
+<desc id="desc">Start with $100, wager $50. After green, wager $50 of $150. After red, double the remaining $50 twice. Each of GGR, GRG, and RGG ends at $200.</desc>
+<rect width="1200" height="630" fill="#222"/>
+<g font-family="monospace" fill="#eee">
+<text x="65" y="76" font-size="20" letter-spacing="4" fill="#b9c1cc">PIKURN / THE ADAPTIVE HEDGE</text>
+<text x="65" y="136" font-size="42" font-weight="bold">Three draws. $200, guaranteed.</text>
+<g stroke-width="3" fill="none">
+<path d="M170 300L460 240M170 300L460 400" stroke="#8796a5"/>
+<path d="M530 240L785 220M530 240L785 320M530 400L785 420" stroke="#8796a5"/>
+<path d="M855 220H1090M855 320H1090M855 420H1090" stroke="#8796a5"/>
+</g>
+<g fill="#222" stroke="#b9c1cc" stroke-width="2">
+<rect x="70" y="266" width="150" height="76" rx="12"/>
+<rect x="415" y="207" width="150" height="72" rx="12"/>
+<rect x="415" y="367" width="150" height="72" rx="12"/>
+<rect x="735" y="197" width="130" height="50" rx="8"/>
+<rect x="735" y="297" width="130" height="50" rx="8"/>
+<rect x="735" y="397" width="130" height="50" rx="8"/>
+</g>
+<g font-size="28" text-anchor="middle"><text x="145" y="315">$100</text><text x="490" y="255">$150</text><text x="490" y="415">$50</text><text x="800" y="231">$200</text><text x="800" y="331">$100</text><text x="800" y="431">$100</text></g>
+<g font-size="17" fill="#c6cbd2"><text x="90" y="370">bet $50</text><text x="430" y="302">bet $50</text><text x="430" y="467">bet $50</text><text x="285" y="235" fill="#50d9bd">● G · ⅔</text><text x="285" y="393" fill="#ff9585">◆ R · ⅓</text><text x="620" y="203" fill="#50d9bd">● G</text><text x="620" y="309" fill="#ff9585">◆ R</text><text x="620" y="400" fill="#50d9bd">● G</text><text x="897" y="208" fill="#ff9585">◆ R · bet $0</text><text x="897" y="308" fill="#50d9bd">● G · all-in</text><text x="897" y="408" fill="#50d9bd">● G · all-in</text></g>
+<g font-size="29" fill="#50d9bd" font-weight="bold"><text x="1070" y="255">$200</text><text x="1070" y="355">$200</text><text x="1070" y="455">$200</text></g>
+<path d="M65 524H1135" stroke="#666"/>
+<text x="65" y="569" font-size="19">Two greens. One red. No replacement. Every possible ending accounted for.</text>
+</g>
+</svg>

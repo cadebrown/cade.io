@@ -29,7 +29,7 @@ export default defineConfig({
     },
     {
       command: 'node scripts/dev-test-server.mjs',
-      url: 'http://127.0.0.1:4323',
+      url: `http://127.0.0.1:${process.env.ASTRO_DRAFT_PORT ?? '4323'}`,
       reuseExistingServer: false,
       timeout: 60_000,
     },

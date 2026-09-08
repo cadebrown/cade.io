@@ -4,6 +4,9 @@ title: 'Style Guide'
 blurb: 'A page to test markdown syntax and display features.'
 ---
 
+import { Code } from 'astro-expressive-code/components'
+import exampleSource from '../lib/urls.ts?raw'
+
 [^1]: [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/), a quick reference and guide to Markdown syntax
 
 [^2]: [Definition Lists](https://www.markdownguide.org/extended-syntax/#definition-lists), a very cool HTML feature that is sorely missing from common markdown. The native Markdown processor supports these.
@@ -116,6 +119,23 @@ Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium dolo
 At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. et harum quidem rerum facilis est et expedita distinctio. nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
 
 ### Code Snippets
+
+Inline `code` has a small border. Code blocks use the shared renderer, with
+syntax highlighting, line numbers, wrapping, and a copy button.
+
+```ts title="expected-value.ts"
+const outcomes = [400, 200, 100]
+const average = outcomes.reduce((sum, wealth) => sum + wealth, 0) / outcomes.length
+console.log(average)
+```
+
+```sh
+npm run validate
+```
+
+Imported source uses the same renderer and theme:
+
+<Code code={exampleSource} lang='ts' title='urls.ts' />
 
 
 ### Unicode Symbols

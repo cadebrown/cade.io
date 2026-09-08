@@ -1,0 +1,195 @@
+---
+
+---
+
+<pikurn-wagers aria-label='Two-bet strategy laboratory'>
+  <header>
+    <h3>Strategy explorer</h3>
+    <p>
+      Set the two uncertain bets. Then wager everything on certain greens and nothing on certain
+      reds.
+    </p>
+  </header>
+  <div class='wager-presets' aria-label='Example strategies'>
+    <button type='button' data-preset='average'>Maximum average</button>
+    <button type='button' data-preset='restricted'>First-bet-only hedge</button>
+    <button type='button' data-preset='guarantee'>Guarantee $200</button>
+  </div>
+  <div class='wager-controls'>
+    <label
+      >First bet, X <output data-first>$0</output>
+      <input
+        aria-label='First wager in dollars'
+        data-x
+        type='range'
+        min='0'
+        max='100'
+        step='1'
+        value='0'
+      />
+    </label>
+    <label
+      >Bet after first green, Y <output data-second>$0</output>
+      <input
+        aria-label='Wager after first green in dollars'
+        data-y
+        type='range'
+        min='0'
+        max='100'
+        step='1'
+        value='0'
+      />
+    </label>
+  </div>
+  <p class='wager-budget' data-budget>After a green, you have $100 available for the second bet.</p>
+  <div class='wager-figures'>
+    <figure>
+      <figcaption>Every runout has probability ⅓</figcaption>
+      <svg
+        viewBox='0 0 440 265'
+        role='img'
+        aria-label='Terminal bankroll for each of three runouts'
+        data-bars></svg>
+    </figure>
+    <figure>
+      <figcaption>Average versus guarantee</figcaption>
+      <svg
+        viewBox='0 0 440 265'
+        role='img'
+        aria-label='Expected terminal bankroll versus guaranteed terminal bankroll'
+        data-frontier></svg>
+      <p class='wager-legend'>
+        <span class='frontier-key'>━</span> Best average at each guaranteed floor. <span
+          class='point-key'>●</span
+        > Your strategy.
+      </p>
+    </figure>
+  </div>
+  <p class='wager-summary' aria-live='polite' data-summary>
+    Expected final bankroll: $233.33. Guaranteed final bankroll: $100.
+  </p>
+  <p data-comparison>The maximum-average strategy can finish at $100, $200, or $400.</p>
+  <noscript
+    >The two policies are shown in the table below. Enable JavaScript to change the wagers and
+    explore their trade-off.</noscript
+  >
+</pikurn-wagers>
+
+<script>
+  import './wager-lab'
+</script>
+
+<style is:global>
+  pikurn-wagers > header {
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+  pikurn-wagers {
+    display: block;
+    margin: 1rem 0;
+    padding: clamp(1rem, 2vw, 1.4rem);
+    border: 1px solid var(--wow-border);
+    background: var(--wow-back-alt);
+    border-radius: 0.65rem;
+    color: var(--wow-text);
+    font-size: 0.9rem;
+  }
+  pikurn-wagers h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.3rem;
+  }
+  pikurn-wagers p {
+    margin: 0.5rem 0;
+  }
+  pikurn-wagers .wager-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+  pikurn-wagers button {
+    font: inherit;
+    font-size: 0.85rem;
+    padding: 0.45rem 0.7rem;
+    min-height: 40px;
+    color: var(--wow-text);
+    background: var(--wow-back);
+    border: 1px solid var(--wow-border);
+    border-radius: 0.3rem;
+    cursor: pointer;
+  }
+  pikurn-wagers button[aria-pressed='true'] {
+    outline: 2px solid var(--wow-link);
+    outline-offset: 2px;
+  }
+  pikurn-wagers .wager-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  pikurn-wagers label {
+    display: block;
+    min-width: 0;
+    font-weight: bold;
+  }
+  pikurn-wagers output {
+    float: right;
+    color: var(--wow-link);
+  }
+  pikurn-wagers input {
+    display: block;
+    width: 100%;
+    margin: 0.35rem 0;
+    min-height: 40px;
+    accent-color: var(--wow-link);
+  }
+  pikurn-wagers .wager-budget,
+  pikurn-wagers .wager-legend {
+    font-size: 0.8rem;
+  }
+  pikurn-wagers .wager-figures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  pikurn-wagers figure {
+    display: block;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+  }
+  pikurn-wagers figcaption {
+    font-size: 0.85rem;
+    font-weight: bold;
+    padding: 0 0 0.6rem;
+  }
+  pikurn-wagers svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  pikurn-wagers svg text {
+    fill: currentColor;
+    font-family: inherit;
+    font-size: 17px;
+  }
+  pikurn-wagers .frontier-key {
+    color: var(--wow-link);
+  }
+  pikurn-wagers .point-key {
+    color: var(--wow-text);
+  }
+  pikurn-wagers .wager-summary {
+    font-weight: bold;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--wow-border);
+  }
+  @media (max-width: 760px) {
+    pikurn-wagers .wager-controls,
+    pikurn-wagers .wager-figures {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

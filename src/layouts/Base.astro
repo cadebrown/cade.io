@@ -22,7 +22,16 @@ const { kind, dated, title, blurb, image, authors, reading } =
   <body>
     <Header />
 
-    {image && <Image src={image} alt={title} priority />}
+    {
+      image && (
+        <Image
+          src={image}
+          alt={title}
+          class={typeof image !== 'string' && image.format === 'svg' ? 'diagram-cover' : undefined}
+          priority
+        />
+      )
+    }
 
     <main>
       <slot name='intro'>
@@ -83,6 +92,12 @@ const { kind, dated, title, blurb, image, authors, reading } =
     height: 33vh;
     width: 100%;
     border-bottom: 1px solid var(--wow-border);
+  }
+
+  img.diagram-cover {
+    object-fit: contain;
+    height: auto;
+    max-height: 50vh;
   }
 
   section.intro .intro-blurb {

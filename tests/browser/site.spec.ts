@@ -2,6 +2,8 @@ import { test, expect } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 
+const draftURL = `http://127.0.0.1:${process.env.ASTRO_DRAFT_PORT ?? '4323'}`
+
 test('slashless articles coexist with original files and semantic downloads', async ({
   page,
   request,
@@ -120,42 +122,109 @@ test('legacy redirects point directly to final URLs; drafts stay absent', async 
   }
 })
 
-test('local draft preview renders diagrams and chart across theme changes and navigation', async ({
+test('Pikurn solves adaptive games across objectives, horizons and blue stops', async ({
   page,
 }, info) => {
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
-  await page.goto('http://127.0.0.1:4323/posts/game-pikurn')
-  await expect(page.locator('site-chart .apexcharts-canvas')).toHaveCount(1)
+  await page.goto(`${draftURL}/posts/game-pikurn`)
+  const lab = page.locator('pikurn-explorer')
+  await expect(lab.locator('[data-average]')).toHaveText('$233.33')
+  await expect(lab.locator('[data-worst]')).toHaveText('$100.00')
+  await expect(lab.locator('[data-wager]')).toHaveText('Wager $0.00')
+  await page.getByLabel('Strategy objective', { exact: true }).selectOption('guaranteed')
+  await expect(lab.locator('[data-average]')).toHaveText('$200.00')
+  await expect(lab.locator('[data-worst]')).toHaveText('$200.00')
+  await expect(lab.locator('[data-best]')).toHaveText('$200.00')
+  await page.getByRole('button', { name: /Draw green/ }).click()
+  await expect(lab.locator('[data-wager]')).toHaveText('Wager $50.00')
+  await page.getByRole('button', { name: /Draw red/ }).click()
+  await expect(lab.locator('[data-wager]')).toHaveText('Wager $100.00')
+  await page.getByRole('button', { name: /Draw green/ }).click()
+  await expect(lab.locator('[data-wager]')).toHaveText('Finish: $200.00')
+  await expect(lab.locator('[data-draw]:enabled')).toHaveCount(0)
+  await page.getByRole('button', { name: 'Reset this game' }).click()
+  await page.getByRole('button', { name: "set theme: 'whiteboard'", exact: true }).click()
+  await lab.screenshot({ path: info.outputPath('pikurn-guaranteed.png') })
+  await page.getByLabel('Strategy objective', { exact: true }).selectOption('expected')
+  await page.getByLabel('Maximum draws', { exact: true }).fill('1')
+  await page.getByLabel('Maximum draws', { exact: true }).press('Tab')
+  await expect(lab.locator('[data-average]')).toHaveText('$133.33')
+  await expect(lab.locator('[data-wager]')).toHaveText('Wager $100.00')
+  await page.getByLabel('Green balls', { exact: true }).fill('3')
+  await page.getByLabel('Green balls', { exact: true }).press('Tab')
+  await page.getByLabel('Blue balls', { exact: true }).fill('1')
+  await page.getByLabel('Blue balls', { exact: true }).press('Tab')
+  await page.getByLabel('Maximum draws', { exact: true }).fill('5')
+  await page.getByLabel('Maximum draws', { exact: true }).press('Tab')
+  await expect(lab.locator('[data-average]')).toHaveText('$190.00')
+  await expect(lab.locator('[data-wager]')).toHaveText('Wager $100.00')
+  await page.getByRole('button', { name: /Draw blue/ }).click()
+  await expect(lab.locator('[data-wager]')).toHaveText('Finish: $100.00')
+  await expect(lab.locator('[data-status]')).toContainText('blue returns the wager')
+  await expect(page.locator('.katex-error')).toHaveCount(0)
   await expect(page.locator('svg[id^="mermaid"]').first()).toBeVisible()
+  const geometry = page.locator('.pikurn-geometry')
+  await expect(geometry.getByRole('img')).toHaveCount(2)
+  await expect(geometry.getByRole('img').first()).toBeVisible()
+  await expect(geometry.getByRole('img').last()).toBeVisible()
+  await page.getByText('Deriving the frontier', { exact: true }).click()
+  await expect(page.locator('.pikurn-proof[open]')).toContainText('the upper bound is attained')
+  await geometry.screenshot({ path: info.outputPath('pikurn-decision-geometry.png') })
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2)).toBe(
+    true
+  )
+  expect(errors).toEqual([])
+})
+
+test('Pikurn wager lab shows the exact frontier and downloadable source', async ({
+  page,
+  request,
+}, info) => {
+  await page.goto(`${draftURL}/posts/game-pikurn`)
+  const lab = page.locator('pikurn-wagers')
+  await expect(lab.locator('[data-summary]')).toContainText('Expected final bankroll: $233.33')
+  await lab.getByRole('button', { name: 'First-bet-only hedge', exact: true }).click()
+  await expect(lab.locator('[data-summary]')).toContainText('Guaranteed final bankroll: $160.00')
+  await lab.getByRole('button', { name: 'Guarantee $200', exact: true }).click()
+  await expect(lab.locator('[data-summary]')).toHaveText(
+    'Expected final bankroll: $200.00. Guaranteed final bankroll: $200.00.'
+  )
+  await expect(lab.locator('[data-bars] text').filter({ hasText: '$200.00' })).toHaveCount(3)
   await page.getByRole('button', { name: "set theme: 'whiteboard'", exact: true }).click()
-  await expect(page.locator('site-chart .apexcharts-tooltip')).toHaveClass(/apexcharts-theme-light/)
+  await lab.screenshot({ path: info.outputPath('pikurn-frontier-light.png') })
   await page.getByRole('button', { name: "set theme: 'blackboard'", exact: true }).click()
-  await expect(page.locator('site-chart .apexcharts-tooltip')).toHaveClass(/apexcharts-theme-dark/)
-  await page.getByRole('button', { name: "set theme: 'whiteboard'", exact: true }).click()
-  await expect(page.locator('site-chart .apexcharts-tooltip')).toHaveClass(/apexcharts-theme-light/)
-  await expect(page.locator('site-chart .apexcharts-canvas')).toHaveCount(1)
-  await page.locator('site-chart').scrollIntoViewIfNeeded()
-  if (info.project.name === 'mobile') {
-    await expect(page.locator('site-chart .apexcharts-title-text')).toHaveText(
-      'Strategy 2: Expected Bankroll'
-    )
-    await expect(page.locator('site-chart .apexcharts-datalabel')).toHaveCount(0)
-  }
-  await expect(page.locator('site-chart .apexcharts-legend-text')).toHaveCount(3)
-  expect(
-    await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 2)
-  ).toBe(true)
-  await page.locator('site-chart').screenshot({ path: info.outputPath('draft-chart.png') })
+  await lab.screenshot({ path: info.outputPath('pikurn-frontier-dark.png') })
+  await lab.getByRole('button', { name: 'Maximum average', exact: true }).click()
+  const first = lab.getByRole('slider', { name: 'First wager in dollars' })
+  await first.focus()
+  await first.press('Home')
+  await first.press('ArrowRight')
+  await expect(first).toHaveValue('1')
+  await expect(lab.locator('[data-summary]')).toContainText('Expected final bankroll: $233.00')
+  const original = await readFile('content/posts/game-pikurn/pikurn.ts', 'utf8')
+  const response = await request.get(`${draftURL}/posts/game-pikurn/pikurn.ts`)
+  expect(response.status()).toBe(200)
+  expect(await response.text()).toBe(original)
+  await page.getByText('Read the complete solver and command-line program', { exact: true }).click()
+  const code = page
+    .locator('details')
+    .filter({ hasText: 'Read the complete solver and command-line program' })
+    .locator('pre')
+  await expect(code).toBeVisible()
+  const sourceLines = await code.locator('.ec-line .code').allTextContents()
+  expect(sourceLines.map((line) => (line === '\n' ? '' : line)).join('\n')).toBe(original.trimEnd())
+  await expect(code).toHaveAttribute('data-language', 'ts')
+  await expect(code.locator('code')).toHaveCSS('border-top-width', '0px')
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2)).toBe(
+    true
+  )
   await page.getByRole('link', { name: '/posts', exact: true }).click()
-  await expect(page).toHaveURL('http://127.0.0.1:4323/posts')
   await page
     .getByRole('link', { name: 'Pikurn: A Betting Game with a Twist', exact: true })
     .first()
     .click()
-  await expect(page.locator('site-chart .apexcharts-canvas')).toHaveCount(1)
-  await expect(page.locator('site-chart .apexcharts-tooltip')).toHaveClass(/apexcharts-theme-light/)
-  expect(errors).toEqual([])
+  await expect(page.locator('pikurn-explorer [data-average]')).toHaveText('$233.33')
 })
 
 test('heading links support keyboard use and light-theme prose links are readable', async ({
@@ -246,4 +315,33 @@ test('post listings retain readable text at larger font sizes', async ({ page },
     ).toBe(true)
     await page.screenshot({ path: info.outputPath(`${route.split('/').at(-1)}-large-text.png`) })
   }
+})
+
+test('fenced and imported code share highlighting, titles, themes, and copying', async ({
+  page,
+  context,
+}, info) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await page.goto('/test')
+  const fence = page
+    .locator('.expressive-code')
+    .filter({ has: page.getByText('expected-value.ts', { exact: true }) })
+  const imported = page
+    .locator('.expressive-code')
+    .filter({ has: page.getByText('urls.ts', { exact: true }) })
+  for (const block of [fence, imported]) {
+    await expect(block.locator('pre')).toHaveAttribute('data-language', 'ts')
+    await expect(block.locator('.code span[style]').first()).toBeVisible()
+  }
+  for (const theme of ['whiteboard', 'blackboard']) {
+    await page.getByRole('button', { name: `set theme: '${theme}'`, exact: true }).click()
+    expect(await fence.locator('pre').evaluate((el) => getComputedStyle(el).backgroundColor)).toBe(
+      await imported.locator('pre').evaluate((el) => getComputedStyle(el).backgroundColor)
+    )
+    await fence.screenshot({ path: info.outputPath(`code-${theme}.png`) })
+  }
+  await imported.getByRole('button', { name: 'Copy to clipboard' }).click()
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
+    (await readFile('src/lib/urls.ts', 'utf8')).trimEnd()
+  )
 })

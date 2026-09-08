@@ -3,6 +3,20 @@
 A post folder is the authoring unit and the downloadable package. Start flat;
 introduce a subfolder only when the material benefits from one.
 
+## Start here
+
+The repository uses Astro 7 and MDX with the native Satteri processor. Exact
+installed versions are recorded in `package-lock.json`; shared code rendering
+is configured in [`ec.config.mjs`](../ec.config.mjs).
+
+- [Agent instructions](../AGENTS.md): conventions for assistants working here.
+- [Live examples](../src/pages/test.mdx): open `/test` on your development server.
+- [Pikurn](../content/posts/game-pikurn/index.mdx): math, diagrams, interactive
+  components, and a complete source listing imported from a runnable file.
+- [Magma paper](../content/posts/magma-paper/index.mdx): colocated paper downloads.
+
+Keep examples and these instructions current when a component API changes.
+
 ## Create a post
 
 Create `content/posts/your-stable-slug/index.mdx` and place its cover image beside
@@ -198,14 +212,89 @@ and fenced code blocks for examples. The native processor supports definition
 lists and directives; a directive still needs corresponding rendering semantics
 to become a custom visual component. Mermaid fences render diagrams.
 
+### Code blocks
+
+Use a fenced block with a language for a short example. Expressive Code supplies
+highlighting, line numbers, wrapping, copy controls, and the site's two themes:
+
+````mdx
+```ts title="expected-value.ts"
+const outcomes = [400, 200, 100]
+const average = outcomes.reduce((sum, value) => sum + value, 0) / outcomes.length
+```
+````
+
+For a complete program or an excerpt stored in a file, import the source and use
+the integration's component. This renders through the same configuration as fences:
+
+```mdx
+import { Code } from 'astro-expressive-code/components'
+import solverSource from './pikurn.ts?raw'
+
+<Code code={solverSource} lang='ts' title='pikurn.ts' />
+```
+
+Do not copy a runnable file into a fence: the listing and download would drift.
+Do not use `Code` from `astro:components` for site articles; that invokes Astro's
+separate renderer and bypasses our Expressive Code configuration. No custom
+`<pre>` markup or article-specific syntax styles are needed. A native
+`<details><summary>…</summary>…</details>` can hold a long listing or proof.
+
+The current Satteri raw-HTML pass (required by the Mermaid integration) discards
+fence language/title metadata. The paired `preserveCodeMetadata` and
+`restoreCodeMetadata` native plugins in
+[`markdown.ts`](../src/integrations/markdown.ts) preserve it for Expressive Code.
+The regression in [`markdown.test.ts`](../tests/markdown.test.ts) and the `/test`
+browser check cover this boundary. Recheck upstream behavior when upgrading;
+remove the pair together once native metadata survives without them.
+
+Escape literal currency dollars in prose as `\$100`; unescaped pairs can become
+inline math. Use KaTeX equations for notation, Mermaid for small relationship or
+game-tree diagrams, and labeled SVG for plots with exact geometric meaning.
+
 Runnable supporting code belongs beside its article. Link to the actual file,
 and import it where the page needs its contents, instead of maintaining an
-independent downloadable copy. The chart example in
-`content/posts/game-pikurn/bankroll-chart.ts` contains typed configuration. Its
-colocated `BankrollChart.astro` renders the shared `Chart` element and calls
-`configureChart(id, options)` in a client script. Each post owns its configuration;
-the shared renderer owns lazy loading, theme updates, and cleanup. Use unique
-chart IDs per page. Formatter callbacks remain ordinary functions.
+independent downloadable copy. The Pikurn article imports its solver from
+`content/posts/game-pikurn/pikurn.ts` both for its interactive lab and its full
+source listing (using a `?raw` import). Post-local components own the controls
+and SVG/HTML visualizations. The solver runs independently with Node 24.2+.
+
+For charts requiring ApexCharts, the shared `Chart` element and
+`configureChart(id, options)` helper accept typed configuration with ordinary
+formatter callbacks. Use unique chart IDs per page.
+
+## Component reference
+
+| Need | Supported component or syntax | Example / implementation |
+| --- | --- | --- |
+| Prose, lists, tables, math | Markdown and KaTeX | [Test page](../src/pages/test.mdx) |
+| Short code example | Language-tagged fence | [Test page code snippets](../src/pages/test.mdx) |
+| Existing source listing | Expressive Code `Code` + `?raw` | [Pikurn article](../content/posts/game-pikurn/index.mdx) |
+| Ordinary image | Relative Markdown image | Automatic optimization and caption |
+| Distinct alt text/caption/download | `Figure` | [Figure.astro](../src/components/Figure.astro) |
+| Image collection | `Gallery` + `galleryImages` | [Gallery.astro](../src/components/Gallery.astro), [helper](../src/lib/gallery.ts) |
+| ApexCharts visualization | `Chart` + `configureChart` | [Chart.astro](../src/components/Chart.astro), [helper](../src/lib/chart.ts) |
+| Relationship diagram | `mermaid` fence | [Pikurn game tree](../content/posts/game-pikurn/index.mdx) |
+| Exact static plot | Accessible SVG in an Astro component | [DecisionGeometry.astro](../content/posts/game-pikurn/DecisionGeometry.astro) |
+| Interactive mathematical model | Post-local Astro component + typed module | [PikurnExplorer.astro](../content/posts/game-pikurn/PikurnExplorer.astro) |
+| Downloads and ZIP | Automatic post-file inventory | [PostFiles.astro](../src/components/PostFiles.astro) |
+
+Check component prop types before reusing them; the examples above are patterns,
+not a separate API definition. For an interactive chart, keep calculation logic
+separate from rendering, label units and assumptions, and validate the model.
+
+## Official documentation
+
+Verified while updating this guide on 2026-09-08. These are upstream references;
+the local configuration and component APIs determine what this site enables.
+
+- [Astro Markdown](https://docs.astro.build/en/guides/markdown-content/) and
+  [MDX components](https://docs.astro.build/en/guides/integrations-guide/mdx/).
+- [Astro images](https://docs.astro.build/en/guides/images/).
+- [Expressive Code's component and file imports](https://expressive-code.com/key-features/code-component/)
+  and [shared configuration](https://expressive-code.com/reference/configuration/).
+- [KaTeX supported notation](https://katex.org/docs/supported.html).
+- [Mermaid flowchart syntax](https://mermaid.js.org/syntax/flowchart.html).
 
 ## Shared assets and stable URLs
 

@@ -1,0 +1,138 @@
+---
+import './pikurn-explorer.css'
+---
+
+<pikurn-explorer class='pikurn-lab' aria-label='Pikurn interactive urn laboratory'>
+  <header class='pk-heading'>
+    <h3>Urn explorer</h3>
+    <p>Choose the bag and objective. Reveal any possible draw to follow the optimal strategy.</p>
+  </header>
+  <fieldset class='pk-controls'>
+    <legend>Starting bag · $100</legend>
+    <label
+      ><span><i class='pk-token pk-G' aria-hidden='true'></i> Green</span><input
+        name='g'
+        aria-label='Green balls'
+        type='number'
+        min='0'
+        max='4'
+        value='2'
+      /></label
+    >
+    <label
+      ><span><i class='pk-token pk-R' aria-hidden='true'></i> Red</span><input
+        name='r'
+        aria-label='Red balls'
+        type='number'
+        min='0'
+        max='4'
+        value='1'
+      /></label
+    >
+    <label
+      ><span><i class='pk-token pk-B' aria-hidden='true'></i> Blue</span><input
+        name='b'
+        aria-label='Blue balls'
+        type='number'
+        min='0'
+        max='4'
+        value='0'
+      /></label
+    >
+    <label
+      ><span>Draw limit</span><input
+        name='n'
+        aria-label='Maximum draws'
+        type='number'
+        min='1'
+        max='3'
+        value='3'
+      /></label
+    >
+    <label class='pk-goal'
+      ><span>Optimize for</span><select name='objective' aria-label='Strategy objective'
+        ><option value='expected'>Maximum average</option><option value='guaranteed'
+          >Best guarantee</option
+        ></select
+      ></label
+    >
+  </fieldset>
+  <p class='pk-small' data-constraint>
+    Up to 4 of each color, 8 balls total. Changing a control starts a new $100 game.
+  </p>
+  <div data-enhanced hidden>
+    <section class='pk-stage' aria-label='Current game'>
+      <div class='pk-urn-side'>
+        <div class='pk-urn' data-urn role='img' aria-label='Two green balls and one red ball'></div>
+        <p class='pk-small' data-remaining></p>
+      </div>
+      <div class='pk-play'>
+        <p class='pk-kicker'>Recommended bet</p>
+        <p class='pk-wager' data-wager></p>
+        <p data-bankroll></p>
+
+        <div class='pk-draws'>
+          <button type='button' data-draw='G'>● Draw green</button><button
+            type='button'
+            data-draw='R'>◆ Draw red</button
+          ><button type='button' data-draw='B'>■ Draw blue</button>
+        </div>
+        <p class='pk-small'>Choose the next color; draws here are not random.</p>
+        <button type='button' class='pk-reset' data-reset>Reset this game</button>
+      </div>
+    </section>
+    <p class='pk-status' data-status role='status' aria-live='polite'></p>
+    <ol class='pk-history' data-history aria-label='Explored draw history'></ol>
+    <div class='pk-results'>
+      <section class='pk-prediction' aria-label='Initial strategy results'>
+        <p class='pk-kicker'>Terminal bankroll · selected strategy</p>
+        <dl class='pk-metrics'>
+          <div><dt>Average finish</dt><dd data-average></dd></div><div>
+            <dt>Worst finish</dt><dd data-worst></dd>
+          </div><div><dt>Best finish</dt><dd data-best></dd></div>
+        </dl>
+        <p class='pk-small'>Includes the original $100. Values cover every possible runout.</p>
+      </section>
+      <figure class='pk-distribution'>
+        <figcaption>
+          <strong>Outcome distribution</strong><span class='pk-small' data-distribution-note></span>
+        </figcaption><div data-distribution></div>
+      </figure>
+    </div>
+    <details class='pk-tree-panel'>
+      <summary>Adaptive game tree <span class='pk-small'>· first three draws</span></summary><p
+        class='pk-small'
+      >
+        Branches show conditional probabilities and the next bet. The tree stops after three draws;
+        the distribution includes all draws.
+      </p><div class='pk-tree' data-tree></div>
+    </details>
+    <details class='pk-path-panel'>
+      <summary>Every possible runout <span class='pk-small' data-path-count></span></summary><div
+        class='pk-table-scroll'
+        tabindex='0'
+        role='region'
+        aria-label='All runouts, probabilities and terminal bankroll'
+      >
+        <table>
+          <thead
+            ><tr><th>Draw sequence</th><th>Probability</th><th>Terminal bankroll</th></tr></thead
+          ><tbody data-paths></tbody>
+        </table>
+      </div>
+    </details>
+  </div>
+  <div data-fallback>
+    <p>
+      The original urn has two green balls and one red ball. Maximizing average bankroll means
+      wagering $0 first, with an optimal expected finish of $233.33. Maximizing the guarantee means
+      wagering $50 first, then adapting to the draw, to finish with $200 on every runout.
+    </p><p>
+      Enable JavaScript to change the urn and explore each branch. The derivations, figures, and
+      complete solver below also work without this lab.
+    </p>
+  </div>
+</pikurn-explorer>
+<script>
+  import './pikurn-explorer'
+</script>

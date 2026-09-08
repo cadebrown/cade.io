@@ -6,11 +6,9 @@ import mdx from '@astrojs/mdx'
 import { satteri, satteriHeadingIdsPlugin } from '@astrojs/markdown-satteri'
 import mermaid from 'astro-mermaid'
 import expressiveCode from 'astro-expressive-code'
-import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-sections'
-import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
-import { pluginColorChips } from 'expressive-code-color-chips'
-import { vscodeThemes } from './src/themes'
 import {
+  preserveCodeMetadata,
+  restoreCodeMetadata,
   mathNodes,
   mathRendering,
   imageFigures,
@@ -43,24 +41,21 @@ export default defineConfig({
           },
         },
       },
-      mdastPlugins: [mathNodes, postLinks],
+      mdastPlugins: [mathNodes, postLinks, preserveCodeMetadata],
       // Use Astro's native slug generation before adding permalink links.
-      hastPlugins: [mathRendering, imageFigures, satteriHeadingIdsPlugin, headingLinks],
+      hastPlugins: [
+        restoreCodeMetadata,
+        mathRendering,
+        imageFigures,
+        satteriHeadingIdsPlugin,
+        headingLinks,
+      ],
     }),
   },
   integrations: [
     sitemap({ filter: (page) => new URL(page).pathname !== '/test' }),
     sharedAssets(),
-    expressiveCode({
-      themes: [...Object.values(vscodeThemes)],
-      plugins: [pluginCollapsibleSections(), pluginLineNumbers(), pluginColorChips()],
-      defaultProps: {
-        collapseStyle: 'collapsible-auto',
-        wrap: true,
-        overridesByLang: { 'zsh,bash,sh,ps,bat': { preserveIndent: false } },
-      },
-      styleOverrides: { codePaddingInline: '1.0em', codePaddingBlock: '1.0em' },
-    }),
+    expressiveCode(),
     mermaid({ theme: 'forest', autoTheme: true }),
     mdx(),
   ],

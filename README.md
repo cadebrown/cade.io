@@ -72,7 +72,8 @@ original links keep their descriptive `/posts/…` names. Shared material has on
 source under `src/assets/`; automatic discovery publishes stable URLs, with explicit exceptions and
 legacy aliases in shared-assets.json.
 
-See [the authoring guide](docs/authoring.md) for complete examples and
+Start with [the agent instructions](AGENTS.md) and [live rendering examples](src/pages/test.mdx)
+at `/test`. See [the authoring guide](docs/authoring.md) for complete examples and
 [the URL overview](docs/url-overview.md) for every migrated and retained URL family,
 all sixteen articles, and the full old public-file mapping.
 
@@ -119,7 +120,8 @@ npm run validate
 | `npm run inventory:urls` | Inventory the current build under `artifacts/`; preserve the historical baseline |
 
 Build before running the build-output or browser tests. Browser tests start their
-own Wrangler server on port 4322 and Astro draft preview on port 4323, and retain traces/screenshots under
+own Wrangler server on port 4322 and Astro draft preview on port 4323 (override the
+latter with `ASTRO_DRAFT_PORT` if occupied), and retain traces/screenshots under
 `artifacts/`. This exercises Cloudflare's local serving behavior, including
 slashless article pages beside nested downloads and generated host redirects;
 an Astro preview alone does not establish those host behaviors. Local validation

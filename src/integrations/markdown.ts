@@ -15,6 +15,49 @@ import {
 } from 'satteri'
 import { katexConfig } from '../katex.ts'
 
+type FenceMetadata = { value: string; lang?: string | null; meta?: string | null }
+
+/** Satteri 0.10 rawHtml reparsing drops HAST data; keep fence metadata per document. */
+export function preserveCodeMetadata(): MdastPluginDefinition {
+  return {
+    name: 'cade-preserve-code-metadata',
+    code(node, ctx) {
+      const fences = (ctx.data.cadeCodeFences ??= []) as FenceMetadata[]
+      fences.push({ value: node.value, lang: node.lang, meta: node.meta })
+    },
+  }
+}
+
+/** Match surviving code blocks to their source, preserving repeated fences in order. */
+export function restoreCodeMetadata(): HastPluginDefinition {
+  return {
+    name: 'cade-restore-code-metadata',
+    element: {
+      filter: ['pre'],
+      visit(node, ctx) {
+        const code = node.children[0]
+        if (code?.type !== 'element' || code.tagName !== 'code') return
+        const fences = (ctx.data.cadeCodeFences ?? []) as FenceMetadata[]
+        const value = ctx.textContent(code).replace(/\n$/, '')
+        const classes = code.properties.className
+        const language = (Array.isArray(classes) ? classes : String(classes ?? '').split(' '))
+          .find((name) => String(name).startsWith('language-'))
+          ?.toString()
+          .slice(9)
+        const index = fences.findIndex(
+          (fence) => fence.value === value && (fence.lang || undefined) === language
+        )
+        if (index < 0) return
+        const [fence] = fences.splice(index, 1)
+        ctx.replaceNode(code, {
+          ...code,
+          data: { ...code.data, lang: fence!.lang, meta: fence!.meta },
+        })
+      },
+    },
+  }
+}
+
 /** Mark math before highlighting; preserve the distinction between inline and block math. */
 export function mathNodes(): MdastPluginDefinition {
   return {

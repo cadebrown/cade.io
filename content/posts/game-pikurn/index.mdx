@@ -1,280 +1,299 @@
 ---
 dated: '2025-12-01'
+updated: '2026-09-08'
 title: 'Pikurn: A Betting Game with a Twist'
-blurb: 'A simple mathematical game'
-image: ./azh-shower-thought.webp
+blurb: 'Two greens, one red, and $100. Maximize the average—or guarantee $200.'
+image: ./pikurn-game-tree.svg
 draft: true
+files:
+  pikurn.ts:
+    label: 'Pikurn solver — runnable TypeScript'
+    description: 'Dynamic programming, runout enumeration, and a standalone command-line program.'
+  pikurn-game-tree.svg:
+    label: 'The $200 guarantee — editable SVG diagram'
 ---
 
-Recently I visited the the folks behind the startup [Khaki AI](https://khaki.email/), and our conversation veered into mathematical brain teasers.
+import PikurnExplorer from './PikurnExplorer.astro'
+import WagerLab from './WagerLab.astro'
+import DecisionGeometry from './DecisionGeometry.astro'
+import { Code } from 'astro-expressive-code/components'
+import solverSource from './pikurn.ts?raw'
+import './pikurn-article.css'
 
-* ["Greg" Gregory Croisdale](https://g.regory.dev/)
-* ["Robo" Ben Klein](https://unhexium.net/)
-* ["AZH" Austin Henley](https://austinhenley.com/blog/techstarsdiary.html)
-* ["Me" Cade Brown](https://cade.io)
+<div class='pikurn-article'>
 
+Start with **\$100** and a uniformly shuffled bag of **two green balls and one red ball**.
 
-## Initial Problem Statement
+- Before each draw, bet any amount of your current bankroll on green.
+- Green adds your stake; red subtracts it.
+- Draw without replacement. You see the ball even if you bet nothing.
 
-Specifically, my old boss AZH posed an interesting problem:
+The best first bet depends on the objective:
 
-> You are offered to play a game, which will consist of 3 coin flips.
->
-> However, the coin flips are not fair and independent: you are told that there will be exactly 2 heads, and 1 tails.
->
-> You start with $100, and you can choose to bet any amount on each flip. You win when the result is a heads flip, and lose when it is a tails flip.
->
-> The payout is double-or-nothing: if you win, you net your bet amount, and if you lose, you lose your bet amount.
->
-> Q: What is the optimal strategy to maximize your expected winnings?
+$$
+\begin{aligned}
+\max\;\mathbb E[W]&:\quad\text{bet }0,\qquad\mathbb E[W]=\tfrac{700}{3}.\\
+\max\;\min W&:\quad\text{bet }50,\qquad W=200\text{ on every runout}.
+\end{aligned}
+$$
 
-As for the source of the problem? A fusion of the core trick in the [Monty Hall Problem](https://en.wikipedia.org/wiki/Monty_Hall_problem) (each outcome 'reveals' new information about the remaining outcomes), game-theory-ification, and of course, meandering shower thoughts:
+Here $W$ is **final bankroll**, including the starting \$100. Austin Henley posed the original puzzle during a conversation at [Khaki AI](https://khaki.email/). The distinction between those two objectives is what makes it interesting.
 
-![Proof of AZH's shower thought](./azh-shower-thought.webp)
+## Explore the game
 
-## Restating and Generalizing the Problem
+Choose an objective, then a possible draw. The wager updates after each observation. Blue balls are optional: drawing one returns the stake and ends the game.
 
-While the original statement is interesting and is great as a simple brain teaser or interview question, it makes sense to make a few modifications:
+<PikurnExplorer />
 
-* Since the events are not independent, they aren't really 'coin flips'
-  * Instead, let's consider events as picking balls from a ['bag' (aka multiset)](https://en.wikipedia.org/wiki/Multiset), without replacement
-* To generalize further than $N=3$, let's consider a game with an arbitrary number of wins/losses guaranteed, encoded as the number of green and red balls in the bag
-* Let's also consider a third possible outcome, in which the game terminates immediately
-  * For basic analysis, we will consider 0 of these outcomes (equivalent to the problem without termination)
-  * Further on, we'll see that this can affect the optimal strategy
+Three useful comparisons:
 
+- **Original bag, three draws:** maximum average \$233⅓; maximum guarantee \$200.
+- **Same bag, one draw:** maximizing the average means going all-in.
+- **Three greens, one red, one blue, five draws:** go all-in for the best average, but no policy can guarantee a profit—blue might appear first.
 
+## Maximum average
 
-With these modifications, here is the generalized problem statement we will be using for the rest of this post:
+The original bag has three equally likely runouts:
 
-> You are offered to play a game, in which you start out with a bankroll of $D$ dollars.
->
-> At the beginning, there is a 'bag' of colored balls, with $G$ green balls (🟢), $R$ red balls (🔴), and $B$ blue balls (🔵).
->
-> The game will consist of up to $N$ events, in which a random ball is picked from the bag.
->
-> Before each event, you can choose to wager any amount (from 0 to your current bankroll) on the event:
->
-> * If the ball is GREEN, you 'win' and receive double your wager back (i.e. bet 1$, win 2$)
-> * If the ball is RED, you 'lose' and lose your wager from your bankroll
-> * If the ball is BLUE, the game ends immediately, and you receive your wager back
->
-> At the end of the game, you cash out your remaining bankroll.
+$$
+P(RGG)=P(GRG)=P(GGR)=\tfrac13.
+$$
 
-Let's name this game $Game(D, N, G, R, B)$. Thus, our original problem corresponds to $Game(100, 3, 2, 1, 0)$.
+Wait until the red appears, then go all-in on each remaining green:
 
-In addition, let's define a few additional terms:
+| Runout | Bankroll after each draw | Finish |
+| --- | --- | --- |
+| `RGG` | 100 → 200 → 400 | \$400 |
+| `GRG` | 100 → 100 → 200 | \$200 |
+| `GGR` | 100 → 100 → 100 | \$100 |
 
-* $S$ is a given 'strategy' for playing the game, expressible as some algorithm of function for predicting moves
-* $E_S[Game(D, N, G, R, B)]$ is the [expected value](https://en.wikipedia.org/wiki/Expected_value) of the game (i.e. the ending bankroll you will have on average)
-* $Min_S[Game(...)]$ is the minimum possible ending bankroll you can have (i.e. the worst-case scenario)
-* $Max_S[Game(...)]$ is the maximum possible ending bankroll you can have (i.e. the best-case scenario)
+The average is $(400+200+100)/3=700/3$. Why pass up a ⅔ chance of green? A dollar lost on an early red would otherwise be doubled twice. **The value of a bet includes its effect on future wagers.**
 
-NOTE: If the $_S$ subscript is ommitted, it is implied to be the GTO (Game Theory Optimal) strategy, which may not be derived yet.
+To prove optimality, keep both uncertain decisions in the calculation. Let $X$ be the first dollar bet and $Y$ the dollar bet after a first green:
 
-We can make a "game-tree" diagram to visualize the possible paths of the game, where each node is a state of the game, and each edge is a probablistic transition to the next state:
+$$
+0\le X\le100,\qquad 0\le Y\le100+X.
+$$
 
-```mermaid
----
-config:
-  padding: 10
----
+All other decisions have known colors: bet everything on green and nothing on red. These choices weakly improve every ending, so they lose no optimum.
 
-graph TD
-    A[Start<br>🔴🟢🟢] -->|G=2/3| A_G
-    A -->|R=1/3| A_R
-    
-    A_G[🔴🟢] -->|G=1/2| A_G_G
-    A_G -->|R=1/2| A_G_R
+$$
+\begin{aligned}
+W_{RGG}&=4(100-X),\\
+W_{GRG}&=2(100+X-Y),\\
+W_{GGR}&=100+X+Y.
+\end{aligned}
+$$
 
-    A_R[🟢🟢] -->|G=2/2| A_R_G
+Hence
 
-    A_G_G[🔴] -->|R=1/1| A_G_G_R
+$$
+\mathbb E[W]=\frac{700-X-Y}{3}\le\frac{700}{3},
+$$
 
-    A_G_R[🟢] -->|G=1/1| A_G_R_G
+with equality at **$X=Y=0$**. Even the 50–50 second bet reduces the whole game's expectation: losing there removes money that could double on the final green.
 
-    A_R_G[🟢] -->|G=1/1| A_R_G_G
+<WagerLab />
 
-    A_G_G_R[∅]
-    A_G_R_G[∅]
-    A_R_G_G[∅]
+## Maximum guarantee
 
-```
-
-We can simplify this diagram my merging nodes that are equivalent (i.e. have the same number of green and red balls). This creates a directed acyclic graph (DAG) of the game:
+Set **$X=Y=50$**. The second bet is one-third of the \$150 bankroll after a green. Every branch ends at \$200:
 
 ```mermaid
-graph TD
-    A_2G_1R[Start<br>🔴🟢🟢] -->|G=2/3| A_1G_1R
-    A_2G_1R -->|R=1/3| A_2G_0R
-    
-    A_1G_1R[🔴🟢] -->|G=1/2| A_0G_1R
-    A_1G_1R -->|R=1/2| A_1G_0R
-
-    A_2G_0R[🟢🟢] -->|G=2/2| A_1G_0R
-
-    A_0G_1R[🔴] -->|R=1/1| A_0G_0R
-
-    A_1G_0R[🟢] -->|G=1/1| A_0G_0R
-
-    A_0G_0R[∅]
-
+flowchart TD
+    S["$100 · bet $50"] -->|"G · 2/3"| G["$150 · bet $50"]
+    S -->|"R · 1/3"| R["$50 · bet $50"]
+    G -->|"G · 1/2"| GG["$200 · bet $0"]
+    G -->|"R · 1/2"| GR["$100 · bet $100"]
+    R -->|"G · certain"| RG["$100 · bet $100"]
+    GG -->|"R · certain"| A["GGR: $200"]
+    GR -->|"G · certain"| B["GRG: $200"]
+    RG -->|"G · certain"| C["RGG: $200"]
 ```
 
-In addition, if we prune the nodes that have no choices (i.e. a single transition edge, or a terminal node), we can see a DAG that only focuses on "important" nodes that we have a "real" decision to make:
+A higher guarantee is impossible. Requiring all three endings to be at least $m$ gives
 
-```mermaid
-graph TD
-    A_2G_1R[Start<br>🔴🟢🟢] -->|G=2/3| A_1G_1R
-    A_2G_1R -->|R=1/3| A_2G_0R
-    
-    A_1G_1R[🔴🟢] -->|G=1/2| A_0G_1R
-    A_1G_1R -->|R=1/2| A_1G_0R
+$$
+\begin{aligned}
+RGG:&\quad X\le100-\tfrac m4,\\
+GRG,\;GGR:&\quad X\ge\tfrac{3m}{4}-100.
+\end{aligned}
+\qquad\Longrightarrow\qquad m\le200.
+$$
 
-    A_2G_0R[🟢🟢]
+The first-bet-only strategy ($Y=0$) peaks at a guarantee of \$160. Adapting the second bet raises it to \$200.
 
-    A_0G_1R[🔴]
+## The average–guarantee frontier
 
-    A_1G_0R[🟢]
+Suppose a ticket home costs \$150. You can guarantee it with $X=Y=25$: the endings are \$300, \$200, and \$150, averaging \$216⅔.
 
+More generally, for a floor $100\le m\le200$,
 
+$$
+\boxed{\max_{W\ge m}\mathbb E[W]=\frac{800-m}{3}},
+\qquad X=Y=\frac{m-100}{2}.
+$$
+
+**Each extra dollar of guarantee costs one-third of a dollar in average bankroll.**
+
+| Goal | $X$ | $Y$ | Guarantee | Average |
+| --- | --- | --- | --- | --- |
+| Maximum average | 0 | 0 | \$100 | \$233⅓ |
+| \$150 ticket | 25 | 25 | \$150 | \$216⅔ |
+| Maximum guarantee | 50 | 50 | \$200 | \$200 |
+
+<details class='pikurn-proof'>
+<summary>Deriving the frontier</summary>
+
+The `GGR` constraint gives $X+Y\ge m-100$, so $\mathbb E[W]\le(800-m)/3$. Choosing $X=Y=(m-100)/2$ produces endings $600-2m$, $200$, and $m$. For $m\in[100,200]$, their minimum is $m$: the upper bound is attained.
+
+</details>
+
+The rules permit arbitrarily divisible stakes, with no fees or borrowing. Rounding bets to cents changes the optimization problem. Maximizing the *probability* of reaching a target is also a separate objective.
+
+## General bags: the Bellman equations
+
+Use state $s=(g,r,b,n)$: remaining greens, reds, blues, and draws. Write $T=g+r+b$ and wager a fraction $f\in[0,1]$ of bankroll $D$.
+
+$$
+(D,s)\longrightarrow
+\begin{cases}
+\bigl(D(1+f),\;(g-1,r,b,n-1)\bigr)&\text{with probability }g/T,\\
+\bigl(D(1-f),\;(g,r-1,b,n-1)\bigr)&\text{with probability }r/T,\\
+D\quad\text{(stop)}&\text{with probability }b/T.
+\end{cases}
+$$
+
+Wealth scales linearly, so memoize only the count state. Let $E(s)$ and $H(s)$ be optimal expected and guaranteed wealth **per starting dollar**. Both equal 1 when $n=0$ or the bag is empty. Subscripts $G,R$ denote continuation values after the corresponding draw.
+
+### Expected wealth
+
+$$
+E(s)=\max_{0\le f\le1}\frac{g(1+f)E_G+r(1-f)E_R+b}{T}.
+$$
+
+This is affine in $f$. Its slope determines the wager:
+
+$$
+f_E^*=\begin{cases}
+1&gE_G>rE_R,\\
+0&gE_G<rE_R,\\
+\text{any }f\in[0,1]&gE_G=rE_R.
+\end{cases}
+$$
+
+The implementation chooses zero on ties. Blue contributes current wealth and terminates; it has no continuation value.
+
+### Guaranteed wealth
+
+$$
+H(s)=\max_{0\le f\le1}\min\bigl\{
+(1+f)H_G,\;(1-f)H_R,\;1\text{ if }b>0
+\bigr\}.
+$$
+
+Omit absent colors. The optimum lies at an endpoint or an intersection of branch lines. With both green and red present, their equalizing candidate is
+
+$$
+f_H=\frac{H_R-H_G}{H_R+H_G},
+$$
+
+when this lies in $[0,1]$. For one green, one red, and two draws, $H_G=1$ and $H_R=2$:
+
+$$
+E(f)=\tfrac32-\tfrac f2,
+\qquad H(f)=\min\{1+f,\;2-2f\}.
+$$
+
+<DecisionGeometry />
+
+The mean decreases from the outset; the guarantee peaks at $f=1/3$. If any blue remains, an immediate stop caps the guarantee at **1**, attained by betting zero throughout.
+
+## Closed forms
+
+### Full bag, no blue: maximum average
+
+For $N=g+r$,
+
+$$
+E(g,r,0,N)=\frac{\sum_{k=0}^{g}\binom Nk}{\binom Ng}.
+$$
+
+**Wait for the last red, then go all-in on every green.** This policy is optimal for any complete bag without blue; it need not be optimal with a shorter horizon or blue stops.
+
+<details class='pikurn-proof'>
+<summary>Proof by induction</summary>
+
+Substitution into the wager coefficient, using Pascal's identity, gives for $g,r>0$
+
+$$
+gE(g-1,r)-rE(g,r-1)=-r<0.
+$$
+
+Thus zero is optimal while a red remains. The zero-bet recurrence agrees with the formula, as do the boundaries $E(0,r)=1$ and $E(g,0)=2^g$. Induction proves the result.
+
+</details>
+
+### Limited horizon, no blue: maximum guarantee
+
+For $0\le n\le g+r$, define $S(n,r)=\sum_{k=0}^{\min(r,n)}\binom nk$. Then
+
+$$
+H(g,r,0,n)=\frac{2^n}{S(n,r)},
+\qquad f_H^*=\frac{\binom{n-1}{r}}{S(n,r)}\quad(n>0).
+$$
+
+Out-of-range binomial coefficients are zero. The original game has $S(3,1)=4$, giving $H=2$ and $f_H^*=1/2$.
+
+The number of greens disappears once the horizon is feasible. Extra greens improve probabilities but leave the worst feasible sequences unchanged when $n,r$ stay fixed.
+
+<details class='pikurn-proof'>
+<summary>Proof via the reciprocal recurrence</summary>
+
+If $r\ge n$, an all-red prefix is possible and $H=1$. If $r=0$, all draws are green and $H=2^n$. Otherwise both colors exist. Inductively, their continuation guarantees $A,C$ satisfy $A\le C$. Equalizing the branches gives
+
+$$
+H=\frac{2AC}{A+C},
+\qquad \frac1H=\frac12\left(\frac1A+\frac1C\right).
+$$
+
+Pascal's identity gives $S(n,r)=S(n-1,r)+S(n-1,r-1)$, completing the induction. Substitution into $(C-A)/(C+A)$ gives the stated wager fraction.
+
+</details>
+
+## Code and checks
+
+[Download pikurn.ts](./pikurn.ts) and run it with Node.js 24.2 or newer:
+
+```sh
+node pikurn.ts
 ```
 
+No dependencies or build step. It prints both policies and every runout. For a custom bag:
 
-## Basic Analysis and Strategies
+```ts
+import { solve, enumerate } from './pikurn.ts'
 
-So, let's first consider ourselves as a human playing this game. How do we approach it?
+const state = { g: 3, r: 1, b: 1, n: 5 }
+console.log(solve(state, 'expected')) // value: 1.9; fraction: 1
+console.table(enumerate(state, s => solve(s, 'expected').fraction, 100))
+```
 
-For this section, we are using the 'simple' version, i.e. $Game(100, 3, 2, 1, 0)$ which has a bag of 🟢🟢🔴.
+<details class='pikurn-source'>
+<summary>Read the complete solver and command-line program</summary>
+<Code code={solverSource} lang='ts' title='pikurn.ts' />
+</details>
 
-A simple observation is that, since $R=1$, you will always lose exactly 1 event. For example, if the first ball is RED, you know have the guarantee that the next 2 balls will be GREEN. Thus, in that case, if you bet \$0 on the first event, then go-all (bet \$100) in on the next event, your bankroll becomes \$200. Then, go all-in on the third event (now betting \$200), and you will have \$400. Thus, in that case you will end up with \$400.
+The listing and explorer import the same file. The ZIP below includes all visualization code and editable figures.
 
-However, that outcome is not guaranteed (there is only a 1/3 chance of that happening). So, in the worst-case (the first ball is RED), you will end up with \$0, and cannot make any more bets. Thus, in this case you will end up with \$0. This is not ideal... You can go bankrupt!
+- **Solver:** memoized count states; at most $(g+1)(r+1)(b+1)(n+1)$ combinations, with constant work per state.
+- **Explorer:** exhaustive runouts for bags up to eight balls; displayed trees stop after three draws. Enumeration can grow exponentially.
+- **Verification:** independent action-grid recursion, probability conservation, bankroll scaling, and comparisons with both closed forms.
 
-There is a seeming paradox here: you have a 2/3 chance of winning, but the payout is 2:1. On this level, it seems +EV to bet on the first event, right? I mean, in the abstract, if someone is giving your a better payout to the odds of winning, you should take it, right?
+The code uses floating-point arithmetic with a small tie tolerance and rejects numerical overflow. The derivations establish the exact results; large computations remain limited by memory, recursion depth, and number range.
 
-Well, the fact that the events are not independent makes a big difference. In effect, observing the first event gives valuable information about the remaining events.
+<p class='pikurn-note'>
+Background: Bellman's <a href='https://pmc.ncbi.nlm.nih.gov/articles/PMC1063639/'>On the Theory of Dynamic Programming</a> and Auckland's <a href='https://www.stat.auckland.ac.nz/~fewster/210/notes/2017S2/ch3blank.pdf'>sampling-without-replacement notes</a>. The Pikurn formulas are derived above. Thanks to <a href='https://austinhenley.com/'>Austin Henley</a>, <a href='https://g.regory.dev/'>Gregory Croisdale</a>, and <a href='https://unhexium.net/'>Ben Klein</a> for the original discussion.
+</p>
 
-We will need to analyze the game for different strategies to see. The answer is not immediately obvious.
-
-For this simple game with $N=3$, we can enumerate all the possible 'runouts' of the game:
-
-* `RGG` you draw 🔴, then 🟢, then 🟢
-* `GRG` you draw 🟢, then 🔴, then 🟢
-* `GGR` you draw 🟢, then 🟢, then 🔴
-
-Each of these runouts are equally likely. Thus, we can evaluate strategies by considering the expected value of the game for each runout, and taking their equally-weighted average.
-
-### Strategy 1: Bet Nothing Until You Are Guaranteed to Win
-
-A strategy that quickly came up in our conversations can be described simply:
-
-> Bet nothing until you are guaranteed to win (i.e. the rest of the balls are GREEN).
->
-> Then, go all-in on the remaining events.
-
-In this strategy, you bet nothing on the first event (since you are not guaranteed to win).
-
-Let's consider the math of each of the 3 runouts:
-
-* `RGG`: bet \$0 initially, and lose nothing
-  * bet \$100 on the second event, and win \$200
-  * bet \$200 on the third event, and win \$400
-  * ending bankroll: \$400
-* `GRG`: bet \$0 initially
-  * bet \$0 on the second event, and lose nothing
-  * bet \$100 on the third event, and win \$200
-  * ending bankroll: \$200
-* `GGR`: bet \$0 initially
-  * bet \$0 on the second event, and lose nothing
-  * bet \$0 on the third event (you know it will be RED), and lose nothing
-  * ending bankroll: \$100
-
-We can see that we never lose money with this strategy, so we can compute the values as:
-
-* $Min_{S1}[Game] = 100$
-* $Max_{S1}[Game] = 400$
-* $E_{S1}[Game] = \frac{1}{3} \times 400 + \frac{1}{3} \times 200 + \frac{1}{3} \times 100 = \frac{7}{3} \times 100 \approx 233.33$
-
-Thus, the expected value of the game with this strategy is \$233.33, and expected profit is \$133.33. Pretty good! You should play this game if the total cost to play is less than \$233.33.
-
-If a hustler on the street offers this game, you can play this strategy and never lose money.
-
-### Strategy 2: Placing an Initial Bet
-
-Let's consider another strategy: placing an initial bet.
-
-This strategy makes sense when viewed in the context of getting better odds on the first event (2/3 chance to win). So, again, shouldn't we bet something on the first event? And, if so, how much?
-
-Well, let's consider the math of this strategy, introducing a variable $0 \le X \le 100$ to represent the amount we bet on the first event, which we can solve for to maximize our expected profit. Again, there are 3 cases to consider:
-
-* `RGG`: bet $X$ initially, and lose $X$
-  * bet $100-X$ on the second event, and win $2(100-X)$
-  * bet $2(100-X)$ on the third event, and win $4(100-X)$
-  * ending bankroll: $4(100-X)$
-* `GRG`: bet $X$ initially, and win $X$
-  * bet \$0 on the second event, and lose nothing
-  * bet $100+X$ on the third event, and win $2(100+X)$
-  * ending bankroll: $2(100+X)$
-* `GGR`: bet $X$ initially, and win $X$
-  * bet $0$ on the second event, and lose nothing
-  * bet $0$ on the third event (you know it will be RED), and lose nothing
-  * ending bankroll: $100+X$
-
-Using some algebra, we can solve for the same metrics as before:
-
-* $Min_{S2}[Game] = \min(100+X, 4(100-X))$
-* $Max_{S2}[Game] = \max(4(100-X), 2(100+X))$
-* $E_{S2}[Game] = \frac{1}{3} \times (4(100-X) + 2(100+X) + (100+X)) = \frac{1}{3} \times (700 - X) \approx 233.33 - \frac{X}{3}$
-
-So, when we simplify the equations, we see that any value of $X$ will actually hurt the expected value of the game! Thus, the optimal strategy is to bet nothing on the first event (if you care about the average outcome).
-
-#### Stuck At The Train Station
-
-On the other hand, let's say we care about the "best-worst-case" outcome, which can also be described as the "minimum possible guaranteed bankroll". Recall that with Strategy 1, our worst-case outcome was \$100 (profit of \$0). Can we do better?
-
-It turns out: Yes!
-
-But, why do we care about this? Well, let's take an alternative view of the game (with the same rules, but different goals):
-
-> You are offered to play the game ONCE, picking GREEN and RED balls out of a bag (same rules as before).
->
-> However, you are stuck at a train station with only \$100. 
->
-> Your return ticket home is \$150 and your only source of income is playing this game.
->
-> Can you guarantee that you will have enough money to buy your return ticket home?
-
-Using Strategy 1, there is a 1/3 chance of netting \$0. In that case, you will still be stuck! So, that's no good.
-
-But, with Strategy 2, we solve for when $Min_{S2}[Game] \ge 150$. In this case, $X = 50$.
-
-import BankrollChart from './BankrollChart.astro'
-
-<BankrollChart />
-
-
-
-### Takeaways: The Base Game
-
-At this point, we can be fairly confident that the optimal strategy in this simple game ($Game(100, 3, 2, 1, 0)$) is to use Strategy 1: bet nothing until you are guaranteed to win, and then go all-in on the remaining events. In modified cases, where you need to guarantee a certain minimum bankroll at the end, using Strategy 2 can be used with an initial wager, tuned to your expectations.
-
-The only thing we haven't considered is betting on the second event, in the case where the outcome is unsure. However, the only time this is true is when the first ball is GREEN. In that case, the probably of the second event is 1/2. Thus, it won't affect the optimal strategy (just increase the variance). We will touch on this later, in extended games where it might matter.
-
-## Let's Get Abstract
-
-I hope so far I've convinced you that the $N=3$ case is not too complicated, and in a certain sense "solved" according to certain metrics. At this level, the problem is simple enough to state, and works well as a simple brain teaser or interview question.
-
-But, now the thought arises: what about other values of $N$? What about other distributions of balls? Our simple solution of just enumerating all possible runouts is not very satisfying; we'd like to determine an analytical solution for the optimal strategy in any given case.
-
-To do this, let's consider arbitrary games, and their relationship to each other. The basic idea is to solve the trivial cases (i.e. $R=0$ or $G=0$), and use recursive relationships and invariant properties to describe any case.
-
-----
-
-Further reading:
-
-* [Urn Problem](https://en.wikipedia.org/wiki/Urn_problem)
-* [Optimal Stopping](https://en.wikipedia.org/wiki/Optimal_stopping)
-* [Optional Stopping Theorem](https://en.wikipedia.org/wiki/Optional_stopping_theorem)
-* https://en.wikipedia.org/wiki/Hypergeometric_distribution
-
+</div>

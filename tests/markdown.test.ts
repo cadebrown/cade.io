@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { markdownToHtml, mdxToJs, type CompileOptions } from 'satteri'
 import { satteriHeadingIdsPlugin, satteriCollectImagesPlugin } from '@astrojs/markdown-satteri'
 import {
+  preserveCodeMetadata,
+  restoreCodeMetadata,
   mathNodes,
   mathRendering,
   imageFigures,
@@ -27,6 +29,29 @@ async function render(source: string) {
 }
 
 describe('native Markdown publishing', () => {
+  it('preserves fence language and title through raw HTML parsing', async () => {
+    const seen: unknown[] = []
+    const source = '```ts title="example.ts" {1}\nconst value = 1\n```'
+    const html = await markdownToHtml(source, {
+      features: { rawHtml: true },
+      mdastPlugins: [preserveCodeMetadata],
+      hastPlugins: [
+        restoreCodeMetadata,
+        {
+          name: 'inspect-renderer-input',
+          element: {
+            filter: ['code'],
+            visit(node) {
+              seen.push(node.data)
+            },
+          },
+        },
+      ],
+    })
+    expect(seen).toEqual([{ lang: 'ts', meta: 'title="example.ts" {1}' }])
+    expect(html.html).not.toContain('data-cade-code')
+  })
+
   it('keeps inline math inside its paragraph and emits valid MathML', async () => {
     const html = await render('Before $x^2$ after.')
     expect(html.match(/<p>/g)).toHaveLength(1)

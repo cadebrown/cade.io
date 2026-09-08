@@ -86,11 +86,13 @@ html[data-theme="whiteboard"] {
 :where(code) {
     /* use monospace text for code snippets */
     font-family: var(--wow-font-mono, monospace, monospace);
-    /* use the same size as normal text */
+    font-size: 1em;
+}
 
+/* Inline snippets get a border; preformatted blocks own their container styling. */
+:where(:not(pre) > code) {
     background: var(--wow-back-alt);
     border: 1px solid var(--wow-border);
-    font-size: 1em;
     padding: 0.08em 0.16em;
     border-radius: 0.25em;
 }
