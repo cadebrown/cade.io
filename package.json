@@ -14,7 +14,7 @@
     "test:browser": "playwright test",
     "validate": "npm run format:check && npm run check && npm run build && npm test && npm run test:browser",
     "format:check": "prettier --check \"src/**/*.{astro,ts}\" \"tests/**/*.ts\" \"content/**/*.{astro,ts}\" \"scripts/*.mjs\" astro.config.ts playwright.config.ts ec.config.mjs",
-    "validate:ci": "playwright install --with-deps chromium && npm run validate",
+    "validate:ci": "playwright install chromium && npm run validate",
     "inventory:urls": "node scripts/inventory-urls.mjs"
   },
   "dependencies": {
