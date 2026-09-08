@@ -1,15 +1,87 @@
 ---
-const { src, title, width = 600, height = 600 } = Astro.props
+type Props = { src: string; title: string }
+
+const { src, title } = Astro.props as Props
+const url = new URL(src)
+if (url.origin !== 'https://www.youtube.com' || !/^\/embed\/[\w-]+$/.test(url.pathname))
+  throw new Error('Youtube only accepts an https://www.youtube.com/embed/<video-id> URL')
+const watchUrl = new URL('/watch', url.origin)
+watchUrl.searchParams.set('v', url.pathname.split('/').pop()!)
 ---
 
-<center>
-  <iframe
-    src={src}
-    title={title}
-    width={width}
-    height={height}
-    allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-    allowfullscreen></iframe>
-</center>
+<div class='youtube' data-youtube-src={src} data-youtube-title={title}>
+  <a class='youtube__poster' href={watchUrl.href} aria-label={`Load video: ${title}`}>
+    <span class='youtube__play' aria-hidden='true'></span>
+    <span class='youtube__title'>Load video: {title}</span>
+  </a>
+</div>
 
-<style></style>
+<script>
+  document.addEventListener('click', (event) => {
+    const link = (event.target as Element).closest<HTMLAnchorElement>('.youtube__poster')
+    if (
+      !link ||
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    )
+      return
+    const container = link.closest<HTMLElement>('[data-youtube-src]')
+    if (!container) return
+    event.preventDefault()
+    const iframe = document.createElement('iframe')
+    iframe.src = container.dataset.youtubeSrc!
+    iframe.title = container.dataset.youtubeTitle!
+    iframe.allow =
+      'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+    iframe.allowFullscreen = true
+    iframe.loading = 'lazy'
+    container.replaceChildren(iframe)
+    iframe.focus()
+  })
+</script>
+
+<style>
+  .youtube {
+    aspect-ratio: 16 / 9;
+    width: min(100%, 60rem);
+    margin: 1rem auto;
+    border: 1px solid var(--wow-border);
+    background: var(--wow-header);
+  }
+
+  .youtube__poster,
+  .youtube :global(iframe) {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .youtube__poster {
+    place-items: center;
+    gap: 0.75rem;
+    color: inherit;
+    background: linear-gradient(135deg, var(--wow-header), var(--wow-footer));
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .youtube__poster:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: -6px;
+  }
+  .youtube__play {
+    width: 0;
+    height: 0;
+    border-block: 1.2rem solid transparent;
+    border-left: 1.9rem solid currentColor;
+  }
+  .youtube__title {
+    max-width: 90%;
+    text-align: center;
+  }
+</style>

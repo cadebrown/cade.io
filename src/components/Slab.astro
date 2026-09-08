@@ -20,7 +20,7 @@ const { href, image, title, blurb, dated, authors } = Astro.props
 
 <li class='slab'>
   <slot name='image'>
-    <a href={href} class='slab-image'>
+    <a href={href} data-astro-prefetch class='slab-image'>
       <Image
         class='slab-image'
         src={image}
@@ -33,7 +33,7 @@ const { href, image, title, blurb, dated, authors } = Astro.props
   <section class='slab-texts'>
     <slot name='title'>
       <span class='slab-title'>
-        <a href={href}>{title}</a>
+        <a href={href} data-astro-prefetch>{title}</a>
       </span>
     </slot>
 
@@ -51,7 +51,7 @@ const { href, image, title, blurb, dated, authors } = Astro.props
 
     <slot name='links'>
       <span class='slab-links'>
-        <a href={href}>View More <Icon name='uiux/arrow-right' /> </a>
+        <a href={href} data-astro-prefetch>View More <Icon name='uiux/arrow-right' /> </a>
       </span>
     </slot>
   </section>

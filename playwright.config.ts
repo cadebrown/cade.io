@@ -18,6 +18,17 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 1000 } },
     },
     { name: 'mobile', use: { ...devices['iPhone 13'], defaultBrowserType: 'chromium' } },
+    {
+      name: 'webkit',
+      testMatch: [
+        'quality.spec.ts',
+        'widgets.spec.ts',
+        'layouts.spec.ts',
+        'explorer.spec.ts',
+        'release.spec.ts',
+      ],
+      use: { ...devices['Desktop Safari'], viewport: { width: 1440, height: 1000 } },
+    },
   ],
   webServer: [
     {

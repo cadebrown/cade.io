@@ -13,33 +13,52 @@ type Props = {
   images: (string | ImageMetadata | GalleryImage)[]
   alt?: string
   originals?: string[]
+  layout?: 'grid' | 'rows'
 }
 
-const { images, alt = 'Gallery image', originals = [] } = Astro.props
+const { images, alt = 'Gallery image', originals = [], layout = 'grid' } = Astro.props
 const entries = images.map((image, index): GalleryImage => {
   if (typeof image === 'object' && 'alt' in image) return image
   return { src: image, alt: `${alt} (${index + 1})`, original: originals[index] }
 })
+if (layout === 'rows' && entries.some(({ src }) => typeof src === 'string')) {
+  throw new Error('Gallery rows require imported image metadata to preserve proportional geometry.')
+}
 ---
 
-<ol class='gallery-list'>
+<ol class:list={['gallery-list', { 'gallery-rows': layout === 'rows' }]}>
   {
     entries.map(({ src, alt, caption, original }) => (
-      <li class='gallery-item'>
+      <li
+        class='gallery-item'
+        style={
+          layout === 'rows'
+            ? `--image-ratio: ${typeof src === 'string' ? 1 : src.width / src.height}`
+            : undefined
+        }
+      >
         <figure>
           {original ? (
             <a href={original} aria-label={`Open original: ${alt}`}>
               <Image
                 src={src}
                 alt={alt}
-                sizes='(max-width: 600px) calc(100vw - 2rem), (max-width: 1000px) 45vw, 380px'
+                sizes={
+                  layout === 'rows'
+                    ? '(max-width: 600px) calc(100vw - 2rem), 60vw'
+                    : '(max-width: 600px) calc(100vw - 2rem), (max-width: 1000px) 45vw, 380px'
+                }
               />
             </a>
           ) : (
             <Image
               src={src}
               alt={alt}
-              sizes='(max-width: 600px) calc(100vw - 2rem), (max-width: 1000px) 45vw, 380px'
+              sizes={
+                layout === 'rows'
+                  ? '(max-width: 600px) calc(100vw - 2rem), 60vw'
+                  : '(max-width: 600px) calc(100vw - 2rem), (max-width: 1000px) 45vw, 380px'
+              }
             />
           )}
           {(caption || original) && (
@@ -89,5 +108,22 @@ const entries = images.map((image, index): GalleryImage => {
     gap: 0.5rem;
     padding: 0.5rem 0;
     font-size: 0.85em;
+  }
+  .gallery-rows {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .gallery-rows .gallery-item {
+    flex: var(--image-ratio) 1 calc(var(--image-ratio) * 10rem);
+    min-width: min(100%, 8rem);
+  }
+  .gallery-rows :global(img) {
+    max-height: none;
+  }
+  @media (max-width: 600px) {
+    .gallery-rows .gallery-item {
+      flex: 1 1 100%;
+    }
   }
 </style>

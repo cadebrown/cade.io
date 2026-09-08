@@ -1,0 +1,223 @@
+---
+import type { ImageMetadata } from 'astro'
+import { getImage } from 'astro:assets'
+import Figure from './Figure.astro'
+
+type Props = {
+  src: ImageMetadata
+  alt: string
+  caption?: string
+  original?: string
+  sizes?: string
+}
+
+const { src, alt, caption, original, sizes } = Astro.props
+const enlarged = await getImage({ src, width: Math.min(src.width, 1800), quality: 85 })
+---
+
+<image-viewer data-enlarged-src={enlarged.src} data-image-alt={alt}>
+  <Figure {src} {alt} {caption} {sizes} href={enlarged.src} />
+  <a class='enlarge-link' href={enlarged.src}>Enlarge image</a>
+  <dialog aria-label={`Enlarged image: ${alt}`}>
+    <div class='viewer-actions'>
+      <a href={original ?? src.src} target='_blank' rel='noopener'>Open original</a>
+      <button type='button' autofocus>Close image</button>
+    </div>
+    <div class='viewer-image' aria-busy='false'></div>
+    <p class='viewer-status' role='status'></p>
+  </dialog>
+</image-viewer>
+
+<script>
+  class ImageViewer extends HTMLElement {
+    private events?: AbortController
+    private trigger?: HTMLElement
+    private previousOverflow?: string
+    private readingPosition?: { x: number; y: number }
+
+    connectedCallback() {
+      this.events?.abort()
+      this.events = new AbortController()
+      const { signal } = this.events
+      const dialog = this.querySelector('dialog')!
+      const frame = this.querySelector<HTMLElement>('.viewer-image')!
+      const status = this.querySelector<HTMLElement>('.viewer-status')!
+      const triggers = this.querySelectorAll<HTMLAnchorElement>('figure > a, .enlarge-link')
+
+      const open = (trigger: HTMLElement) => {
+        this.trigger = trigger
+        this.readingPosition = { x: window.scrollX, y: window.scrollY }
+        if (!frame.firstElementChild) {
+          const img = new Image()
+          img.alt = this.dataset.imageAlt ?? ''
+          img.decoding = 'async'
+          frame.setAttribute('aria-busy', 'true')
+          status.textContent = 'Loading enlarged image…'
+          img.addEventListener(
+            'load',
+            () => {
+              frame.setAttribute('aria-busy', 'false')
+              status.textContent = ''
+            },
+            { signal }
+          )
+          img.addEventListener(
+            'error',
+            () => {
+              frame.setAttribute('aria-busy', 'false')
+              status.textContent =
+                'The enlarged image could not load. You can still open the original.'
+              img.remove()
+            },
+            { signal }
+          )
+          img.src = this.dataset.enlargedSrc!
+          frame.append(img)
+        }
+        this.previousOverflow = document.documentElement.style.overflow
+        document.documentElement.style.overflow = 'hidden'
+        dialog.showModal()
+        // Native dialog autofocus can scroll the document to its top-layer
+        // control. Keep the article anchored while the enlarged image is open.
+        window.scrollTo(this.readingPosition.x, this.readingPosition.y)
+      }
+
+      for (const trigger of triggers) {
+        trigger.setAttribute('aria-haspopup', 'dialog')
+        trigger.addEventListener(
+          'click',
+          (event) => {
+            // Modified clicks retain the link's normal open-in-new-tab behavior.
+            if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
+            event.preventDefault()
+            open(trigger)
+          },
+          { signal }
+        )
+      }
+      dialog.querySelector('button')!.addEventListener('click', () => dialog.close(), { signal })
+      dialog.addEventListener(
+        'click',
+        (event) => {
+          if (event.target !== dialog) return
+          const bounds = dialog.getBoundingClientRect()
+          if (
+            event.clientX < bounds.left ||
+            event.clientX > bounds.right ||
+            event.clientY < bounds.top ||
+            event.clientY > bounds.bottom
+          )
+            dialog.close()
+        },
+        { signal }
+      )
+      dialog.addEventListener(
+        'close',
+        () => {
+          this.restoreScroll()
+          this.trigger?.focus({ preventScroll: true })
+        },
+        { signal }
+      )
+    }
+
+    private restoreScroll() {
+      if (this.previousOverflow === undefined) return
+      document.documentElement.style.overflow = this.previousOverflow
+      this.previousOverflow = undefined
+      if (this.readingPosition) window.scrollTo(this.readingPosition.x, this.readingPosition.y)
+      this.readingPosition = undefined
+    }
+
+    disconnectedCallback() {
+      this.querySelector('dialog')?.close()
+      this.restoreScroll()
+      this.events?.abort()
+    }
+  }
+  if (!customElements.get('image-viewer')) customElements.define('image-viewer', ImageViewer)
+</script>
+
+<style>
+  image-viewer {
+    display: block;
+    min-width: 0;
+  }
+  image-viewer :global(figure) {
+    margin: 0;
+  }
+  image-viewer :global(figure > a) {
+    display: block;
+    width: 100%;
+    cursor: zoom-in;
+  }
+  image-viewer :global(figure img) {
+    width: 100%;
+    height: auto;
+  }
+  .enlarge-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    text-decoration: underline;
+  }
+  dialog {
+    position: fixed;
+    inset: 0;
+    height: fit-content;
+    width: min(96vw, 72rem);
+    max-width: 96vw;
+    max-height: 96dvh;
+    margin: auto;
+    padding: 0.75rem;
+    overflow: auto;
+    color: var(--wow-text);
+    background: var(--wow-back);
+    border: 1px solid var(--wow-border);
+    border-radius: 0.5rem;
+  }
+  dialog::backdrop {
+    background: rgb(0 0 0 / 80%);
+  }
+  .viewer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .viewer-actions a {
+    text-decoration: underline;
+  }
+  button {
+    font: inherit;
+    color: inherit;
+    background: var(--wow-back-alt);
+    border: 1px solid var(--wow-border);
+    padding: 0.5rem 0.7rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
+  .viewer-image {
+    min-height: 8rem;
+  }
+  .viewer-image :global(img) {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: calc(96dvh - 7rem);
+    margin: auto;
+    object-fit: contain;
+  }
+  .viewer-status {
+    margin: 0.5rem 0 0;
+  }
+  .viewer-status:empty {
+    display: none;
+  }
+  @media print {
+    dialog,
+    .enlarge-link {
+      display: none;
+    }
+  }
+</style>

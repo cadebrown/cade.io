@@ -1,0 +1,10 @@
+.lab-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 1.1rem;
+  padding: 1rem;
+  border: 1px solid var(--wow-border);
+  background: var(--wow-back-alt);
+  font-family: var(--wow-font-mono);
+  font-size: 0.85rem;
+}

@@ -1,0 +1,76 @@
+---
+import { parseHTML } from 'linkedom'
+
+type Props = { lightSvg: string; darkSvg: string }
+const { lightSvg, darkSvg } = Astro.props as Props
+const variants = [darkSvg, lightSvg].map((markup) => {
+  const { document } = parseHTML(markup)
+  const svg = document.querySelector('svg')
+  const bounds = svg
+    ?.getAttribute('viewBox')
+    ?.trim()
+    .split(/[\s,]+/)
+    .map(Number)
+  if (
+    !bounds ||
+    bounds.length !== 4 ||
+    !bounds.every(Number.isFinite) ||
+    bounds[2]! <= 0 ||
+    bounds[3]! <= 0
+  )
+    throw new Error('StaticDiagram requires an SVG with a finite, positive viewBox')
+  return {
+    width: bounds[2]!,
+    height: bounds[3]!,
+    title: svg?.querySelector('title')?.textContent || 'Diagram',
+  }
+})
+const width = Math.max(...variants.map((variant) => variant.width))
+const height = Math.max(...variants.map((variant) => variant.height))
+---
+
+<figure
+  class='static-diagram'
+  tabindex='0'
+  role='group'
+  aria-label={variants[0]!.title}
+  aria-description='Scroll horizontally to explore the diagram on a narrow screen.'
+  style={{ '--diagram-width': `${width}px`, '--diagram-height': `${height}px` }}
+>
+  <div class='static-diagram__dark' set:html={darkSvg} />
+  <div class='static-diagram__light' set:html={lightSvg} />
+</figure>
+
+<style>
+  .static-diagram {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 1.5rem auto;
+    overflow-x: auto;
+    outline-offset: 3px;
+  }
+  .static-diagram > div {
+    width: max(100%, var(--diagram-width));
+    min-height: var(--diagram-height);
+  }
+  .static-diagram :global(svg) {
+    display: block;
+    width: var(--diagram-width);
+    height: auto;
+    margin: 0 auto;
+  }
+  .static-diagram:focus-visible {
+    outline: 2px solid var(--wow-link);
+  }
+  .static-diagram__light {
+    display: none;
+  }
+  :global(html[data-theme='whiteboard']) .static-diagram__dark {
+    display: none;
+  }
+  :global(html[data-theme='whiteboard']) .static-diagram__light {
+    display: block;
+  }
+</style>

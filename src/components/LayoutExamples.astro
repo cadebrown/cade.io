@@ -1,0 +1,195 @@
+---
+import Table from './Table.astro'
+import StaticDiagram from './StaticDiagram.astro'
+import StaticPlot from './visualizations/StaticPlot.astro'
+import DecisionGeometry from '../../content/posts/game-pikurn/DecisionGeometry.astro'
+
+const outcomes = [
+  ['RGG', '33.3%', '$400'],
+  ['GRG', '33.3%', '$200'],
+  ['GGR', '33.3%', '$100'],
+]
+const diagram = (theme: string) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 110" role="img" aria-labelledby="layout-flow-${theme}"><title id="layout-flow-${theme}">Article source, static build, readable page, optional controls</title><g fill="none" stroke="currentColor"><rect x="8" y="25" width="160" height="60"/><rect x="202" y="25" width="160" height="60"/><rect x="396" y="25" width="160" height="60"/><rect x="590" y="25" width="162" height="60"/><path d="M168 55H202m-8-5 8 5-8 5M362 55H396m-8-5 8 5-8 5M556 55H590m-8-5 8 5-8 5"/></g><g fill="currentColor" font-family="monospace" font-size="16" text-anchor="middle"><text x="88" y="61">Article source</text><text x="282" y="61">Static build</text><text x="476" y="61">Readable page</text><text x="671" y="61">Add controls</text></g></svg>`
+---
+
+<section class='layout-examples' id='layout-examples' aria-labelledby='layout-examples-title'>
+  <h2 id='layout-examples-title'>Readable layouts</h2>
+  <p>
+    Center small results, give charts room to breathe, and keep wide content readable with local
+    scrolling. These examples work before JavaScript loads.
+  </p>
+
+  <h3>Compact tables: content and background stay together</h3>
+  <div class='table-comparison'>
+    <section aria-label='Previous table layout' class='table-before'>
+      <h4>Before</h4>
+      <p>The background stretches beyond the cells.</p>
+      <table>
+        <thead><tr><th>Runout</th><th>Chance</th><th>Finish</th></tr></thead>
+        <tbody
+          >{
+            outcomes.map((row) => (
+              <tr>
+                {row.map((value) => (
+                  <td>{value}</td>
+                ))}
+              </tr>
+            ))
+          }</tbody
+        >
+      </table>
+    </section>
+    <section aria-label='Centered table layout'>
+      <h4>Now</h4>
+      <p>The complete table is centered at its natural width.</p>
+      <Table label='Compact runout results'>
+        <table>
+          <thead
+            ><tr
+              ><th scope='col'>Runout</th><th scope='col' class='numeric'>Chance</th><th
+                scope='col'
+                class='numeric'>Finish</th
+              ></tr
+            ></thead
+          >
+          <tbody
+            >{
+              outcomes.map(([runout, chance, finish]) => (
+                <tr>
+                  <>
+                    <th scope='row'>{runout}</th>
+                    <td class='numeric'>{chance}</td>
+                    <td class='numeric'>{finish}</td>
+                  </>
+                </tr>
+              ))
+            }</tbody
+          >
+        </table>
+      </Table>
+    </section>
+  </div>
+
+  <h3>Wide tables: use the available space</h3>
+  <p>
+    Long descriptions can wrap; numeric columns remain aligned. Scroll sideways on small screens.
+  </p>
+  <Table label='Wide strategy comparison' width='wide'>
+    <table>
+      <thead
+        ><tr
+          ><th scope='col'>Strategy</th><th scope='col'>When to use it</th><th
+            scope='col'
+            class='numeric'>Guaranteed finish</th
+          ><th scope='col' class='numeric'>Average finish</th></tr
+        ></thead
+      >
+      <tbody>
+        <tr
+          ><th scope='row'>Maximum average</th><td
+            >Accept a lower worst outcome for a larger average.</td
+          ><td class='numeric'>$100.00</td><td class='numeric'>$233.33</td></tr
+        >
+        <tr
+          ><th scope='row'>Maximum guarantee</th><td
+            >Choose the strategy with the strongest worst outcome.</td
+          ><td class='numeric'>$200.00</td><td class='numeric'>$200.00</td></tr
+        >
+      </tbody>
+    </table>
+  </Table>
+
+  <details class='long-results'>
+    <summary>Long results: a bounded table with a persistent header</summary>
+    <p>Synthetic rows demonstrate vertical and horizontal scrolling inside one container.</p>
+    <Table label='Long synthetic results' width='wide' maxHeight='16rem'>
+      <table>
+        <thead
+          ><tr
+            ><th scope='col'>Sample</th><th scope='col'>Configuration</th><th
+              scope='col'
+              class='numeric'>Observations</th
+            ><th scope='col' class='numeric'>Indexed value</th></tr
+          ></thead
+        >
+        <tbody
+          >{
+            Array.from({ length: 24 }, (_, index) => (
+              <tr>
+                <>
+                  <th scope='row'>{index + 1}</th>
+                  <td>Demonstration configuration {index + 1}</td>
+                  <td class='numeric'>{(index + 1) * 100}</td>
+                  <td class='numeric'>{(1 + index / 10).toFixed(2)}</td>
+                </>
+              </tr>
+            ))
+          }</tbody
+        >
+      </table>
+    </Table>
+  </details>
+
+  <h3>Diagrams: preserve the lettering</h3>
+  <p>
+    This diagram stays centered on a wide screen. On a phone, scroll inside it to follow the flow.
+  </p>
+  <StaticDiagram darkSvg={diagram('dark')} lightSvg={diagram('light')} />
+
+  <h3>Charts: reflow the axes and labels</h3>
+  <p>
+    The narrow layout uses fewer ticks and a taller plotting area. It shows the same six data
+    points.
+  </p>
+  <StaticPlot
+    identifier='layout-plot'
+    title='Responsive static chart'
+    description='Synthetic demonstration data. Resize this container to compare the narrow and wide layouts.'
+  />
+
+  <h3>Paired charts: shared alignment</h3>
+  <p>These Pikurn figures stack when there is insufficient room for two readable panels.</p>
+  <DecisionGeometry />
+</section>
+
+<style>
+  .layout-examples {
+    margin: 2.5rem auto;
+    width: 100%;
+    max-width: 56rem;
+    min-width: 0;
+  }
+  .layout-examples > p {
+    max-width: 70ch;
+    line-height: 1.5;
+  }
+  h3 {
+    margin-top: 2rem;
+  }
+  h4 {
+    margin: 0;
+  }
+  .table-comparison {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: 1.5rem;
+  }
+  .table-comparison > section {
+    min-width: 0;
+  }
+  .table-comparison p {
+    font-size: 0.85rem;
+  }
+  .table-before table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+  .table-comparison :global(table) {
+    font-size: 0.85rem;
+  }
+  .long-results {
+    margin: 1.5rem 0;
+  }
+</style>

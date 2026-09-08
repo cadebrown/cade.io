@@ -13,5 +13,9 @@ export default defineEcConfig({
     wrap: true,
     overridesByLang: { 'zsh,bash,sh,ps,bat': { preserveIndent: false } },
   },
-  styleOverrides: { codePaddingInline: '1.0em', codePaddingBlock: '1.0em' },
+  styleOverrides: {
+    codePaddingInline: '1.0em',
+    codePaddingBlock: '1.0em',
+    lineNumbers: { foreground: 'var(--wow-text)' },
+  },
 })

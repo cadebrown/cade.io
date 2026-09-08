@@ -1,0 +1,267 @@
+---
+import * as Plot from '@observablehq/plot'
+import { parseHTML } from 'linkedom'
+
+export type StaticPlotPoint = Record<string, number | string>
+type Props = {
+  data?: StaticPlotPoint[]
+  xKey?: string
+  yKey?: string
+  xLabel?: string
+  yLabel?: string
+  title?: string
+  description?: string
+  filename?: string
+  identifier?: string
+}
+const syntheticData = [
+  { year: 2019, notes: 3 },
+  { year: 2020, notes: 5 },
+  { year: 2021, notes: 8 },
+  { year: 2022, notes: 13 },
+  { year: 2023, notes: 11 },
+  { year: 2024, notes: 17 },
+] satisfies StaticPlotPoint[]
+const {
+  data: suppliedData = syntheticData,
+  xKey = 'year',
+  yKey = 'notes',
+  xLabel = 'Year',
+  yLabel = 'Synthetic indexed notes',
+  title = 'Build-time Observable Plot',
+  description = 'Synthetic demonstration data, included to show a reusable static chart with a table and portable downloads.',
+  filename = 'synthetic-indexed-notes',
+  identifier = 'synthetic-indexed-notes',
+} = Astro.props as Props
+const data: StaticPlotPoint[] = suppliedData
+if (!data.length) throw new Error('StaticPlot requires at least one data point')
+if (!data.every((point) => xKey in point && yKey in point))
+  throw new Error(`StaticPlot data must contain ${xKey} and ${yKey}`)
+const values = data.map((point) => point[yKey])
+if (!values.every((value): value is number => typeof value === 'number' && Number.isFinite(value)))
+  throw new Error(`StaticPlot ${yKey} values must be finite numbers`)
+const upper = Math.max(1, Math.ceil(Math.max(...values) / 5) * 5)
+const lower = Math.min(0, Math.floor(Math.min(...values) / 5) * 5)
+const { document } = parseHTML('<!doctype html><html><body></body></html>')
+type PlotLayout = {
+  name: 'wide' | 'narrow'
+  width: number
+  height: number
+  marginLeft: number
+  marginBottom: number
+  fontSize: string
+  xTicks: number
+  yTicks: number
+}
+const layouts: PlotLayout[] = [
+  {
+    name: 'wide',
+    width: 768,
+    height: 360,
+    marginLeft: 64,
+    marginBottom: 52,
+    fontSize: '15px',
+    xTicks: 6,
+    yTicks: 6,
+  },
+  {
+    name: 'narrow',
+    width: 360,
+    height: 350,
+    marginLeft: 76,
+    marginBottom: 62,
+    fontSize: '17px',
+    xTicks: 4,
+    yTicks: 5,
+  },
+]
+const createPlot = (layout: PlotLayout) => {
+  const xValues = [...new Set(data.map((point) => point[xKey]!))]
+  const narrowTicks = xValues.filter((_, index) =>
+    [0, Math.floor((xValues.length - 1) / 2), xValues.length - 1].includes(index)
+  )
+  const plot = Plot.plot({
+    document,
+    width: layout.width,
+    height: layout.height,
+    marginLeft: layout.marginLeft,
+    marginTop: 38,
+    marginBottom: layout.marginBottom,
+    style: {
+      background: 'transparent',
+      color: 'currentColor',
+      fontFamily: 'monospace',
+      fontSize: layout.fontSize,
+    },
+    x: {
+      label: xLabel,
+      ticks: layout.name === 'narrow' ? narrowTicks : layout.xTicks,
+      tickFormat: (value) => String(value),
+    },
+    y: { label: yLabel, grid: true, domain: [lower, upper], ticks: layout.yTicks },
+    marks: [
+      Plot.ruleY([0]),
+      Plot.lineY(data, { x: xKey, y: yKey, stroke: 'var(--wow-link)', strokeWidth: 2.5 }),
+      Plot.dot(data, {
+        x: xKey,
+        y: yKey,
+        fill: 'var(--wow-link)',
+        r: 4.25,
+        title: (point) => `${point[xKey]}: ${point[yKey]}`,
+      }),
+    ],
+  })
+  const svgId = `${identifier}-${layout.name}`
+  const titleElement = document.createElementNS('http://www.w3.org/2000/svg', 'title')
+  titleElement.setAttribute('id', `${svgId}-title`)
+  titleElement.textContent = title
+  const descriptionElement = document.createElementNS('http://www.w3.org/2000/svg', 'desc')
+  descriptionElement.setAttribute('id', `${svgId}-description`)
+  descriptionElement.textContent = description
+  plot.insertBefore(descriptionElement, plot.firstChild)
+  plot.insertBefore(titleElement, plot.firstChild)
+  plot.setAttribute('role', 'img')
+  plot.setAttribute('aria-labelledby', `${svgId}-title ${svgId}-description`)
+  // Plot's unnamed-role SVG groups cannot carry aria-label in the HTML accessibility tree.
+  for (const group of plot.querySelectorAll('g[aria-label]')) group.removeAttribute('aria-label')
+  return plot
+}
+const widePlot = createPlot(layouts[0])
+const narrowPlot = createPlot(layouts[1])
+const wideSvg = widePlot.outerHTML
+const narrowSvg = narrowPlot.outerHTML
+const exported = widePlot.cloneNode(true) as typeof widePlot
+exported.removeAttribute('aria-labelledby')
+exported.setAttribute('aria-label', `${title}. ${description}`)
+const portableSvg = exported.outerHTML
+  .replaceAll('currentColor', '#000000')
+  .replaceAll('var(--wow-link)', '#075ca8')
+  .replaceAll('background: transparent', 'background: #ffffff')
+const csvCell = (value: string | number) => `"${String(value).replaceAll('"', '""')}"`
+const csv = [
+  [xLabel, yLabel].map(csvCell).join(','),
+  ...data.map((point) => [point[xKey]!, point[yKey]!].map(csvCell).join(',')),
+].join('\n')
+const svgHref = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(portableSvg)}`
+const csvHref = `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`
+---
+
+<figure class='static-plot' id={identifier}>
+  <div class='plot-frame plot-frame-wide' set:html={wideSvg} />
+  <div class='plot-frame plot-frame-narrow' set:html={narrowSvg} />
+  <figcaption>
+    <strong id={`${identifier}-title`}>{title}</strong><span id={`${identifier}-description`}>
+      {description}</span
+    >
+  </figcaption>
+  <p class='exports'>
+    <a href={svgHref} download={`${filename}.svg`}>Download SVG</a><a
+      href={csvHref}
+      download={`${filename}.csv`}>Download CSV</a
+    >
+  </p>
+  <div class='table-wrap' tabindex='0' role='region' aria-label={`${title} data table`}>
+    <table>
+      <thead
+        ><tr><th scope='col'>{xLabel}</th><th scope='col' class='numeric'>{yLabel}</th></tr></thead
+      ><tbody
+        >{
+          data.map((point) => (
+            <tr>
+              <>
+                <td>{point[xKey]}</td>
+                <td class='numeric'>{point[yKey]}</td>
+              </>
+            </tr>
+          ))
+        }</tbody
+      >
+    </table>
+  </div>
+</figure>
+<style>
+  .static-plot {
+    max-width: 48rem;
+    margin: 2rem auto;
+    color: var(--wow-text);
+    font-family: var(--wow-font-text, monospace);
+    container-type: inline-size;
+  }
+  .plot-frame {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    border: 1px solid var(--wow-border);
+    background: var(--wow-back-alt);
+    padding: 0.45rem;
+  }
+  .plot-frame-wide {
+    display: none;
+  }
+  .plot-frame-narrow {
+    width: min(100%, 22.5rem);
+    margin-inline: auto;
+  }
+  .plot-frame :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    color: var(--wow-text);
+  }
+  figcaption {
+    max-width: min(100%, 22.5rem);
+    margin-top: 0.7rem;
+    line-height: 1.5;
+  }
+  .exports {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 0.7rem 0;
+  }
+  .exports a {
+    color: var(--wow-link);
+  }
+  .table-wrap {
+    width: fit-content;
+    max-width: min(100%, 30rem);
+    margin-inline: auto;
+    overflow-x: auto;
+    outline-offset: 3px;
+  }
+  table {
+    display: table;
+    border-collapse: collapse;
+    width: max-content;
+    min-width: 100%;
+    margin: 0;
+    overflow: visible;
+    font-family: var(--wow-font-mono, monospace);
+  }
+  th,
+  td {
+    border: 1px solid var(--wow-border);
+    padding: 0.4rem 0.55rem;
+    text-align: left;
+  }
+  .numeric {
+    text-align: right;
+  }
+  @container (min-width: 38rem) {
+    figcaption {
+      max-width: 100%;
+    }
+    .plot-frame-wide {
+      display: block;
+    }
+    .plot-frame-narrow {
+      display: none;
+    }
+  }
+  @container (max-width: 26rem) {
+    .plot-frame-narrow {
+      padding: 0.25rem;
+    }
+  }
+</style>

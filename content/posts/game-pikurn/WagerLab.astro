@@ -1,5 +1,6 @@
 ---
-
+import { wagerSnapshot } from './pikurn-snapshots'
+const snapshot = wagerSnapshot(0, 0)
 ---
 
 <pikurn-wagers aria-label='Two-bet strategy laboratory'>
@@ -11,9 +12,9 @@
     </p>
   </header>
   <div class='wager-presets' aria-label='Example strategies'>
-    <button type='button' data-preset='average'>Maximum average</button>
-    <button type='button' data-preset='restricted'>First-bet-only hedge</button>
-    <button type='button' data-preset='guarantee'>Guarantee $200</button>
+    <button type='button' data-preset='average' disabled>Maximum average</button>
+    <button type='button' data-preset='restricted' disabled>First-bet-only hedge</button>
+    <button type='button' data-preset='guarantee' disabled>Guarantee $200</button>
   </div>
   <div class='wager-controls'>
     <label
@@ -26,6 +27,7 @@
         max='100'
         step='1'
         value='0'
+        disabled
       />
     </label>
     <label
@@ -38,26 +40,41 @@
         max='100'
         step='1'
         value='0'
+        disabled
       />
     </label>
   </div>
   <p class='wager-budget' data-budget>After a green, you have $100 available for the second bet.</p>
+  <p class='wager-scroll-hint'>↔ Scroll each chart sideways to see its full range.</p>
   <div class='wager-figures'>
     <figure>
       <figcaption>Every runout has probability ⅓</figcaption>
-      <svg
-        viewBox='0 0 440 265'
-        role='img'
-        aria-label='Terminal bankroll for each of three runouts'
-        data-bars></svg>
+      <div class='chart-scroll' tabindex='0' role='region' aria-label='Terminal bankroll chart'>
+        <svg
+          viewBox='0 0 440 265'
+          role='img'
+          aria-label='Terminal bankroll for each of three runouts'
+          data-bars
+          set:html={snapshot.bars}
+        />
+      </div>
     </figure>
     <figure>
       <figcaption>Average versus guarantee</figcaption>
-      <svg
-        viewBox='0 0 440 265'
-        role='img'
-        aria-label='Expected terminal bankroll versus guaranteed terminal bankroll'
-        data-frontier></svg>
+      <div
+        class='chart-scroll'
+        tabindex='0'
+        role='region'
+        aria-label='Average versus guarantee chart'
+      >
+        <svg
+          viewBox='0 0 440 265'
+          role='img'
+          aria-label='Expected terminal bankroll versus guaranteed terminal bankroll'
+          data-frontier
+          set:html={snapshot.frontier}
+        />
+      </div>
       <p class='wager-legend'>
         <span class='frontier-key'>━</span> Best average at each guaranteed floor. <span
           class='point-key'>●</span
@@ -86,6 +103,8 @@
     padding: 0;
   }
   pikurn-wagers {
+    container-name: pikurn-wagers;
+    container-type: inline-size;
     display: block;
     margin: 1rem 0;
     padding: clamp(1rem, 2vw, 1.4rem);
@@ -150,9 +169,19 @@
   }
   pikurn-wagers .wager-figures {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 25rem);
     gap: 1rem;
+    justify-content: center;
     margin: 1rem 0;
+  }
+  pikurn-wagers .wager-scroll-hint {
+    display: none;
+    font-size: 0.8rem;
+  }
+  @container pikurn-wagers (max-width: 359px) {
+    pikurn-wagers .wager-scroll-hint {
+      display: block;
+    }
   }
   pikurn-wagers figure {
     display: block;
@@ -170,6 +199,17 @@
     height: auto;
     overflow: visible;
   }
+  pikurn-wagers .chart-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    outline-offset: 3px;
+  }
+  pikurn-wagers .chart-scroll:focus-visible {
+    outline: 2px solid var(--wow-text);
+  }
+  pikurn-wagers .chart-scroll svg {
+    min-width: 360px;
+  }
   pikurn-wagers svg text {
     fill: currentColor;
     font-family: inherit;
@@ -186,10 +226,17 @@
     padding-top: 0.7rem;
     border-top: 1px solid var(--wow-border);
   }
-  @media (max-width: 760px) {
-    pikurn-wagers .wager-controls,
-    pikurn-wagers .wager-figures {
+  @container pikurn-wagers (max-width: 35rem) {
+    pikurn-wagers .wager-controls {
       grid-template-columns: 1fr;
+    }
+  }
+  @container pikurn-wagers (min-width: 49.5rem) {
+    pikurn-wagers figcaption {
+      min-height: 3.3em;
+    }
+    pikurn-wagers .wager-figures {
+      grid-template-columns: repeat(2, minmax(24rem, 25rem));
     }
   }
 </style>

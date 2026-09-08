@@ -1,0 +1,36 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "maxJavaScriptDecodedBytes": 35000,
+      "maxCssTransferBytes": 150000,
+      "maxImageTransferBytes": 2500000
+    },
+    {
+      "path": "/posts/game-pikurn",
+      "maxJavaScriptDecodedBytes": 60000,
+      "maxCssTransferBytes": 150000,
+      "maxImageTransferBytes": 3000000
+    },
+    {
+      "path": "/test",
+      "maxJavaScriptDecodedBytes": 150000,
+      "maxCssTransferBytes": 150000,
+      "maxImageTransferBytes": 1000000
+    }
+  ],
+  "site": {
+    "maxDistBytes": 210000000,
+    "maxAstroBytes": 110000000
+  },
+  "lighthouse": {
+    "categories": ["performance", "accessibility", "best-practices", "seo"],
+    "scoreFloors": {
+      "performance": 0.9,
+      "accessibility": 0.9,
+      "best-practices": 0.9,
+      "seo": 0.9
+    },
+    "scoreGoals": { "performance": 0.95 }
+  }
+}

@@ -1,0 +1,84 @@
+---
+import HarmonicExplorer from './HarmonicExplorer.svelte'
+import MandelbrotExplorer from './MandelbrotExplorer.svelte'
+import StaticPlot from './StaticPlot.astro'
+---
+
+<section class='visualization-examples' aria-labelledby='visualization-examples-title'>
+  <h2 id='visualization-examples-title'>Visualization foundation</h2>
+  <p>
+    These examples keep the first render useful: exact geometry and the data plot are static
+    HTML/SVG, while the harmonic model adds behavior only after it becomes visible.
+  </p>
+  <StaticPlot />
+  <HarmonicExplorer client:visible={{ rootMargin: '200px' }} />
+  <MandelbrotExplorer client:visible={{ rootMargin: '200px' }} />
+  <figure class='geometry-sample'>
+    <svg viewBox='0 0 320 170' role='img' aria-labelledby='geometry-title geometry-description'>
+      <title id='geometry-title'>Exact decision geometry</title><desc id='geometry-description'
+        >A triangle with vertices A, B, and C and a blue median from A to the midpoint of BC.</desc
+      >
+      <path d='M35 140 L160 25 L285 140 Z' class='shape'></path><path
+        d='M160 25 L160 140'
+        class='median'></path>
+      <circle cx='35' cy='140' r='3.5'></circle><circle cx='160' cy='25' r='3.5'></circle><circle
+        cx='285'
+        cy='140'
+        r='3.5'></circle><circle cx='160' cy='140' r='3.5'></circle>
+      <text x='20' y='159'>B</text><text x='155' y='17'>A</text><text x='291' y='159'>C</text><text
+        x='165'
+        y='159'>M</text
+      >
+    </svg>
+    <figcaption>
+      <strong>Post-local pattern.</strong> An article with exact geometry can keep its SVG and typed calculation
+      beside the post, as Pikurn does, without introducing a shared runtime.
+    </figcaption>
+  </figure>
+</section>
+
+<style>
+  .visualization-examples {
+    margin: 2.5rem 0;
+    font-family: var(--wow-font-text, monospace);
+  }
+  .visualization-examples > p {
+    max-width: 70ch;
+    line-height: 1.55;
+  }
+  .geometry-sample {
+    margin: 2rem 0;
+    padding: 1rem;
+    border: 1px solid var(--wow-border);
+    background: var(--wow-back-alt);
+  }
+  .geometry-sample svg {
+    display: block;
+    width: 100%;
+    max-width: 36rem;
+    height: auto;
+    color: var(--wow-text);
+  }
+  .shape {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+  }
+  .median {
+    fill: none;
+    stroke: var(--wow-link);
+    stroke-width: 2.5;
+  }
+  circle {
+    fill: currentColor;
+  }
+  text {
+    fill: currentColor;
+    font-family: var(--wow-font-mono, monospace);
+    font-size: 14px;
+  }
+  figcaption {
+    margin-top: 0.7rem;
+    line-height: 1.5;
+  }
+</style>

@@ -1,0 +1,45 @@
+name: Website quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ASTRO_TELEMETRY_DISABLED: '1'
+      WRANGLER_SEND_METRICS: 'false'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm install --global npm@12.0.2
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Validate rendering, accessibility, and interactions
+        run: npm run validate
+      - name: Measure page budgets and Lighthouse scores
+        run: npm run quality:audit
+      - name: Preserve reports and failure evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: website-quality
+          path: |
+            artifacts/browser-results.json
+            artifacts/browser/
+            artifacts/quality/latest/
+          retention-days: 14

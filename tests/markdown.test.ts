@@ -6,6 +6,7 @@ import {
   restoreCodeMetadata,
   mathNodes,
   mathRendering,
+  tableAccessibility,
   imageFigures,
   headingLinks,
   postLinks,
@@ -20,7 +21,13 @@ function options(): CompileOptions {
       gfm: { footnotes: { label: 'References', clobberPrefix: '' } },
     },
     mdastPlugins: [mathNodes, postLinks],
-    hastPlugins: [mathRendering, imageFigures, satteriHeadingIdsPlugin, headingLinks],
+    hastPlugins: [
+      mathRendering,
+      tableAccessibility,
+      imageFigures,
+      satteriHeadingIdsPlugin,
+      headingLinks,
+    ],
   }
 }
 
@@ -63,8 +70,42 @@ describe('native Markdown publishing', () => {
 
   it('renders display math without a code block or paragraph wrapper', async () => {
     const html = await render('$$\nx^2\n$$')
-    expect(html).toMatch(/^<span class="katex-display">/)
+    expect(html).toMatch(/^<span class="katex-display" tabindex="0">/)
     expect(html).not.toMatch(/<(?:pre|code|p)>/)
+  })
+
+  it('makes Markdown tables keyboard-scrollable without replacing their table semantics', async () => {
+    const html = await render('| Column |\n| --- |\n| Value |')
+    expect(html).toContain('class="table-scroll" tabindex="0" role="region"')
+    expect(html).toContain('aria-label="Column"')
+    expect(html).toContain('<table>')
+    expect(html).not.toContain('<table tabindex=')
+    expect(html).toContain('<th>Column</th>')
+    expect(html).toContain('<td>Value</td>')
+  })
+
+  it('preserves column alignment and uses a single wrapper for an already managed table', async () => {
+    const html = await render('| Label | Value |\n| :--- | ---: |\n| Sample | 123 |')
+    expect(html).toContain('style="text-align: right"')
+    expect(html.match(/class="table-scroll"/g)).toHaveLength(1)
+    const managed = await markdownToHtml(
+      '<div class="table-scroll"><table><caption>Results</caption><tr><th scope="col">Value</th></tr><tr><td>123</td></tr></table></div>',
+      {
+        ...options(),
+        features: { rawHtml: true },
+      }
+    )
+    expect(managed.html.match(/class="table-scroll"/g)).toHaveLength(1)
+    expect(managed.html).toContain('<caption>Results</caption>')
+    expect(managed.html).toContain('scope="col"')
+  })
+
+  it('renders tall floor delimiters with valid SVG moveto commands', async () => {
+    const html = await render(
+      '$$\n\\left\\lfloor \\dfrac{\\dfrac{1}{2}}{\\dfrac{3}{4}} \\right\\rfloor\n$$'
+    )
+    expect(html).toContain('M319 602 V0 H403 V602 v')
+    expect(html).not.toContain('MM319')
   })
 
   it('shares TeX macros within a document and isolates them between documents', async () => {

@@ -9,39 +9,52 @@
     "astro": "astro",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "astro check",
+    "check": "astro check && svelte-check --tsconfig ./tsconfig.json",
     "deploy:pages": "wrangler pages deploy dist",
     "test:browser": "playwright test",
     "validate": "npm run format:check && npm run check && npm run build && npm test && npm run test:browser",
-    "format:check": "prettier --check \"src/**/*.{astro,ts}\" \"tests/**/*.ts\" \"content/**/*.{astro,ts}\" \"scripts/*.mjs\" astro.config.ts playwright.config.ts ec.config.mjs",
-    "validate:ci": "playwright install chromium && npm run validate",
-    "inventory:urls": "node scripts/inventory-urls.mjs"
+    "format:check": "prettier --check \"src/**/*.{astro,ts,svelte}\" \"tests/**/*.ts\" \"content/**/*.{astro,ts}\" \"scripts/*.mjs\" astro.config.ts playwright.config.ts ec.config.mjs",
+    "validate:ci": "playwright install chromium webkit && npm run validate",
+    "inventory:urls": "node scripts/inventory-urls.mjs",
+    "quality:audit": "node scripts/quality-audit.mjs",
+    "benchmark:build": "node scripts/benchmark-build.mjs",
+    "test:visual": "playwright test --config playwright.visual.config.ts"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.1",
     "@astrojs/mdx": "^8.0.1",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
+    "@astrojs/svelte": "^9.0.1",
     "@expressive-code/plugin-collapsible-sections": "^0.44.2",
     "@expressive-code/plugin-line-numbers": "^0.44.2",
-    "@mermaid-js/layout-elk": "^0.2.3",
-    "apexcharts": "^7.1.0",
+    "@fontsource/ubuntu-mono": "^5.3.0",
+    "@observablehq/plot": "^0.6.17",
     "astro": "^7.3.1",
     "astro-expressive-code": "^0.44.2",
-    "astro-mermaid": "^2.1.0",
     "expressive-code-color-chips": "^0.2.0",
     "fflate": "^0.8.3",
     "katex": "^0.18.7",
+    "linkedom": "^0.18.13",
     "mermaid": "^11.17.2",
+    "pagefind": "^1.5.2",
+    "satori": "^0.33.4",
     "satteri": "^0.10.5",
-    "sharp": "^0.35.4"
+    "sharp": "^0.35.4",
+    "svelte": "^5.57.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.63.0",
+    "@types/d3": "^7.4.3",
     "@types/node": "^24.13.3",
+    "chrome-launcher": "^1.2.1",
+    "lighthouse": "^13.4.1",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-svelte": "^4.1.1",
+    "svelte-check": "^4.7.6",
     "typescript": "^6.0.3",
     "vitest": "^5.0.0",
     "wrangler": "^4.129.1"
@@ -49,5 +62,13 @@
   "engines": {
     "node": ">=24.15.0 <25"
   },
-  "packageManager": "npm@12.0.2"
+  "packageManager": "npm@12.0.2",
+  "overrides": {
+    "satori": {
+      "fflate": "0.7.5"
+    },
+    "miniflare": {
+      "sharp": "$sharp"
+    }
+  }
 }

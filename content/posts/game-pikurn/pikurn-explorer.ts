@@ -21,10 +21,32 @@ class PikurnExplorer extends HTMLElement {
   private wealth = 100
   private history: string[] = []
   private ready = false
+  private observer?: IntersectionObserver
 
   connectedCallback() {
     if (this.ready) return
+    this.observer ??= new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          this.observer?.disconnect()
+          this.activate()
+        }
+      },
+      { rootMargin: '240px' }
+    )
+    this.observer.observe(this)
+  }
+
+  disconnectedCallback() {
+    this.observer?.disconnect()
+    this.observer = undefined
+  }
+
+  private activate() {
+    if (this.ready) return
     this.ready = true
+    this.querySelector<HTMLFieldSetElement>('.pk-controls')!.disabled = false
+    this.querySelector<HTMLButtonElement>('[data-reset]')!.disabled = false
     this.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input,select').forEach((input) =>
       input.addEventListener('change', () => this.configure(input.name))
     )
@@ -34,9 +56,7 @@ class PikurnExplorer extends HTMLElement {
     this.querySelector<HTMLButtonElement>('[data-reset]')?.addEventListener('click', () =>
       this.reset()
     )
-    this.element('[data-enhanced]').hidden = false
-    this.element('[data-fallback]').hidden = true
-    this.reset()
+    this.renderGame('New game. Choose a possible draw to follow the recommended strategy.')
   }
 
   private element(selector: string): HTMLElement {

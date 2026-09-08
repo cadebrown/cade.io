@@ -12,6 +12,12 @@ type Props = {
   original?: string
   imgStyle?: string
   imgClass?: string
+  sizes?: string
+  priority?: boolean
+  width?: number
+  height?: number
+  layout?: 'constrained' | 'fixed' | 'full-width' | 'none'
+  fit?: 'cover' | 'contain' | 'fill'
 }
 
 const {
@@ -24,6 +30,12 @@ const {
   original,
   imgStyle,
   imgClass,
+  sizes,
+  priority,
+  width,
+  height,
+  layout,
+  fit,
   ...rest
 } = Astro.props
 ---
@@ -33,10 +45,32 @@ const {
   {
     href ? (
       <a href={href}>
-        <Image src={src} alt={alt} style={imgStyle} class={imgClass} />
+        <Image
+          src={src}
+          alt={alt}
+          style={imgStyle}
+          class={imgClass}
+          {sizes}
+          {priority}
+          {width}
+          {height}
+          {layout}
+          {fit}
+        />
       </a>
     ) : (
-      <Image src={src} alt={alt} style={imgStyle} class={imgClass} />
+      <Image
+        src={src}
+        alt={alt}
+        style={imgStyle}
+        class={imgClass}
+        {sizes}
+        {priority}
+        {width}
+        {height}
+        {layout}
+        {fit}
+      />
     )
   }
   {caption && <figcaption>{caption}</figcaption>}

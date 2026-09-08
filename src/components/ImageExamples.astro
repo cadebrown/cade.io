@@ -1,0 +1,137 @@
+---
+import { Code } from 'astro-expressive-code/components'
+import Figure from './Figure.astro'
+import portrait from '../assets/photos/cade-face-grad.webp'
+import fractalPortrait from '../assets/photos/cade-fractal.webp'
+import mandelbrot from '../../content/posts/rendering-fractals/mandelbrot.webp'
+import source from '../lib/visualizations/harmonics.ts?raw'
+---
+
+<section class='image-examples' aria-labelledby='image-examples-title'>
+  <h2 id='image-examples-title'>Images, geometry, and source</h2>
+  <p>
+    These patterns retain the original image and make the intended display constraint explicit. The
+    surrounding slot may crop; the source image does not.
+  </p>
+  <div class='image-grid'>
+    <Figure
+      src={portrait}
+      alt='Portrait of Cade Brown wearing a hat.'
+      caption='Natural portrait: constrained layout preserves the imported image ratio.'
+      layout='constrained'
+      sizes='(max-width: 680px) calc(100vw - 3rem), 30rem'
+    />
+    <Figure
+      src={fractalPortrait}
+      alt='Cade wearing headphones at a desk, with a Mandelbrot rendering on the monitor.'
+      caption='Intentional thumbnail: a 3:2 slot uses cover cropping while the source remains untouched.'
+      width={360}
+      height={240}
+      fit='cover'
+      layout='constrained'
+      sizes='(max-width: 680px) calc(100vw - 3rem), 22rem'
+    />
+  </div>
+  <Figure
+    src={mandelbrot}
+    alt='A blue and black rendering of the Mandelbrot set with filigree-like boundary detail.'
+    caption='Full-width fractal figure: a wide source fits this editorial slot without making a portrait dominate the lab.'
+    layout='full-width'
+    sizes='(max-width: 900px) calc(100vw - 2rem), 900px'
+  />
+  <figure class='exact-geometry'>
+    <svg
+      viewBox='0 0 520 190'
+      role='img'
+      aria-labelledby='geometry-example-title geometry-example-description'
+    >
+      <title id='geometry-example-title'>Triangle median geometry</title><desc
+        id='geometry-example-description'
+        >A triangle ABC with a blue median from A to M, the midpoint of BC.</desc
+      >
+      <path d='M60 150 L260 30 L460 150 Z' class='outline'></path><path
+        d='M260 30 L260 150'
+        class='median'></path>
+      <circle cx='60' cy='150' r='4'></circle><circle cx='260' cy='30' r='4'></circle><circle
+        cx='460'
+        cy='150'
+        r='4'></circle><circle cx='260' cy='150' r='4'></circle>
+      <text x='46' y='174'>B</text><text x='253' y='20'>A</text><text x='467' y='174'>C</text><text
+        x='267'
+        y='174'>M</text
+      >
+    </svg>
+    <figcaption>
+      Exact geometry stays SVG: labels and the A→M median retain their meaning at every size.
+    </figcaption>
+  </figure>
+  <p>
+    Existing source uses the shared Expressive Code renderer and a raw import; it is not copied into
+    a separate fence.
+  </p>
+  <Code code={source} lang='ts' title='harmonics.ts' />
+</section>
+
+<style>
+  .image-examples {
+    margin: 3rem 0;
+    font-family: var(--wow-font-text, monospace);
+  }
+  .image-examples > p {
+    max-width: 70ch;
+    line-height: 1.55;
+  }
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+  .image-grid :global(figure) {
+    min-width: 0;
+    margin: 1rem 0;
+  }
+  .image-grid :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .exact-geometry {
+    margin: 2rem 0;
+    padding: 1rem;
+    border: 1px solid var(--wow-border);
+    background: var(--wow-back-alt);
+  }
+  .exact-geometry svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    color: var(--wow-text);
+  }
+  .exact-geometry .outline {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+  }
+  .exact-geometry .median {
+    fill: none;
+    stroke: var(--wow-link);
+    stroke-width: 3;
+  }
+  .exact-geometry circle {
+    fill: currentColor;
+  }
+  .exact-geometry text {
+    fill: currentColor;
+    font-family: var(--wow-font-mono, monospace);
+    font-size: 15px;
+  }
+  .exact-geometry figcaption {
+    margin-top: 0.7rem;
+    line-height: 1.5;
+  }
+  @media (max-width: 680px) {
+    .image-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

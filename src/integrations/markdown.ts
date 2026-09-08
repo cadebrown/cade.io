@@ -71,6 +71,70 @@ export function mathNodes(): MdastPluginDefinition {
   }
 }
 
+/** Keep native tables inside one keyboard-accessible, centered overflow container. */
+export function tableAccessibility(): HastPluginDefinition {
+  return {
+    name: 'cade-table-accessibility',
+    element: {
+      filter: ['table'],
+      visit(node, ctx) {
+        let ancestor: Readonly<HastNode> | undefined = ctx.parent(node)
+        while (ancestor) {
+          if (ancestor.type === 'element') {
+            const classes = String(ancestor.properties.className ?? '').split(/[ ,]+/)
+            if (
+              classes.some((name) => ['table-frame', 'table-scroll', 'table-wrap'].includes(name))
+            )
+              return
+          }
+          if (ancestor.type === 'mdxJsxFlowElement' && ancestor.name === 'Table') return
+          ancestor = ctx.parent(ancestor)
+        }
+        const header = node.children.find(
+          (child) => child.type === 'element' && child.tagName === 'thead'
+        )
+        const caption = node.children.find(
+          (child) => child.type === 'element' && child.tagName === 'caption'
+        )
+        const label = caption
+          ? ctx.textContent(caption)
+          : header && 'children' in header
+            ? header.children
+                .flatMap((row) =>
+                  'children' in row
+                    ? row.children
+                        .filter((cell) => cell.type === 'element')
+                        .map((cell) => ctx.textContent(cell).trim())
+                    : []
+                )
+                .join(', ')
+            : 'Data table'
+        const properties = { ...node.properties }
+        delete properties.tabIndex
+        ctx.replaceNode(node, {
+          type: 'element',
+          tagName: 'div',
+          properties: { className: ['table-frame'], 'data-width': 'compact' },
+          children: [
+            {
+              type: 'element',
+              tagName: 'div',
+              properties: {
+                className: ['table-scroll'],
+                tabIndex: 0,
+                role: 'region',
+                ariaLabel: label.trim() || 'Data table',
+                ariaDescription: 'Scroll horizontally when the table is wider than this area.',
+              },
+              children: [{ ...node, properties }],
+            },
+          ],
+        })
+      },
+    },
+  }
+}
+
 /** Each document gets its own macro table; global TeX definitions stay within that document. */
 export function mathRendering(): HastPluginDefinition {
   const options: katex.KatexOptions = {
@@ -93,14 +157,34 @@ export function mathRendering(): HastPluginDefinition {
         const tree = htmlToHast(html, { fragment: true })
         // Satteri's HTML parser prefixes the default MathML namespace with a colon.
         // Normalize that attribute before MDX turns the tree into JSX.
-        function normalizeNamespace(child: HastNode): void {
+        function normalizeMathMarkup(child: HastNode): void {
+          if (
+            child.type === 'element' &&
+            Array.isArray(child.properties.className) &&
+            child.properties.className.includes('katex-display')
+          ) {
+            // Wide equations scroll horizontally; keyboard readers need the same access.
+            child.properties.tabIndex = 0
+          }
           if (child.type === 'element' && ':xmlns' in child.properties) {
             child.properties.xmlns = String(child.properties[':xmlns'])
             delete child.properties[':xmlns']
           }
-          if ('children' in child) child.children.forEach(normalizeNamespace)
+          if (
+            child.type === 'element' &&
+            child.tagName === 'path' &&
+            typeof child.properties.d === 'string'
+          ) {
+            // KaTeX 0.18.7 tall floor delimiters contain a duplicate SVG moveto.
+            // https://github.com/KaTeX/KaTeX/blob/main/src/svgGeometry.ts (lfloor/rfloor)
+            child.properties.d = child.properties.d.replaceAll(
+              'MM319 602 V0 H403 V602 v',
+              'M319 602 V0 H403 V602 v'
+            )
+          }
+          if ('children' in child) child.children.forEach(normalizeMathMarkup)
         }
-        normalizeNamespace(tree)
+        normalizeMathMarkup(tree)
         if (tree.type !== 'root') throw new Error('Expected a KaTeX HTML fragment')
         ctx.replaceNode(node, tree.children)
       },

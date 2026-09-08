@@ -1,11 +1,62 @@
 ---
 layout: '@layouts/Base.astro'
-title: 'Style Guide'
-blurb: 'A page to test markdown syntax and display features.'
+title: 'Component lab'
+blurb: 'Images, interactive models, diagrams, and typography for cade.io.'
 ---
 
 import { Code } from 'astro-expressive-code/components'
 import exampleSource from '../lib/urls.ts?raw'
+import VisualizationExamples from '@components/visualizations/VisualizationExamples.astro'
+import ImageExamples from '@components/ImageExamples.astro'
+import SocialPreviewExamples from '@components/SocialPreviewExamples.astro'
+import MathSupport from '@components/MathSupport.astro'
+import WidgetPreviews from '@components/WidgetPreviews.astro'
+import LayoutExamples from '@components/LayoutExamples.astro'
+import '@styles/lab.css'
+
+<MathSupport />
+
+<nav aria-label='Component lab sections' className='lab-navigation'>
+  <a href='#widget-previews'>Widget previews</a>
+  <a href='#layout-examples'>Tables & chart layouts</a>
+  <a href='#visualization-examples-title'>Visualizations</a>
+  <a href='#image-examples-title'>Image layouts</a>
+  <a href='#static-diagrams'>Diagrams</a>
+  <a href='#social-previews'>Link previews</a>
+  <a href='#text'>Typography & code</a>
+</nav>
+
+This is the working reference for article components. Figures and diagrams arrive
+already rendered; interactive models add controls when they enter view.
+
+<WidgetPreviews />
+
+<LayoutExamples />
+
+<VisualizationExamples />
+
+<ImageExamples />
+
+## Static diagrams
+
+Mermaid is rendered during the build in both themes. This diagram needs no client
+JavaScript. Give each diagram a title and a description in its source.
+
+```mermaid
+flowchart LR
+  accTitle: From article source to reader interaction
+  accDescr: Article source produces complete HTML and SVG at build time. The browser displays these immediately and adds controls when a visualization becomes visible.
+  A[Article source] --> B[Build: HTML + SVG]
+  B --> C[Immediate reading]
+  C --> D[Visible island: controls]
+```
+
+
+<section id='social-previews'>
+  <SocialPreviewExamples src='/og/posts/game-pikurn.png' title='Pikurn' />
+</section>
+
+## Markdown reference
 
 [^1]: [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/), a quick reference and guide to Markdown syntax
 
@@ -312,4 +363,3 @@ Here's an example of an image:
 $$
 \N\C
 $$
-

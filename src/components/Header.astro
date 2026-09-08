@@ -6,7 +6,7 @@ import Image from './Image.astro'
   <nav>
     <ul class='header-links'>
       <li>
-        <a href='/' aria-label='Home'>
+        <a href='/' data-astro-prefetch aria-label='Home'>
           <Image
             class='header-links-icon'
             src='/web-app-manifest-512x512.png'
@@ -18,14 +18,14 @@ import Image from './Image.astro'
       </li>
 
       <li class='header-hidden-mobile'>
-        <a href='/'>cade.io</a>
+        <a href='/' data-astro-prefetch>cade.io</a>
       </li>
 
       <li>
-        <a href='/posts'>/posts</a>
+        <a href='/posts' data-astro-prefetch>/posts</a>
       </li>
       <li>
-        <a href='/links'>/links</a>
+        <a href='/links' data-astro-prefetch>/links</a>
       </li>
     </ul>
     <search></search>

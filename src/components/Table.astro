@@ -1,0 +1,23 @@
+---
+import '../styles/tables.css'
+
+type Props = {
+  label: string
+  width?: 'compact' | 'wide'
+  maxHeight?: string
+}
+const { label, width = 'compact', maxHeight } = Astro.props as Props
+---
+
+<div class='table-frame' data-width={width}>
+  <div
+    class:list={['table-scroll', { 'table-scroll--bounded': maxHeight }]}
+    style={maxHeight ? { '--table-max-height': maxHeight } : undefined}
+    tabindex='0'
+    role='region'
+    aria-label={label}
+    aria-description='Scroll horizontally when the table is wider than this area.'
+  >
+    <slot />
+  </div>
+</div>

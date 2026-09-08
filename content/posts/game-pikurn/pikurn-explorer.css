@@ -274,24 +274,35 @@
   font-weight: bold;
 }
 .pikurn-lab .pk-table-scroll {
+  width: fit-content;
+  max-width: 100%;
   max-height: 22rem;
   overflow: auto;
-  margin-top: 1rem;
+  margin: 1rem auto 0;
 }
 .pikurn-lab table {
+  display: table;
   font-size: 0.73rem;
-  width: 100%;
-  margin: 0;
+  width: max-content;
+  margin: 0 auto;
+  border-collapse: collapse;
+  overflow: visible;
 }
 .pikurn-lab td,
 .pikurn-lab th {
   padding: 0.5rem 0.3rem;
   text-align: right;
-  white-space: normal;
+  white-space: nowrap;
 }
 .pikurn-lab td:first-child,
 .pikurn-lab th:first-child {
   text-align: left;
+}
+.pikurn-lab .pk-table-scroll thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--wow-back-alt);
 }
 .pikurn-lab [hidden] {
   display: none !important;

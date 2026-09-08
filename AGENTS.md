@@ -16,8 +16,18 @@ See [src/pages/test.mdx](src/pages/test.mdx), rendered at `/test`, for live exam
   `Code` from `astro-expressive-code/components` with a `?raw` import. Both use
   `ec.config.mjs`; do not hand-build highlighted HTML, copy runnable files into
   fences, or add a separate article-specific highlighter/theme.
-- Prefer existing `Figure`, `Gallery`, and `Chart` components. Keep article-specific
+- Prefer existing `Image`, `Figure`, and `Gallery` components. They preserve
+  natural image geometry unless an intentional crop supplies dimensions and
+  `fit`; reserve `priority` for above-the-fold media. Keep article-specific
   interactive components beside the article; share them only when reused.
+- Mermaid fences are static SVG generated at build time. A cold diagram build
+  needs Playwright Chromium and later unchanged diagrams reuse `.astro` cache.
+  Use build-time SVG/table output for static data; use Svelte SSR plus
+  `client:visible` only for independent optional explorers. See
+  [docs/visualizations.md](docs/visualizations.md) and `/test`.
+- Widget and performance changes must preserve their surrounding design. Do not
+  redesign the homepage, rearrange content, or change global typography, palette,
+  header, footer, or theme controls unless the request explicitly includes it.
 - Make explanations direct. Define notation, label diagrams, distinguish proof
   from numerical evidence, and provide meaningful alt text and control labels.
 - Use theme tokens, keyboard-accessible controls, and readable mobile layouts.
@@ -35,4 +45,9 @@ Run the relevant checks from the README. Rendering/integration changes require
 The browser suite owns port 4322 and uses 4323 for drafts; use `ASTRO_DRAFT_PORT`
 when the draft port is occupied. Preserve unrelated servers and working changes.
 A site build does not validate the mathematics or behavior of supporting programs.
+`npm run quality:audit` is a separate heavier local/CI report over an existing
+build; it does not replace Wrangler browser coverage or deployment validation.
+`/search` indexes published articles only. `/content-index.json` and `/llms.txt`
+are public discovery endpoints. The optional feature-detected `document.modelContext`
+tools are experimental; do not claim browser support without direct evidence.
 Commit, push, and deploy only when authorized; validation alone does not publish.

@@ -1,5 +1,7 @@
 ---
 import './pikurn-explorer.css'
+import { explorerSnapshot, money } from './pikurn-snapshots'
+const snapshot = explorerSnapshot()
 ---
 
 <pikurn-explorer class='pikurn-lab' aria-label='Pikurn interactive urn laboratory'>
@@ -7,7 +9,7 @@ import './pikurn-explorer.css'
     <h3>Urn explorer</h3>
     <p>Choose the bag and objective. Reveal any possible draw to follow the optimal strategy.</p>
   </header>
-  <fieldset class='pk-controls'>
+  <fieldset class='pk-controls' disabled>
     <legend>Starting bag · $100</legend>
     <label
       ><span><i class='pk-token pk-G' aria-hidden='true'></i> Green</span><input
@@ -60,43 +62,52 @@ import './pikurn-explorer.css'
   <p class='pk-small' data-constraint>
     Up to 4 of each color, 8 balls total. Changing a control starts a new $100 game.
   </p>
-  <div data-enhanced hidden>
+  <div data-enhanced>
     <section class='pk-stage' aria-label='Current game'>
       <div class='pk-urn-side'>
-        <div class='pk-urn' data-urn role='img' aria-label='Two green balls and one red ball'></div>
-        <p class='pk-small' data-remaining></p>
+        <div
+          class='pk-urn'
+          data-urn
+          role='img'
+          aria-label='Two green balls and one red ball'
+          set:html={snapshot.urn}
+        />
+        <p class='pk-small' data-remaining>2 green · 1 red · 0 blue / 3 draws left</p>
       </div>
       <div class='pk-play'>
         <p class='pk-kicker'>Recommended bet</p>
-        <p class='pk-wager' data-wager></p>
-        <p data-bankroll></p>
+        <p class='pk-wager' data-wager>Wager {money(snapshot.wager)}</p>
+        <p data-bankroll>0% of your $100.00 bankroll.</p>
 
         <div class='pk-draws'>
-          <button type='button' data-draw='G'>● Draw green</button><button
+          <button type='button' data-draw='G' disabled>● Draw green</button><button
             type='button'
-            data-draw='R'>◆ Draw red</button
-          ><button type='button' data-draw='B'>■ Draw blue</button>
+            data-draw='R'
+            disabled>◆ Draw red</button
+          ><button type='button' data-draw='B' disabled>■ Draw blue</button>
         </div>
         <p class='pk-small'>Choose the next color; draws here are not random.</p>
-        <button type='button' class='pk-reset' data-reset>Reset this game</button>
+        <button type='button' class='pk-reset' data-reset disabled>Reset this game</button>
       </div>
     </section>
-    <p class='pk-status' data-status role='status' aria-live='polite'></p>
+    <p class='pk-status' data-status role='status' aria-live='polite'>
+      New game. Choose a possible draw to follow the recommended strategy.
+    </p>
     <ol class='pk-history' data-history aria-label='Explored draw history'></ol>
     <div class='pk-results'>
       <section class='pk-prediction' aria-label='Initial strategy results'>
         <p class='pk-kicker'>Terminal bankroll · selected strategy</p>
         <dl class='pk-metrics'>
-          <div><dt>Average finish</dt><dd data-average></dd></div><div>
-            <dt>Worst finish</dt><dd data-worst></dd>
-          </div><div><dt>Best finish</dt><dd data-best></dd></div>
+          <div><dt>Average finish</dt><dd data-average>{money(snapshot.average)}</dd></div><div>
+            <dt>Worst finish</dt><dd data-worst>{money(snapshot.worst)}</dd>
+          </div><div><dt>Best finish</dt><dd data-best>{money(snapshot.best)}</dd></div>
         </dl>
         <p class='pk-small'>Includes the original $100. Values cover every possible runout.</p>
       </section>
       <figure class='pk-distribution'>
         <figcaption>
           <strong>Outcome distribution</strong><span class='pk-small' data-distribution-note></span>
-        </figcaption><div data-distribution></div>
+        </figcaption><div data-distribution set:html={snapshot.distributionMarkup} />
       </figure>
     </div>
     <details class='pk-tree-panel'>
@@ -105,7 +116,7 @@ import './pikurn-explorer.css'
       >
         Branches show conditional probabilities and the next bet. The tree stops after three draws;
         the distribution includes all draws.
-      </p><div class='pk-tree' data-tree></div>
+      </p><div class='pk-tree' data-tree set:html={snapshot.treeMarkup} />
     </details>
     <details class='pk-path-panel'>
       <summary>Every possible runout <span class='pk-small' data-path-count></span></summary><div
@@ -117,12 +128,12 @@ import './pikurn-explorer.css'
         <table>
           <thead
             ><tr><th>Draw sequence</th><th>Probability</th><th>Terminal bankroll</th></tr></thead
-          ><tbody data-paths></tbody>
+          ><tbody data-paths set:html={snapshot.pathsMarkup} />
         </table>
       </div>
     </details>
   </div>
-  <div data-fallback>
+  <noscript>
     <p>
       The original urn has two green balls and one red ball. Maximizing average bankroll means
       wagering $0 first, with an optimal expected finish of $233.33. Maximizing the guarantee means
@@ -131,7 +142,7 @@ import './pikurn-explorer.css'
       Enable JavaScript to change the urn and explore each branch. The derivations, figures, and
       complete solver below also work without this lab.
     </p>
-  </div>
+  </noscript>
 </pikurn-explorer>
 <script>
   import './pikurn-explorer'

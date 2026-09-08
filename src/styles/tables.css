@@ -1,0 +1,63 @@
+/* Only managed table containers use these rules; the surrounding page keeps its design. */
+.table-frame {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 1.5rem auto;
+}
+.table-scroll {
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  margin-inline: auto;
+  overflow-x: auto;
+  outline-offset: 3px;
+}
+.table-scroll > table {
+  display: table;
+  width: max-content;
+  max-width: none;
+  margin: 0;
+  overflow: visible;
+  border-collapse: collapse;
+}
+.table-frame[data-width='wide'] > .table-scroll,
+.table-frame[data-width='wide'] > .table-scroll > table {
+  width: 100%;
+}
+.table-frame[data-width='wide'] > .table-scroll > table {
+  min-width: max-content;
+}
+.table-scroll :is(th, td) {
+  padding: 0.5rem 0.75rem;
+  max-width: 30ch;
+  text-align: left;
+}
+.table-scroll :is(th, td)[align='center'] {
+  text-align: center;
+}
+.table-scroll :is(th, td)[align='right'],
+.table-scroll .numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.table-scroll :is(th, td)[align='left'] {
+  text-align: left;
+}
+.table-scroll--bounded {
+  max-height: var(--table-max-height);
+  overflow: auto;
+}
+.table-scroll--bounded thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.table-scroll:focus-visible {
+  outline: 2px solid var(--wow-link);
+}
+@media (max-width: 540px) {
+  .table-scroll :is(th, td) {
+    padding: 0.4rem 0.55rem;
+  }
+}

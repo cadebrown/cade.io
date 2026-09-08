@@ -1,0 +1,165 @@
+---
+import Base from '@layouts/Base.astro'
+import { getPublishedPosts, postUrl } from '../lib/content'
+const posts = await getPublishedPosts()
+---
+
+<Base title='Search the notebook' blurb='Find an idea, an experiment, or a piece of code.'>
+  <search class='site-search'>
+    <form action='/search' role='search'>
+      <label for='site-query'>Search articles</label>
+      <div class='search-row'>
+        <input
+          id='site-query'
+          name='q'
+          type='search'
+          maxlength='200'
+          autocomplete='off'
+          placeholder='Try “Fourier” or “Pikurn”'
+        />
+        <button type='submit'>Search</button>
+      </div>
+    </form>
+    <p role='status' aria-live='polite' data-search-status>
+      Search the full text of published articles.
+    </p>
+    {
+      import.meta.env.DEV && (
+        <p class='dev-note'>
+          Local search uses the latest production build. Run npm run build to refresh it.
+        </p>
+      )
+    }
+    <ol data-search-results aria-label='Search results'></ol>
+  </search>
+  <section class='browse-index' aria-labelledby='browse-title'>
+    <h2 id='browse-title'>Browse all articles</h2>
+    <ul>
+      {
+        posts.map((post) => (
+          <li>
+            <>
+              <a href={postUrl(post.id)} data-astro-prefetch>
+                {post.data.title}
+              </a>
+              <p>{post.data.blurb}</p>
+            </>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>
+<style>
+  .site-search,
+  .browse-index {
+    max-width: 720px;
+    margin: 0 auto 2rem;
+  }
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.4rem;
+  }
+  .search-row {
+    display: flex;
+    gap: 0.6rem;
+  }
+  input {
+    min-width: 0;
+    flex: 1;
+    border: 1px solid var(--wow-border);
+    border-radius: 0.35rem;
+    padding: 0.7rem;
+  }
+  button {
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+  }
+  [role='status'],
+  .dev-note {
+    color: var(--wow-text);
+    font-size: 0.85rem;
+  }
+  ul,
+  ol {
+    padding-left: 1.25rem;
+  }
+  .browse-index li {
+    margin: 1.2rem 0;
+  }
+  .browse-index p {
+    margin: 0.15rem 0;
+    font-size: 0.9rem;
+  }
+  :global([data-search-results] li) {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--wow-border);
+  }
+</style>
+<script>
+  import { prepareSearch, searchArticles } from '../lib/search'
+  const form = document.querySelector<HTMLFormElement>('.site-search form')!
+  const input = document.querySelector<HTMLInputElement>('#site-query')!
+  const results = document.querySelector<HTMLOListElement>('[data-search-results]')!
+  const status = document.querySelector<HTMLElement>('[data-search-status]')!
+  let revision = 0
+  let timer: ReturnType<typeof setTimeout>
+  async function search() {
+    const current = ++revision
+    const query = input.value.trim()
+    const url = new URL(location.href)
+    if (query) url.searchParams.set('q', query)
+    else url.searchParams.delete('q')
+    history.replaceState(null, '', url)
+    status.textContent = query ? 'Searching…' : 'Search the full text of published articles.'
+    if (!query) {
+      results.replaceChildren()
+      return
+    }
+    try {
+      const matches = await searchArticles(query)
+      if (current !== revision) return
+      results.replaceChildren(
+        ...matches.map((match) => {
+          const item = document.createElement('li')
+          const link = document.createElement('a')
+          link.href = match.url
+          link.textContent = match.title
+          link.dataset.astroPrefetch = ''
+          const excerpt = document.createElement('p')
+          excerpt.textContent = match.excerpt
+          item.append(link, excerpt)
+          return item
+        })
+      )
+      status.textContent = matches.length
+        ? `${matches.length} result${matches.length === 1 ? '' : 's'} for “${query}”.`
+        : `No articles found for “${query}”. Try a broader term.`
+    } catch {
+      if (current === revision) {
+        results.replaceChildren()
+        status.textContent = 'Search is unavailable. Browse the article index below, or retry.'
+      }
+    }
+  }
+  input.addEventListener(
+    'focus',
+    () => {
+      void prepareSearch().catch(() => {})
+    },
+    { once: true }
+  )
+  form.addEventListener('submit', (event) => {
+    event.preventDefault()
+    clearTimeout(timer)
+    void search()
+  })
+  input.addEventListener('input', () => {
+    revision++
+    clearTimeout(timer)
+    timer = setTimeout(() => void search(), 180)
+  })
+  input.value = new URL(location.href).searchParams.get('q')?.slice(0, 200) ?? ''
+  if (input.value) void search()
+</script>

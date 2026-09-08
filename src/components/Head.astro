@@ -3,9 +3,7 @@
 import '@styles/wow.css'
 import '@styles/cadeio.css'
 import '@styles/navigation.css'
-
-// KaTeX styles bundled by Astro from the npm package (no vendored copy)
-import 'katex/dist/katex.min.css'
+import '@styles/tables.css'
 
 import { SITE_NAME, SITE_TITLE } from '@site'
 import type { ImageMetadata } from 'astro'
@@ -54,6 +52,12 @@ const image_url = imageUrl(image, Astro.site!)
 <link rel='sitemap' href='/sitemap-index.xml' />
 <link
   rel='alternate'
+  type='application/json'
+  href='/content-index.json'
+  title='Published article index'
+/>
+<link
+  rel='alternate'
   type='application/rss+xml'
   title={SITE_TITLE}
   href={new URL('rss.xml', Astro.site)}
@@ -87,7 +91,7 @@ const image_url = imageUrl(image, Astro.site!)
 <meta property='twitter:description' content={blurb} />
 <meta property='twitter:image' content={image_url} />
 
-<!-- KaTeX copy-tex extension: lets users copy LaTeX source from rendered equations -->
 <script>
-  import 'katex/dist/contrib/copy-tex.min.js'
+  import { registerSiteTools } from '../lib/site-tools'
+  registerSiteTools()
 </script>

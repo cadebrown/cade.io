@@ -14,6 +14,8 @@ type Props = {
   priority?: boolean
   layout?: 'constrained' | 'fixed' | 'full-width' | 'none'
   fetchpriority?: 'high' | 'low' | 'auto'
+  fit?: 'cover' | 'contain' | 'fill'
+  quality?: number
 }
 
 const {
@@ -28,6 +30,8 @@ const {
   priority = false,
   layout = 'constrained',
   fetchpriority,
+  fit = 'cover',
+  quality = 80,
 } = Astro.props
 ---
 
@@ -57,7 +61,8 @@ const {
       loading={loading}
       priority={priority}
       fetchpriority={fetchpriority}
-      quality={90}
+      fit={fit}
+      quality={quality}
     />
   )
 }

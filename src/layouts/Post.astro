@@ -1,11 +1,13 @@
 ---
 import Base from '@layouts/Base.astro'
 import type { LayoutProps } from './types'
+import MathSupport from '@components/MathSupport.astro'
 
 type Props = LayoutProps
 ---
 
 <Base {...'frontmatter' in Astro.props ? Astro.props.frontmatter : Astro.props} kind='article'>
+  <MathSupport />
   <article>
     <slot />
   </article>

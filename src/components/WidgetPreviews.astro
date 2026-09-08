@@ -1,0 +1,201 @@
+---
+import { Code } from 'astro-expressive-code/components'
+import Figure from './Figure.astro'
+import ZoomFigure from './ZoomFigure.astro'
+import Gallery from './Gallery.astro'
+import ImageCompare from './ImageCompare.astro'
+import fractal from '../../content/posts/rendering-fractals/mandelbrot.webp'
+import portrait from '../assets/photos/cade-quantum.webp'
+import square from '../assets/photos/cade-face-grad.webp'
+import before from '../assets/examples/mandelbrot-40.png'
+import after from '../assets/examples/mandelbrot-320.png'
+
+const images = [
+  {
+    src: portrait,
+    alt: 'Cade beside a quantum computing display.',
+    caption: 'Portrait · complete image',
+  },
+  {
+    src: fractal,
+    alt: 'The black Mandelbrot set surrounded by rainbow-colored escape bands.',
+    caption: 'Landscape · complete image',
+  },
+  { src: square, alt: 'Cade wearing a hat.', caption: 'Square · complete image' },
+]
+---
+
+<section class='widget-previews' aria-labelledby='widget-previews'>
+  <h2 id='widget-previews'>Widget previews</h2>
+  <p>Try these additions on the same images. Each one is optional for an individual post.</p>
+  <nav aria-label='Widget previews'>
+    <a href='#preview-enlarge'>Enlarge a figure</a>
+    <a href='#preview-compare'>Compare two renders</a>
+    <a href='#preview-gallery'>Arrange mixed images</a>
+  </nav>
+
+  <section class='preview-section' id='preview-enlarge' aria-labelledby='enlarge-title'>
+    <h3 id='enlarge-title'>Inspect detail without leaving the article</h3>
+    <p>
+      The same figure at the same reading size. In the proposed version, click the image, then press
+      Escape to return.
+    </p>
+    <div class='preview-pair'>
+      <div class='preview-example'>
+        <h4>Current · inline figure</h4>
+        <Figure
+          src={fractal}
+          alt='The black Mandelbrot set surrounded by rainbow-colored escape bands.'
+          caption='Detail stays at the article’s reading width.'
+          sizes='(max-width: 760px) calc(100vw - 2rem), 520px'
+        />
+      </div>
+      <div class='preview-example' data-preview='zoom'>
+        <h4>Proposed · optional enlargement</h4>
+        <ZoomFigure
+          src={fractal}
+          alt='The black Mandelbrot set surrounded by rainbow-colored escape bands.'
+          caption='Open a larger view; keep your place in the article.'
+          original='/posts/rendering-fractals/mandelbrot.webp'
+          sizes='(max-width: 760px) calc(100vw - 2rem), 520px'
+        />
+      </div>
+    </div>
+    <details>
+      <summary>Use this figure in a post</summary>
+      <Code
+        lang='astro'
+        code={`<ZoomFigure src={image} alt="Describe the image"
+  caption="Explain the figure" original="/posts/your-post/original.webp" />`}
+      />
+    </details>
+  </section>
+
+  <section class='preview-section' id='preview-compare' aria-labelledby='compare-title'>
+    <h3 id='compare-title'>Compare two renders at the same position</h3>
+    <p>
+      Move the slider to compare 40 and 320 escape iterations of the same Mandelbrot region. Both
+      position and scale stay fixed.
+    </p>
+    <ImageCompare
+      {before}
+      {after}
+      beforeAlt='Mandelbrot region rendered with a 40-iteration escape limit; broad black regions remain unresolved.'
+      afterAlt='The identical Mandelbrot region rendered with a 320-iteration escape limit, resolving additional boundary detail.'
+      beforeLabel='40 iterations'
+      afterLabel='320 iterations'
+      caption='Numerical render comparison. Colors also depend on the escape limit; neither image proves set membership.'
+    />
+    <p class='change-note'>
+      Separate figures make you remember a detail while looking between them. This control keeps the
+      same feature under your eye.
+    </p>
+    <details>
+      <summary>Use this comparison in a post</summary>
+      <Code
+        lang='astro'
+        code={`<ImageCompare before={firstRender} after={secondRender}
+  beforeAlt="Describe the first render" afterAlt="Describe the second render"
+  beforeLabel="40 iterations" afterLabel="320 iterations" />`}
+      />
+    </details>
+  </section>
+
+  <section class='preview-section' id='preview-gallery' aria-labelledby='gallery-title'>
+    <h3 id='gallery-title'>Give mixed images a shared row height</h3>
+    <p>
+      These are the same three uncropped images in the same order. The proposed layout assigns each
+      image a width proportional to its shape.
+    </p>
+    <div class='gallery-preview' data-preview='gallery-grid'>
+      <h4>Current · equal-width grid</h4>
+      <Gallery {images} />
+    </div>
+    <div class='gallery-preview' data-preview='gallery-rows'>
+      <h4>Proposed · proportional rows</h4>
+      <Gallery {images} layout='rows' />
+    </div>
+    <p class='change-note'>
+      The portrait no longer sets the height of a mostly empty row. On phones, images stack at their
+      natural proportions.
+    </p>
+    <details>
+      <summary>Use these rows in a post</summary>
+      <Code lang='astro' code={'<Gallery images={images} layout="rows" />'} />
+    </details>
+  </section>
+</section>
+
+<style>
+  .widget-previews {
+    max-width: 56rem;
+    margin: 2rem 0;
+    color: var(--wow-text);
+  }
+  .widget-previews > p,
+  .preview-section > p {
+    max-width: 75ch;
+    line-height: 1.55;
+  }
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+  }
+  nav a {
+    text-decoration: underline;
+  }
+  .preview-section {
+    padding-block: 1.5rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--wow-border);
+    scroll-margin-top: 1rem;
+  }
+  .preview-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+  .preview-example {
+    min-width: 0;
+  }
+  .preview-example h4,
+  .gallery-preview h4 {
+    margin: 0 0 0.75rem;
+    font-size: 0.9rem;
+  }
+  .preview-example :global(figure) {
+    margin: 0;
+  }
+  .preview-example :global(figure img) {
+    width: 100%;
+    height: auto;
+  }
+  .preview-example :global(figcaption) {
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+  }
+  .gallery-preview {
+    margin-top: 1.5rem;
+  }
+  .gallery-preview :global(figcaption) {
+    font-size: 0.75rem;
+    text-align: left;
+  }
+  .change-note {
+    font-size: 0.9rem;
+  }
+  details {
+    margin-top: 1rem;
+  }
+  summary {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  @media (max-width: 760px) {
+    .preview-pair {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+</style>

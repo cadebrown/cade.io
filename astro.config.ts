@@ -1,16 +1,19 @@
 import sharedAssets from './src/integrations/shared-assets'
 import { SITE_CANON } from './src/site'
 import { defineConfig } from 'astro/config'
+import svelte from '@astrojs/svelte'
 import sitemap from '@astrojs/sitemap'
 import mdx from '@astrojs/mdx'
 import { satteri, satteriHeadingIdsPlugin } from '@astrojs/markdown-satteri'
-import mermaid from 'astro-mermaid'
+import staticDiagrams from './src/integrations/static-diagrams'
+import searchIndex from './src/integrations/search-index'
 import expressiveCode from 'astro-expressive-code'
 import {
   preserveCodeMetadata,
   restoreCodeMetadata,
   mathNodes,
   mathRendering,
+  tableAccessibility,
   imageFigures,
   headingLinks,
   postLinks,
@@ -22,6 +25,8 @@ export default defineConfig({
   build: { format: 'file' },
   scopedStyleStrategy: 'where',
   compressHTML: true,
+  image: { responsiveStyles: true },
+  prefetch: { prefetchAll: false, defaultStrategy: 'hover' },
   server: { host: true },
   experimental: { contentIntellisense: true },
   markdown: {
@@ -46,6 +51,7 @@ export default defineConfig({
       hastPlugins: [
         restoreCodeMetadata,
         mathRendering,
+        tableAccessibility,
         imageFigures,
         satteriHeadingIdsPlugin,
         headingLinks,
@@ -53,10 +59,12 @@ export default defineConfig({
     }),
   },
   integrations: [
+    svelte(),
     sitemap({ filter: (page) => new URL(page).pathname !== '/test' }),
     sharedAssets(),
     expressiveCode(),
-    mermaid({ theme: 'forest', autoTheme: true }),
+    staticDiagrams(),
+    searchIndex(),
     mdx(),
   ],
 })

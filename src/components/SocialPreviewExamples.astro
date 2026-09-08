@@ -1,0 +1,78 @@
+---
+type Props = { src: string; title: string }
+const { src, title } = Astro.props as Props
+---
+
+<section class='social-preview-examples' aria-label='Social preview examples'>
+  <h2>Social preview</h2>
+  <p>One generated card, shown as a wide preview and a narrow chat-style crop.</p>
+  <div class='social-preview-examples__grid'>
+    <figure>
+      <img
+        src={src}
+        width='1200'
+        height='630'
+        loading='lazy'
+        decoding='async'
+        alt={`Wide social preview for ${title}`}
+      />
+      <figcaption>Wide social-card presentation</figcaption>
+    </figure>
+    <figure class='social-preview-examples__chat'>
+      <img
+        src={src}
+        width='1200'
+        height='630'
+        loading='lazy'
+        decoding='async'
+        alt={`Cropped chat preview for ${title}`}
+      />
+      <figcaption>Narrow chat-style thumbnail</figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .social-preview-examples {
+    margin: 2rem auto;
+    max-width: 960px;
+  }
+  .social-preview-examples__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(12rem, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+  figure {
+    margin: 0;
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--wow-border);
+  }
+  figcaption {
+    margin-top: 0.45rem;
+    text-align: center;
+  }
+  .social-preview-examples__chat {
+    overflow: hidden;
+    border: 1px solid var(--wow-border);
+  }
+  .social-preview-examples__chat img {
+    width: 220%;
+    max-width: none;
+    transform: translateX(-25%);
+    border: 0;
+  }
+  @media (max-width: 620px) {
+    .social-preview-examples__grid {
+      grid-template-columns: 1fr;
+    }
+    .social-preview-examples__chat img {
+      width: 140%;
+      transform: translateX(-14%);
+    }
+  }
+</style>

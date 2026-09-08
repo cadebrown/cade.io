@@ -10,7 +10,7 @@ import album from '../assets/music/DDD.webp'
 import Figure from '@components/Figure.astro'
 import Image from '@components/Image.astro'
 
-<Figure src={portrait} alt='Me, circa 2019' class='wow-fr' />
+<Figure src={portrait} alt='Me, circa 2019' class='wow-fr' priority sizes='(max-width: 800px) calc(100vw - 2rem), 35vw' />
 
 ## Hey! I'm Cade 👋
 
@@ -32,7 +32,7 @@ I was also [involved](https://www.linkedin.com/company/qardian-labs/) in a few [
 
 <hr />
 
-<Figure class='wow-fl' alt='Album Artwork: DEREALIZATION' src={album} />
+<Figure class='wow-fl' alt='Album Artwork: DEREALIZATION' src={album} sizes='(max-width: 800px) calc(100vw - 2rem), 35vw' />
 
 ## My Music
 

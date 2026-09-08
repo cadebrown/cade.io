@@ -12,12 +12,17 @@ version recorded in `packageManager`. Install the locked dependencies:
 
 ```sh
 npm ci
+npx playwright install chromium
 npm run dev
 ```
 
 Open [localhost:4321](http://localhost:4321). The development server includes
 drafts; production builds exclude draft pages, post-file downloads, feed entries,
 and listing entries.
+
+Chromium is needed to render Mermaid diagrams on the first visit or cold build.
+This installs the build tool's browser; visitors receive static SVG and do not
+download Mermaid or a browser runtime.
 
 ## Repository layout
 
@@ -32,8 +37,8 @@ content/
     cade-brown.json
     cade-brown.webp
 src/
-  assets/                        # shared photos, music artwork, icons, fonts, PDFs
-  components/                    # images, galleries, charts, metadata, navigation
+  assets/                        # shared photos, music artwork, icons, PDFs
+  components/                    # images, figures, visualizations, metadata, navigation
   layouts/
   pages/                         # page routes and prerendered download endpoints
   lib/                           # publication queries, file discovery, ZIP creation
@@ -83,17 +88,24 @@ all sixteen articles, and the full old public-file mapping.
   definition lists, directives, and heading IDs. Small native plugins provide
   KaTeX rendering, figure captions, heading permalinks, and article-relative links.
 - MDX supports imported Astro components. Native Astro image processing uses
-  Sharp; local SVG icons are native imports.
+  Sharp; `Image` and `Figure` preserve intrinsic geometry unless an author
+  intentionally supplies crop dimensions and `fit`.
 - Expressive Code supplies code highlighting, line numbers, collapsible sections,
-  and color chips. Mermaid supplies diagrams.
-- Interactive charts use typed imported ApexCharts configuration and an explicit
-  component lifecycle. Chart strings are not evaluated as JavaScript.
+  and color chips. Mermaid fences become cached light/dark SVG during the build;
+  the first build needs Playwright Chromium, while unchanged diagrams reuse
+  `.astro/static-diagrams` thereafter.
+- Observable Plot creates static SVG and tabular data at build time. Independent
+  Svelte explorers are SSR-first and hydrate with `client:visible`; post-specific
+  components remain beside their article unless shared.
+- Pagefind indexes published articles only at build time. `/search`,
+  `/content-index.json`, and `/llms.txt` expose the same public collection for
+  readers and discovery tools. Optional `document.modelContext` page tools are
+  experimental and feature-detected; browser support is not asserted here.
 - Navigation uses ordinary document loads with progressive native view transitions
   and reduced-motion support. Validated theme controls work even when browser
   storage is unavailable.
-- The blackboard and whiteboard themes retain the site's monospace design.
-  Preserved Ubuntu font files remain available as shared assets; their presence
-  does not imply the current theme loads them.
+- The blackboard and whiteboard themes retain their existing colors and system
+  monospace design.
 
 The old custom image service, remark/rehype pipeline, icon integration, and string
 chart evaluator have been replaced. Site-specific rendering behavior lives in
@@ -102,8 +114,8 @@ chart evaluator have been replaced. Site-specific rendering behavior lives in
 ## Validation
 
 ```sh
-# Install the browser used by the repository's browser checks, once per machine.
-npx playwright install chromium
+# Install browsers used by the repository's browser checks, once per machine.
+npx playwright install chromium webkit
 
 # Formatting, type checking, production build, unit/build tests, and browser tests.
 npm run validate
@@ -115,6 +127,9 @@ npm run validate
 | `npm run build` | Generate the production site in `dist/` |
 | `npm test` | Unit tests plus assertions against an existing production build |
 | `npm run test:browser` | Desktop/mobile checks against Wrangler's local Pages server |
+| `npm run quality:audit` | Optional heavier Lighthouse, resource-budget, and screenshot audit of an existing `dist/` build |
+| `npm run test:visual` | Optional exact homepage screenshot comparisons on port 4324; initial baselines are for macOS |
+| `npm run benchmark:build` | Isolated cold/warm build timings and size report, without replacing the local preview |
 | `npm run preview` | Quick Astro preview of the current build |
 | `npm run format:check` | Check the configured source formatting scope |
 | `npm run inventory:urls` | Inventory the current build under `artifacts/`; preserve the historical baseline |
@@ -126,6 +141,12 @@ latter with `ASTRO_DRAFT_PORT` if occupied), and retain traces/screenshots under
 slashless article pages beside nested downloads and generated host redirects;
 an Astro preview alone does not establish those host behaviors. Local validation
 is separate from verifying a deployment on `cade.io`.
+
+See the [widget improvement plan](docs/quality-plan.md),
+[quality checks](docs/quality-checks.md), and
+[visualization foundation](docs/visualizations.md) for focused contracts and
+`/test` examples. `validate:ci` installs Chromium and WebKit before the standard
+gate; the quality audit is intentionally a separate, heavier local or CI job.
 
 ## URLs and hosting
 
