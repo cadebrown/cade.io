@@ -67,3 +67,9 @@ Do not commit (already ignored in `.gitignore`):
 ## Notes
 
 * No GitHub Actions workflow is required for deployments.
+* Pages runs `npm run validate:ci`, matching `pages_build_command` in the managed
+  configuration. This includes formatting, type checks, build, unit tests, and
+  desktop/mobile browser tests before publishing.
+* `.node-version` pins Node 24.20.0. A broad `24` previously selected 24.13.1
+  in Pages, which cannot install the project's npm 12.0.2 (requires Node 24.15+).
+  Keep the pin and `package.json` engine requirement compatible with npm.

@@ -1,6 +1,6 @@
 # Pikurn article and interactive solver
 
-Implemented on 2026-09-08; retained as a draft for local review.
+Implemented and published on 2026-09-08, preserving the posting date 2025-12-01.
 
 The article separates maximum expected terminal wealth from maximum guaranteed
 terminal wealth. It derives both Bellman recurrences, the original game's exact
@@ -45,7 +45,7 @@ number range, recursion depth, and memory.
 
 To reproduce: `node content/posts/game-pikurn/pikurn.ts`, then
 `ASTRO_DRAFT_PORT=4325 npm run validate` if the default draft-test port is occupied.
-The draft is available through Astro development mode and excluded from production.
+The published article is available at `/posts/game-pikurn`.
 
 ## Editorial and visual refinement
 
@@ -74,4 +74,17 @@ verified official references in `docs/authoring.md`.
 
 Formatting, Astro checks, and production build passed; 127 unit/build tests and
 20 desktop/mobile browser tests passed, including highlighting, shared themes,
-source-text parity, and actual clipboard contents. The article remains a draft.
+source-text parity, and actual clipboard contents. At this stage the article remained a draft.
+
+## Publication
+
+Selected `pikurn-risk-balance.png` as the cover and social image, removed the draft
+flag, and preserved `dated: '2025-12-01'`. The original cover is downloadable with
+the article sources; rejected concepts remain outside the content package.
+The complete artwork stays visible on desktop and mobile without cropping.
+
+Formatting, Astro checks, production build, 127 unit/build tests, and 22 browser
+tests passed. Publication checks cover the posting date, decoded cover, social
+image, post and author listings, RSS, and sitemap. Both interactive labs now run
+against the production preview in browser tests. The URL inventory reports no
+broken paths or fragments, redirect problems, or original-file mismatches.

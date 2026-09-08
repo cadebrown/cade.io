@@ -7,7 +7,7 @@ downloads, and supporting code.
 
 ## Develop
 
-Use Node.js 24, recorded in `.node-version` and `package.json`, and the npm
+Use Node.js 24.20.0, pinned in `.node-version`, and the npm
 version recorded in `packageManager`. Install the locked dependencies:
 
 ```sh

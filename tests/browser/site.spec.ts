@@ -109,7 +109,6 @@ test('legacy redirects point directly to final URLs; drafts stay absent', async 
     expect(final.status(), to).toBe(200)
   }
   for (const slug of [
-    'game-pikurn',
     'hwsw-setup',
     'langjam-kardinality',
     'machine-kolmogorov',
@@ -120,6 +119,7 @@ test('legacy redirects point directly to final URLs; drafts stay absent', async 
     expect((await request.get(`/posts/${slug}`)).status()).toBe(404)
     expect((await request.get(`/posts/${slug}/${slug}.mdx`)).status()).toBe(404)
   }
+  expect((await request.get(`${draftURL}/posts/hwsw-setup`)).status()).toBe(200)
 })
 
 test('Pikurn solves adaptive games across objectives, horizons and blue stops', async ({
@@ -127,7 +127,7 @@ test('Pikurn solves adaptive games across objectives, horizons and blue stops', 
 }, info) => {
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
-  await page.goto(`${draftURL}/posts/game-pikurn`)
+  await page.goto('/posts/game-pikurn')
   const lab = page.locator('pikurn-explorer')
   await expect(lab.locator('[data-average]')).toHaveText('$233.33')
   await expect(lab.locator('[data-worst]')).toHaveText('$100.00')
@@ -181,7 +181,7 @@ test('Pikurn wager lab shows the exact frontier and downloadable source', async 
   page,
   request,
 }, info) => {
-  await page.goto(`${draftURL}/posts/game-pikurn`)
+  await page.goto('/posts/game-pikurn')
   const lab = page.locator('pikurn-wagers')
   await expect(lab.locator('[data-summary]')).toContainText('Expected final bankroll: $233.33')
   await lab.getByRole('button', { name: 'First-bet-only hedge', exact: true }).click()
@@ -203,7 +203,7 @@ test('Pikurn wager lab shows the exact frontier and downloadable source', async 
   await expect(first).toHaveValue('1')
   await expect(lab.locator('[data-summary]')).toContainText('Expected final bankroll: $233.00')
   const original = await readFile('content/posts/game-pikurn/pikurn.ts', 'utf8')
-  const response = await request.get(`${draftURL}/posts/game-pikurn/pikurn.ts`)
+  const response = await request.get('/posts/game-pikurn/pikurn.ts')
   expect(response.status()).toBe(200)
   expect(await response.text()).toBe(original)
   await page.getByText('Read the complete solver and command-line program', { exact: true }).click()
@@ -344,4 +344,26 @@ test('fenced and imported code share highlighting, titles, themes, and copying',
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
     (await readFile('src/lib/urls.ts', 'utf8')).trimEnd()
   )
+})
+
+test('Pikurn is published with the selected cover and original posting date', async ({
+  page,
+  request,
+}, info) => {
+  await page.goto('/posts/game-pikurn')
+  await expect(page.locator('.intro time')).toHaveAttribute('datetime', '2025-12-01T00:00:00.000Z')
+  const cover = page.locator('body > img')
+  await cover.evaluate((image: HTMLImageElement) => image.decode())
+  await expect(cover).toHaveCSS('object-fit', 'contain')
+  const socialImage = await page.locator('meta[property="og:image"]').getAttribute('content')
+  expect(socialImage).toMatch(/^https:\/\/cade\.io\/_astro\/pikurn-risk-balance.*\.png$/)
+  const response = await request.get(new URL(socialImage!).pathname)
+  expect(response.status()).toBe(200)
+  expect(response.headers()['content-type']).toContain('image/png')
+  await page.screenshot({ path: info.outputPath('pikurn-published-cover.png') })
+  for (const route of ['/posts', '/authors/cade-brown', '/rss.xml', '/sitemap-0.xml']) {
+    const response = await request.get(route)
+    expect(response.status()).toBe(200)
+    expect(await response.text()).toContain('/posts/game-pikurn')
+  }
 })

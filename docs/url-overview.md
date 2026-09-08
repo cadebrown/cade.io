@@ -121,7 +121,7 @@ reserved future article URLs, not working production redirect targets.
 | `/posts/dataset-smcefr` | `/posts/dataset-smcefr` | Keep published address |
 | `/posts/diy-gamma-zeta` | `/posts/diy-gamma-zeta` | Keep published address |
 | `/posts/diy-miller-rabin` | `/posts/diy-miller-rabin` | Keep published address |
-| `/posts/game-pikurn` | `/posts/game-pikurn` | Draft: withheld; no production redirect |
+| `/posts/game-pikurn` | `/posts/game-pikurn` | Published; original posting date 2025-12-01 |
 | `/posts/hwsw-setup` | `/posts/hwsw-setup` | Draft: withheld; no production redirect |
 | `/posts/langjam-kardinality` | `/posts/langjam-kardinality` | Draft: withheld; no production redirect |
 | `/posts/machine-knuth` | `/posts/machine-knuth` | Keep published address |

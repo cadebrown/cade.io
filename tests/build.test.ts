@@ -41,10 +41,10 @@ describe('built site structure', () => {
     expect(rss).toContain('<description>') // description was a fix
   })
 
-  it('RSS feed excludes draft posts', () => {
+  it('RSS includes Pikurn while excluding remaining drafts', () => {
     const rss = read('rss.xml')
-    // game-pikurn is marked draft and should not appear
-    expect(rss).not.toContain('Pikurn')
+    expect(rss).toContain('/posts/game-pikurn')
+    expect(rss).not.toContain('/posts/hwsw-setup')
   })
 
   it('emits a sitemap', () => {
