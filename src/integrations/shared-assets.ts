@@ -108,6 +108,20 @@ export default function sharedAssets(): AstroIntegration {
           pages.map((page) => `/${page.pathname}`.replace(/^\/+/, '/').replace(/\/$/, ''))
         )
         const redirects = await aliases(inventory.aliases, published)
+        const rewrites = new Map<string, string>()
+        // Older directory builds permanently redirected these URLs to a trailing slash.
+        // Serve that cached destination instead of redirecting it back into a loop.
+        for (const page of published) {
+          if (!page || page === '/404') continue
+          try {
+            await access(join(output, `${page}.html`))
+          } catch (error) {
+            if ((error as NodeJS.ErrnoException).code === 'ENOENT') continue
+            throw error
+          }
+          redirects.delete(`${page}/`)
+          rewrites.set(`${page}/`, page)
+        }
         for (const [from, target] of redirects) {
           const exists = await Promise.all(
             [target, `${target}.html`, `${target}/index.html`].map(async (candidate) => {
@@ -124,9 +138,11 @@ export default function sharedAssets(): AstroIntegration {
         }
         await writeFile(
           join(output, '_redirects'),
-          [...redirects]
-            .sort(([a], [b]) => a.localeCompare(b))
-            .map(([from, to]) => `${from} ${to} 301`)
+          [
+            ...[...redirects].map(([from, to]) => `${from} ${to} 301`),
+            ...[...rewrites].map(([from, to]) => `${from} ${to} 200`),
+          ]
+            .sort()
             .join('\n') + '\n'
         )
       },

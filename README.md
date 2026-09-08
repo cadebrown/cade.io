@@ -150,7 +150,11 @@ gate; the quality audit is intentionally a separate, heavier local or CI job.
 
 ## URLs and hosting
 
-Pages use lowercase, extensionless, slashless paths. Article slugs remain stable
+Pages use lowercase, extensionless, slashless canonical paths. Trailing-slash page
+URLs serve the same HTML through explicit Cloudflare 200 rewrites: older directory
+builds issued permanent redirects to those URLs, so redirecting them back would
+loop for visitors retaining the old redirect. Canonical metadata and site links
+remain slashless. Article slugs remain stable
 when titles change. `/posts` and `/posts/<slug>` remain canonical. `/testpage` redirects to `/test`. Existing `/authors`, `/links`,
 RSS, sitemap, robots, and browser icon addresses retain their purposes.
 

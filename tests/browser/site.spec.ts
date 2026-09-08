@@ -101,8 +101,19 @@ test('native math, code and gallery render in both themes without page overflow'
 test('legacy redirects point directly to final URLs; drafts stay absent', async ({ request }) => {
   const lines = (await readFile('dist/_redirects', 'utf8')).trim().split('\n')
   for (const line of lines) {
-    const [from, to] = line.split(' ')
+    const [from, to, status] = line.split(' ')
     const response = await request.get(from!, { maxRedirects: 0 })
+    if (status === '200') {
+      expect(response.status(), from).toBe(200)
+      expect(response.headers().location, from).toBeUndefined()
+      const canonical = from!.replace(/\/$/, '')
+      const final = await request.get(canonical, { maxRedirects: 0 })
+      expect(final.status(), canonical).toBe(200)
+      const body = await response.text()
+      expect(body, from).toBe(await final.text())
+      expect(body, from).toContain(`rel="canonical" href="https://cade.io${canonical}"`)
+      continue
+    }
     expect(response.status(), from).toBe(301)
     expect(new URL(response.headers().location!, 'http://127.0.0.1:4322').pathname, from).toBe(to)
     const final = await request.get(to!, { maxRedirects: 0 })
@@ -120,6 +131,17 @@ test('legacy redirects point directly to final URLs; drafts stay absent', async 
     expect((await request.get(`/posts/${slug}/${slug}.mdx`)).status()).toBe(404)
   }
   expect((await request.get(`${draftURL}/posts/hwsw-setup`)).status()).toBe(200)
+})
+
+test('old permanent slash redirects terminate at a rendered article', async ({ page }) => {
+  // Model a browser retaining the 308 issued by the previous directory build.
+  await page.route('**/posts/machine-knuth', (route) =>
+    route.fulfill({ status: 308, headers: { location: '/posts/machine-knuth/' } })
+  )
+  const response = await page.goto('/posts/machine-knuth')
+  expect(response?.status()).toBe(200)
+  await expect(page).toHaveURL(/\/posts\/machine-knuth\/$/)
+  await expect(page.getByRole('heading', { name: 'My Desktop: Knuth', exact: true })).toBeVisible()
 })
 
 test('Pikurn solves adaptive games across objectives, horizons and blue stops', async ({

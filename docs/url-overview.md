@@ -41,6 +41,12 @@ Cloudflare's HTML serving behavior provides the extensionless article URL. This
 is why host behavior is included in browser tests instead of assuming Astro's
 preview server has identical normalization.
 
+Trailing-slash versions of emitted HTML pages use explicit 200 rewrites to the
+same HTML file. The previous directory build issued permanent 308 redirects to
+these addresses; redirecting them back to slashless URLs would loop for returning
+visitors with the old redirect cached. Canonical metadata and internal links
+remain slashless. Historical aliases and moved files still use direct 301s.
+
 ## Every URL family
 
 | Before | Canonical implementation | Decision and reason |
