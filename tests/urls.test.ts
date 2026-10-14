@@ -56,7 +56,7 @@ describe('URL migration contract', () => {
       const updated = updatedDocuments.get(asset.current)
       if (updated) {
         expect(updated.mode).toBe('public')
-        expect(target).toBe(`/${updated.kind}.pdf`)
+        expect(target).toBe(`/${updated.kind}-CadeBrown.pdf`)
       }
       expect(createHash('sha256').update(readFileSync(file!)).digest('hex'), asset.current).toBe(
         updated?.pdfSha256 ?? asset.sha256

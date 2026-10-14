@@ -21,9 +21,11 @@ for (const kind of ['resume', 'cv']) {
 const configPath = join(root, 'src/data/shared-assets.json')
 const config = JSON.parse(await readFile(configPath, 'utf8'))
 for (const kind of ['resume', 'cv']) {
-  config.urls[`cade-brown-${kind}.pdf`] = `/${kind}.pdf`
-  config.aliases[`/cade-brown-${kind}.pdf`] = `/${kind}.pdf`
-  config.aliases[`/bones/${kind}-CadeBrown.pdf`] = `/${kind}.pdf`
+  const canonical = `/${kind}-CadeBrown.pdf`
+  config.urls[`cade-brown-${kind}.pdf`] = canonical
+  config.aliases[`/${kind}.pdf`] = canonical
+  config.aliases[`/cade-brown-${kind}.pdf`] = canonical
+  config.aliases[`/bones/${kind}-CadeBrown.pdf`] = canonical
 }
 updates.push([configPath, JSON.stringify(config, null, 2) + '\n'])
 // Validate the complete pair before writing anything; a partial import fails the build's hash check.

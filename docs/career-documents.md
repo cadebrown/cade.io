@@ -12,7 +12,7 @@ bundle into a new directory:
 
 ```sh
 npm run resume -- build --spec profile/resumes/resume.yaml --max-pages 1
-npm run resume -- build --spec profile/resumes/cv.yaml --max-pages 3
+npm run resume -- build --spec profile/resumes/cv.yaml --max-pages 4
 npm run resume -- site-export --artifact RESUME_BUNDLE --output-root REVIEW_ROOT/resume
 npm run resume -- site-export --artifact CV_BUNDLE --output-root REVIEW_ROOT/cv
 ```
@@ -28,8 +28,8 @@ From this repository:
 npm run career:preview -- --source REVIEW_ROOT
 ```
 
-The preview binds to 127.0.0.1:4325 and exposes `/resume`, `/cv`, `/resume.pdf`,
-and `/cv.pdf`. `--port` selects another local port. Both pages identify the private
+The preview binds to 127.0.0.1:4325 and exposes `/resume`, `/cv`, `/resume-CadeBrown.pdf`,
+and `/cv-CadeBrown.pdf`. `--port` selects another local port. Both pages identify the private
 review and use noindex metadata and headers. Review PDFs retain their review
 markings. The private input path is read only on the server.
 
@@ -72,16 +72,19 @@ npm run career:import -- --source PUBLIC_ROOT
 The importer validates both public snapshots and matching PDF bytes before making
 local changes. It saves only the minimal JSON under `src/data/career/`, replaces
 the two canonical PDFs in `src/assets/`, and updates the existing shared-asset
-mapping. `/resume.pdf` and `/cv.pdf` become canonical; `/cade-brown-resume.pdf`,
-`/cade-brown-cv.pdf`, and the historic `/bones/` aliases redirect directly to
-them. Public PDFs use the site's existing asset publisher; there is no second
+mapping. `/resume-CadeBrown.pdf` and `/cv-CadeBrown.pdf` become canonical;
+`/resume.pdf`, `/cv.pdf`, `/cade-brown-resume.pdf`, `/cade-brown-cv.pdf`, and the
+historic `/bones/` aliases redirect directly to them. Public PDFs use the site's
+existing asset publisher; there is no second
 copy in the content snapshot or `public/`. A partial import fails the build's
 PDF hash check. Importing does not commit or deploy. Do not run the public
 import for a private review; the importer rejects it.
 
 The October 14, 2026 release uses the selected slate-blue layout, a one-page
-resume and a three-page CV. Both share the headline “Agentic performance
-optimization | Compilers & DSLs | GPU numerical libraries.” Historical PDF URLs
+resume and a four-page CV. Both share the headline “Agentic performance
+optimization | Compilers & DSLs | GPU numerical libraries.” The fuller CV includes
+talks, research service, open-source contributions, robotics leadership, and its
+scholarship entry. Historical PDF URLs
 serve these current documents. The pre-migration URL inventory stays unchanged;
 its byte-preservation test explicitly checks these two updated documents against
 their approved snapshots and retains historical byte checks for every other file.

@@ -62,8 +62,8 @@ remain slashless. Historical aliases and moved files still use direct 301s.
 | `/authors/cade-brown` | `/authors/cade-brown` | Keep: established author identity URL; now lists the author's published posts correctly. |
 | `/links` | `/links` | Keep: short and accurately describes the link collection. |
 | `/testpage` | `/test` | Rename: short address for the rendering test page; excluded from the sitemap. |
-| `/bones/resume-CadeBrown.pdf`, `/cade-brown-resume.pdf` | `/resume.pdf` | Direct aliases to the current resume; the readable page is `/resume`. |
-| `/bones/cv-CadeBrown.pdf`, `/cade-brown-cv.pdf` | `/cv.pdf` | Direct aliases to the current CV; the readable page is `/cv`. |
+| `/resume.pdf`, `/bones/resume-CadeBrown.pdf`, `/cade-brown-resume.pdf` | `/resume-CadeBrown.pdf` | Direct aliases to the current resume; the readable page is `/resume`. |
+| `/cv.pdf`, `/bones/cv-CadeBrown.pdf`, `/cade-brown-cv.pdf` | `/cv-CadeBrown.pdf` | Direct aliases to the current CV; the readable page is `/cv`. |
 | `/assets/cade-pics/<filename>` | `/assets/photos/<filename>` | Clarify the shared asset family; original filenames retained. |
 | `/assets/dysdemi/<filename>` | `/assets/music/<filename>` | Clarify shared music artwork; existing artwork identifiers retained. |
 | `/bones/favicon-512-<variant>.png` | `/assets/brand/favicon-512-<variant>.png` | Group downloadable branding variants with their shared owner. |
@@ -175,14 +175,14 @@ second source copy under `public/`.
 | `/assets/test.png` | `/assets/test.png` | Keep URL |
 | `/assets/testpage_boxdrawing.svg` | `/assets/testpage_boxdrawing.svg` | Keep URL |
 | `/bones/CadeBrown-2021-ICL-MAGMA-AI.pdf` | `/posts/vqgan-clip/cade-brown-magma-ai-2021.pdf` | 301 |
-| `/bones/cv-CadeBrown.pdf` | `/cv.pdf` | 301 |
+| `/bones/cv-CadeBrown.pdf` | `/cv-CadeBrown.pdf` | 301 |
 | `/bones/favicon-512-alpha.png` | `/assets/brand/favicon-512-alpha.png` | 301 |
 | `/bones/favicon-512-blue.png` | `/assets/brand/favicon-512-blue.png` | 301 |
 | `/bones/favicon-512-green.png` | `/assets/brand/favicon-512-green.png` | 301 |
 | `/bones/favicon-512-red.png` | `/assets/brand/favicon-512-red.png` | 301 |
 | `/bones/favicon-512-white.png` | `/assets/brand/favicon-512-white.png` | 301 |
 | `/bones/machine-god.webp` | `/posts/vqgan-clip/machine-god.webp` | 301 |
-| `/bones/resume-CadeBrown.pdf` | `/resume.pdf` | 301 |
+| `/bones/resume-CadeBrown.pdf` | `/resume-CadeBrown.pdf` | 301 |
 | `/CNAME` | `/CNAME` | Keep URL |
 | `/favicon-96x96.png` | `/favicon-96x96.png` | Keep URL |
 | `/favicon.ico` | `/favicon.ico` | Keep URL |
@@ -249,9 +249,10 @@ subscription endpoint; renaming it to `/feed.xml` would add migration cost witho
 new behavior.
 
 The extensionless `/resume` and `/cv` pages present the approved documents and
-offer separate viewing and download links at `/resume.pdf` and `/cv.pdf`.
-The prior `/cade-brown-resume.pdf` and `/cade-brown-cv.pdf` addresses redirect
-directly to those canonical PDFs. See [career documents](career-documents.md).
+offer separate viewing and download links at `/resume-CadeBrown.pdf` and
+`/cv-CadeBrown.pdf`. The prior `/resume.pdf`, `/cv.pdf`,
+`/cade-brown-resume.pdf`, and `/cade-brown-cv.pdf` addresses redirect directly to
+those canonical PDFs. See [career documents](career-documents.md).
 Likewise, `/projects/<slug>` would be appropriate for a real
 project landing page with releases and documentation; it need not move historical
 articles out of `/posts`.

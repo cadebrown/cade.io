@@ -20,6 +20,8 @@ const name = intro.find((block) => block.type === 'name')!.text!
 const headline = intro.find((block) => block.type === 'headline')?.text
 const introGroups = careerIntroGroups(intro)
 const title = kind === 'resume' ? 'Résumé' : 'Curriculum vitae'
+const pdfFilename = `${kind}-CadeBrown.pdf`
+const pdfPath = `/${pdfFilename}`
 const updated = new Date(`${document.updated}T12:00:00Z`).toLocaleDateString('en-US', {
   month: 'long',
   day: 'numeric',
@@ -48,10 +50,10 @@ const updated = new Date(`${document.updated}T12:00:00Z`).toLocaleDateString('en
         <a href='/cv' aria-current={kind === 'cv' ? 'page' : undefined}>Curriculum vitae</a>
       </nav>
       <div class='career-pdf-actions'>
-        <a class='career-pdf-link career-pdf-view' href={`/${kind}.pdf`}
+        <a class='career-pdf-link career-pdf-view' href={pdfPath}
           >View PDF <span aria-hidden='true'>→</span></a
         >
-        <a class='career-pdf-link' href={`/${kind}.pdf`} download={`cade-brown-${kind}.pdf`}
+        <a class='career-pdf-link' href={pdfPath} download={pdfFilename}
           >Download PDF <span aria-hidden='true'>↓</span></a
         >
       </div>
@@ -98,9 +100,7 @@ const updated = new Date(`${document.updated}T12:00:00Z`).toLocaleDateString('en
       </article>
     </div>
     <div class='career-end'>
-      <a href={`/${kind}.pdf`} download={`cade-brown-${kind}.pdf`}
-        >Download {title.toLowerCase()} PDF</a
-      >
+      <a href={pdfPath} download={pdfFilename}>Download {title.toLowerCase()} PDF</a>
       <a href={kind === 'resume' ? '/cv' : '/resume'}
         >{kind === 'resume' ? 'Read the full CV →' : 'Read the résumé →'}</a
       >

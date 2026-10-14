@@ -120,6 +120,10 @@
       "type": "bullet"
     },
     {
+      "text": "Tools: CUDA, C/C++, Fortran, Python, MPI, OpenMP, HIP/ROCm, DPC++/oneAPI, PyTorch.",
+      "type": "meta"
+    },
+    {
       "text": "Software Architect | InterGauge",
       "type": "role"
     },
@@ -148,6 +152,10 @@
       "type": "bullet"
     },
     {
+      "text": "Tools: CUDA, C/C++, Python, LLVM/MLIR, NumPy, PyTorch, TensorFlow, Matplotlib.",
+      "type": "meta"
+    },
+    {
       "text": "Additional Experience",
       "type": "heading"
     },
@@ -164,6 +172,14 @@
       "type": "bullet"
     },
     {
+      "text": "Optimized graph-database queries for analytics over a terabyte-scale source-code dataset.",
+      "type": "bullet"
+    },
+    {
+      "text": "Tools: Java, Python, REST, ArangoDB.",
+      "type": "meta"
+    },
+    {
       "text": "Machine Learning Consultant | Qardian Labs",
       "type": "role"
     },
@@ -174,6 +190,10 @@
     {
       "text": "Trained and validated a model for heart-disease identification and anomaly detection, with a web interface for risk assessment and further-investigation decisions.",
       "type": "bullet"
+    },
+    {
+      "text": "Tools: Python, TensorFlow, Django, Heroku, Google Cloud SDK.",
+      "type": "meta"
     },
     {
       "type": "page_break"
@@ -195,6 +215,18 @@
       "type": "bullet"
     },
     {
+      "text": "Implemented and ran benchmarks to measure Lustre parallel-filesystem scalability on the Titan supercomputer.",
+      "type": "bullet"
+    },
+    {
+      "text": "Assisted with fabrication of the SimpleSummit cluster’s 3D-printed enclosure for eight NVIDIA Jetson boards.",
+      "type": "bullet"
+    },
+    {
+      "text": "Tools: C/C++, CUDA, Python, MPI, SDL, Blender.",
+      "type": "meta"
+    },
+    {
       "text": "Software Consultant | Agilaire LLC",
       "type": "role"
     },
@@ -203,15 +235,7 @@
       "type": "bullet"
     },
     {
-      "text": "Education",
-      "type": "heading"
-    },
-    {
-      "text": "Bachelor's degree, Computer Science | University of Tennessee, Knoxville",
-      "type": "role"
-    },
-    {
-      "text": "2019–2023",
+      "text": "Tools: Python, Django, hardware, HTML, JavaScript, CSS.",
       "type": "meta"
     },
     {
@@ -227,6 +251,62 @@
       "text": "Cade Brown, Ahmad Abdelfattah, Stanimire Tomov, and Jack Dongarra. Design, Optimization, and Benchmarking of Dense Linear Algebra Algorithms on AMD GPUs. IEEE HPEC, 2020.",
       "type": "link",
       "url": "https://doi.org/10.1109/HPEC43674.2020.9286214"
+    },
+    {
+      "text": "Talks & Presentations",
+      "type": "heading"
+    },
+    {
+      "text": "SABATH: ML Surrogate Platform",
+      "type": "role"
+    },
+    {
+      "text": "MLCommons Science | 2022",
+      "type": "meta"
+    },
+    {
+      "text": "Presented SABATH’s approach to reproducibility in scientific machine-learning models.",
+      "type": "bullet"
+    },
+    {
+      "text": "Challenge #6: Sentinel-3 Satellite Dataset",
+      "type": "role"
+    },
+    {
+      "text": "Smoky Mountain Conference, ORNL | 2022",
+      "type": "meta"
+    },
+    {
+      "text": "Introduced the SMCEFR dataset and data challenge for participating researchers.",
+      "type": "bullet"
+    },
+    {
+      "text": "MAGMA to hipMAGMA: Adding HIP Compatibility to a Scientific C++ Library",
+      "type": "role"
+    },
+    {
+      "text": "ICL Annual Conference | 2018",
+      "type": "meta"
+    },
+    {
+      "text": "Demonstrated HIP portability for CUDA scientific libraries targeting AMD GPUs.",
+      "type": "bullet"
+    },
+    {
+      "type": "page_break"
+    },
+    {
+      "text": "Research Service",
+      "type": "heading"
+    },
+    {
+      "text": "Dataset Sponsor | Smoky Mountain Conference, ORNL | 2022",
+      "type": "role"
+    },
+    {
+      "text": "Contributed the SMCEFR Sentinel-3 dataset with Piotr Luszczek for the conference’s research data challenge.",
+      "type": "link",
+      "url": "https://smc-datachallenge.ornl.gov/ch6-satellite-datasets/"
     },
     {
       "text": "Research",
@@ -260,11 +340,62 @@
       "text": "CARVE: a collaborative RISC-V emulator and visualizer for the web, developed with Gregory Croisdale under Stephen Marz.",
       "type": "link",
       "url": "https://github.com/cadebrown/CARVE"
+    },
+    {
+      "text": "Blok: Built a C/C++ voxel game with world generation, chunk and mesh rendering, and input handling using OpenGL, GLFW, AssImp, FreeType, and PortAudio (2020).",
+      "type": "link",
+      "url": "https://github.com/cadebrown/Blok"
+    },
+    {
+      "text": "Personal website and research blog: Technical writing, tutorials, and digital artwork, maintained since 2015.",
+      "type": "link",
+      "url": "https://cade.io/posts"
+    },
+    {
+      "text": "Open Source Contributions",
+      "type": "heading"
+    },
+    {
+      "text": "MPFR | Open Source Contributor | 2016–2017",
+      "type": "role"
+    },
+    {
+      "text": "Contributed arbitrary-precision implementations of scientific functions and assisted researchers through MPFR mailing lists.",
+      "type": "link",
+      "url": "https://www.mpfr.org/"
+    },
+    {
+      "text": "Leadership",
+      "type": "heading"
+    },
+    {
+      "text": "FIRST Robotics #3966 | Lead Programmer | 2015–2018",
+      "type": "role"
+    },
+    {
+      "text": "Designed and implemented software for semi-autonomous robots competing in FIRST Robotics events.",
+      "type": "bullet"
+    },
+    {
+      "text": "Education",
+      "type": "heading"
+    },
+    {
+      "text": "Bachelor's degree, Computer Science | University of Tennessee, Knoxville",
+      "type": "role"
+    },
+    {
+      "text": "2019–2023",
+      "type": "meta"
+    },
+    {
+      "text": "FIRST Robotics Alumni Scholarship",
+      "type": "bullet"
     }
   ],
   "kind": "cv",
   "mode": "public",
-  "pdfSha256": "f97e16a3a21a70c0a5b27547b0225e3d5e835bd3c3bb6823350a3d94620b6651",
+  "pdfSha256": "9059e0e8fddf41cd1d2f3aea65ae224fd7f8a5f7c421c1c060f58e5134121bfa",
   "schemaVersion": 1,
   "updated": "2026-10-14"
 }

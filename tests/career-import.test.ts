@@ -61,9 +61,11 @@ it('imports only public pairs, migrates PDF aliases directly and keeps one copy'
     run()
     const config = JSON.parse(await readFile(join(root, 'src/data/shared-assets.json'), 'utf8'))
     for (const kind of ['resume', 'cv']) {
-      expect(config.urls[`cade-brown-${kind}.pdf`]).toBe(`/${kind}.pdf`)
-      expect(config.aliases[`/cade-brown-${kind}.pdf`]).toBe(`/${kind}.pdf`)
-      expect(config.aliases[`/bones/${kind}-CadeBrown.pdf`]).toBe(`/${kind}.pdf`)
+      const canonical = `/${kind}-CadeBrown.pdf`
+      expect(config.urls[`cade-brown-${kind}.pdf`]).toBe(canonical)
+      expect(config.aliases[`/${kind}.pdf`]).toBe(canonical)
+      expect(config.aliases[`/cade-brown-${kind}.pdf`]).toBe(canonical)
+      expect(config.aliases[`/bones/${kind}-CadeBrown.pdf`]).toBe(canonical)
       expect(await readFile(join(root, `src/assets/cade-brown-${kind}.pdf`))).toEqual(pdf)
       await expect(readFile(join(root, `src/data/career/${kind}/document.pdf`))).rejects.toThrow()
     }

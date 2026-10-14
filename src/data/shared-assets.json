@@ -1,7 +1,7 @@
 {
   "urls": {
-    "cade-brown-cv.pdf": "/cv.pdf",
-    "cade-brown-resume.pdf": "/resume.pdf"
+    "cade-brown-cv.pdf": "/cv-CadeBrown.pdf",
+    "cade-brown-resume.pdf": "/resume-CadeBrown.pdf"
   },
   "aliases": {
     "/assets/cade-pics/cade-codetn-2016.webp": "/assets/photos/cade-codetn-2016.webp",
@@ -22,13 +22,13 @@
     "/assets/dysdemi/DDAYHFP.webp": "/assets/music/DDAYHFP.webp",
     "/assets/dysdemi/DDD.webp": "/assets/music/DDD.webp",
     "/assets/dysdemi/DDTGATW.webp": "/assets/music/DDTGATW.webp",
-    "/bones/cv-CadeBrown.pdf": "/cv.pdf",
+    "/bones/cv-CadeBrown.pdf": "/cv-CadeBrown.pdf",
     "/bones/favicon-512-alpha.png": "/assets/brand/favicon-512-alpha.png",
     "/bones/favicon-512-blue.png": "/assets/brand/favicon-512-blue.png",
     "/bones/favicon-512-green.png": "/assets/brand/favicon-512-green.png",
     "/bones/favicon-512-red.png": "/assets/brand/favicon-512-red.png",
     "/bones/favicon-512-white.png": "/assets/brand/favicon-512-white.png",
-    "/bones/resume-CadeBrown.pdf": "/resume.pdf",
+    "/bones/resume-CadeBrown.pdf": "/resume-CadeBrown.pdf",
     "/fonts/Ubuntu-Bold.woff2": "/assets/fonts/Ubuntu-Bold.woff2",
     "/fonts/Ubuntu-BoldItalic.woff2": "/assets/fonts/Ubuntu-BoldItalic.woff2",
     "/fonts/Ubuntu-Italic.woff2": "/assets/fonts/Ubuntu-Italic.woff2",
@@ -64,7 +64,9 @@
     "/icons/cadeio-icons/socials/website.svg": "/assets/icons/socials/website.svg",
     "/icons/cadeio-icons/socials/youtube.svg": "/assets/icons/socials/youtube.svg",
     "/icons/cadeio-icons/uiux/arrow-right.svg": "/assets/icons/uiux/arrow-right.svg",
-    "/cade-brown-resume.pdf": "/resume.pdf",
-    "/cade-brown-cv.pdf": "/cv.pdf"
+    "/cade-brown-resume.pdf": "/resume-CadeBrown.pdf",
+    "/cade-brown-cv.pdf": "/cv-CadeBrown.pdf",
+    "/resume.pdf": "/resume-CadeBrown.pdf",
+    "/cv.pdf": "/cv-CadeBrown.pdf"
   }
 }

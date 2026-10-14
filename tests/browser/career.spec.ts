@@ -10,6 +10,7 @@ type Snapshot = {
 }
 
 const kinds = ['resume', 'cv'] as const
+const pdfPath = (kind: (typeof kinds)[number]) => `/${kind}-CadeBrown.pdf`
 
 async function snapshot(kind: (typeof kinds)[number]): Promise<Snapshot> {
   return JSON.parse(await readFile(join('src/data/career', kind, 'document.json'), 'utf8'))
@@ -55,14 +56,14 @@ for (const kind of kinds) {
     }
 
     const view = page.getByRole('link', { name: 'View PDF', exact: true })
-    await expect(view).toHaveAttribute('href', `/${kind}.pdf`)
+    await expect(view).toHaveAttribute('href', pdfPath(kind))
     expect(await view.getAttribute('download')).toBeNull()
     const [download] = await Promise.all([
       page.waitForEvent('download'),
       page.getByRole('link', { name: 'Download PDF', exact: true }).click(),
     ])
-    expect(download.suggestedFilename()).toBe(`cade-brown-${kind}.pdf`)
-    const pdf = await request.get(`/${kind}.pdf`)
+    expect(download.suggestedFilename()).toBe(`${kind}-CadeBrown.pdf`)
+    const pdf = await request.get(pdfPath(kind))
     expect(pdf.status()).toBe(200)
     expect(pdf.headers()['content-type']).toContain('application/pdf')
     expect(pdf.headers()['x-robots-tag']).toBeUndefined()
@@ -78,8 +79,12 @@ test('public career PDFs have one canonical address and historic aliases redirec
   request,
 }) => {
   for (const kind of kinds) {
-    const canonical = `/${kind}.pdf`
-    for (const alias of [`/cade-brown-${kind}.pdf`, `/bones/${kind}-CadeBrown.pdf`]) {
+    const canonical = pdfPath(kind)
+    for (const alias of [
+      `/${kind}.pdf`,
+      `/cade-brown-${kind}.pdf`,
+      `/bones/${kind}-CadeBrown.pdf`,
+    ]) {
       const redirect = await request.get(alias, { maxRedirects: 0 })
       expect(redirect.status(), alias).toBe(301)
       expect(new URL(redirect.headers().location!, 'http://127.0.0.1:4322').pathname).toBe(
@@ -104,11 +109,11 @@ test('public career pages and download links remain usable without JavaScript', 
     await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
     await expect(page.getByRole('link', { name: 'View PDF', exact: true })).toHaveAttribute(
       'href',
-      `/${kind}.pdf`
+      pdfPath(kind)
     )
     await expect(page.getByRole('link', { name: 'Download PDF', exact: true })).toHaveAttribute(
       'download',
-      `cade-brown-${kind}.pdf`
+      `${kind}-CadeBrown.pdf`
     )
   }
   await context.close()

@@ -44,7 +44,7 @@ export default function careerDocuments(): AstroIntegration {
           })
           if (mode === 'review')
             injectRoute({
-              pattern: `/${kind}.pdf`,
+              pattern: `/${kind}-CadeBrown.pdf`,
               entrypoint: fileURLToPath(new URL('../components/career/pdf.ts', import.meta.url)),
               prerender: true,
             })
@@ -54,7 +54,7 @@ export default function careerDocuments(): AstroIntegration {
         if (!process.env.CAREER_REVIEW_DIR) return
         server.middlewares.use((req, res, next) => {
           const pathname = new URL(req.url ?? '/', 'http://localhost').pathname
-          if (/^\/(resume|cv)(\/|\.pdf)?$/.test(pathname)) {
+          if (/^\/(resume|cv)(\/|(?:-CadeBrown)?\.pdf)?$/.test(pathname)) {
             res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive')
             res.setHeader('Cache-Control', 'no-store')
           }
