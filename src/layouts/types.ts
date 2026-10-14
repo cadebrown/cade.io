@@ -6,6 +6,7 @@ export type AuthorReference =
 
 export type PageData = {
   kind?: 'website' | 'article'
+  noindex?: boolean
   title: string
   blurb: string
   dated?: Date

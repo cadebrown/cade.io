@@ -1,0 +1,44 @@
+---
+import type { CareerBlock } from '../../lib/career-documents'
+type Props = { block: CareerBlock }
+const { block } = Astro.props
+const text = block.text ?? ''
+type Run = { text: string; bold?: boolean; muted?: boolean; url?: string }
+let runs: Run[] = [{ text, url: block.url }]
+if (block.type === 'role') {
+  const parts = text.split(' | ')
+  runs = parts.flatMap((part, index) => [
+    ...(index ? [{ text: ' | ', muted: true }] : []),
+    { text: part, bold: index === 0, muted: parts.length === 3 && index === 2 },
+  ])
+} else if (block.url?.startsWith('https://doi.org/')) {
+  const authorEnd = text.indexOf('. ') + 2
+  const venueStart = text.lastIndexOf(' IEEE HPEC, ')
+  if (authorEnd > 1 && venueStart > authorEnd)
+    runs = [
+      { text: text.slice(0, authorEnd) },
+      { text: text.slice(authorEnd, venueStart), url: block.url },
+      { text: text.slice(venueStart) },
+    ]
+} else if (block.url && text.includes(': ')) {
+  const colon = text.indexOf(':')
+  runs = [{ text: text.slice(0, colon), bold: true, url: block.url }, { text: text.slice(colon) }]
+} else if (/^(Languages|Machine Learning|Agentic Engineering): /.test(text)) {
+  const colon = text.indexOf(':') + 1
+  runs = [{ text: text.slice(0, colon), bold: true }, { text: text.slice(colon) }]
+}
+---
+
+{
+  runs.map((run) =>
+    run.url ? (
+      <a href={run.url}>{run.bold ? <strong>{run.text}</strong> : run.text}</a>
+    ) : run.bold ? (
+      <strong>{run.text}</strong>
+    ) : run.muted ? (
+      <span class='career-muted'>{run.text}</span>
+    ) : (
+      run.text
+    )
+  )
+}

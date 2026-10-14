@@ -1,0 +1,421 @@
+---
+import Base from '../../layouts/Base.astro'
+import Blocks from './Blocks.astro'
+import { canonicalPath } from '../../lib/urls'
+import {
+  careerSections,
+  careerIntroGroups,
+  readCareerDocument,
+  type CareerKind,
+} from '../../lib/career-documents'
+// File-format prerendering supplies /resume.html; the public route stays /resume.
+const kind = canonicalPath(Astro.url.pathname).slice(1) as CareerKind
+const { document } = await readCareerDocument(
+  import.meta.env.CAREER_DOCUMENT_DIR,
+  kind,
+  import.meta.env.CAREER_DOCUMENT_MODE
+)
+const { intro, sections } = careerSections(document.blocks)
+const name = intro.find((block) => block.type === 'name')!.text!
+const headline = intro.find((block) => block.type === 'headline')?.text
+const introGroups = careerIntroGroups(intro)
+const title = kind === 'resume' ? 'Résumé' : 'Curriculum vitae'
+const updated = new Date(`${document.updated}T12:00:00Z`).toLocaleDateString('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+  timeZone: 'UTC',
+})
+---
+
+<Base
+  title={`${name} — ${title}`}
+  blurb={headline ?? `${name}'s ${title.toLowerCase()}`}
+  noindex={document.mode === 'review'}
+>
+  <Fragment slot='intro'></Fragment>
+  <div class='career-document' data-career-kind={kind}>
+    {
+      document.mode === 'review' && (
+        <p class='career-review' role='note'>
+          Private review <span>Draft for review · not for distribution</span>
+        </p>
+      )
+    }
+    <div class='career-toolbar'>
+      <nav aria-label='Career documents'>
+        <a href='/resume' aria-current={kind === 'resume' ? 'page' : undefined}>Résumé</a>
+        <a href='/cv' aria-current={kind === 'cv' ? 'page' : undefined}>Curriculum vitae</a>
+      </nav>
+      <div class='career-pdf-actions'>
+        <a class='career-pdf-link career-pdf-view' href={`/${kind}.pdf`}
+          >View PDF <span aria-hidden='true'>→</span></a
+        >
+        <a class='career-pdf-link' href={`/${kind}.pdf`} download={`cade-brown-${kind}.pdf`}
+          >Download PDF <span aria-hidden='true'>↓</span></a
+        >
+      </div>
+    </div>
+    <header class='career-identity'>
+      {
+        introGroups.map((group) =>
+          group.contacts ? (
+            <ul class='career-contacts' aria-label='Contact and profile links'>
+              {group.blocks.map((block) => (
+                <li>{block.url ? <a href={block.url}>{block.text}</a> : block.text}</li>
+              ))}
+            </ul>
+          ) : (
+            group.blocks.map((block) =>
+              block.type === 'name' ? (
+                <h1>{block.text}</h1>
+              ) : block.type === 'headline' ? (
+                <p class='career-headline'>{block.text}</p>
+              ) : (
+                <Blocks blocks={[block]} />
+              )
+            )
+          )
+        )
+      }
+    </header>
+    <div class='career-layout'>
+      <aside class='career-outline'>
+        <nav aria-label='Document sections'>
+          {sections.map((section) => <a href={`#${section.id}`}>{section.title}</a>)}
+        </nav>
+        <p>Updated<br /><time datetime={document.updated}>{updated}</time></p>
+      </aside>
+      <article class='career-body' aria-label={title}>
+        {
+          sections.map((section) => (
+            <section aria-labelledby={section.id}>
+              <h2 id={section.id}>{section.title}</h2>
+              <Blocks blocks={section.blocks} />
+            </section>
+          ))
+        }
+      </article>
+    </div>
+    <div class='career-end'>
+      <a href={`/${kind}.pdf`} download={`cade-brown-${kind}.pdf`}
+        >Download {title.toLowerCase()} PDF</a
+      >
+      <a href={kind === 'resume' ? '/cv' : '/resume'}
+        >{kind === 'resume' ? 'Read the full CV →' : 'Read the résumé →'}</a
+      >
+    </div>
+  </div>
+</Base>
+<style>
+  .career-document {
+    --career-accent: #a7c2df;
+    --career-rule: #52657b;
+    --career-muted: #c0c8d1;
+    --wow-link: var(--career-accent);
+    --wow-link-visited: var(--career-accent);
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1.6rem 2rem 3rem;
+  }
+  :global(html[data-theme='whiteboard']) .career-document {
+    --career-accent: #284b70;
+    --career-rule: #c1cdda;
+    --career-muted: #4f5965;
+  }
+  .career-review {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.55rem 0.8rem;
+    margin: 0 0 1.2rem;
+    border: 1px solid var(--wow-border);
+    background: var(--wow-back-alt);
+    font-size: 0.65rem;
+    font-weight: bold;
+  }
+  .career-review span {
+    font-weight: normal;
+  }
+  .career-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.75rem;
+    padding-bottom: 1.1rem;
+    border-bottom: 2px solid var(--career-accent);
+  }
+  .career-toolbar nav {
+    display: flex;
+    gap: 1.25rem;
+  }
+  .career-toolbar [aria-current] {
+    color: var(--wow-text);
+    text-decoration: underline;
+    text-underline-offset: 0.4em;
+  }
+  .career-pdf-actions {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .career-pdf-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.7rem 1rem;
+    border: 2px solid var(--career-accent);
+    background: var(--wow-back);
+    color: var(--career-accent);
+    font-size: 0.85rem;
+    font-weight: bold;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .career-pdf-link:hover,
+  .career-pdf-view {
+    background: var(--career-accent);
+    color: var(--wow-back);
+  }
+  .career-pdf-view:hover {
+    background: var(--wow-back);
+    color: var(--career-accent);
+  }
+  .career-pdf-link span {
+    margin-left: 0.5em;
+  }
+  .career-identity {
+    padding: 2.1rem 0 1.8rem;
+    background: none;
+    border: 0;
+  }
+  .career-identity h1 {
+    font-size: clamp(2rem, 6vw, 3.25rem);
+    letter-spacing: -0.055em;
+    line-height: 1.1;
+    margin: 0 0 0.65rem;
+  }
+  .career-headline {
+    color: var(--career-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 48rem;
+  }
+  .career-contacts {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.2rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    font-size: 0.72rem;
+    line-height: 1.7;
+  }
+  .career-contacts li {
+    margin: 0;
+    padding: 0;
+    overflow-wrap: anywhere;
+  }
+  .career-layout {
+    display: grid;
+    grid-template-columns: 175px minmax(0, 1fr);
+    gap: 2.2rem;
+    border-top: 1px solid var(--career-rule);
+  }
+  .career-outline {
+    align-self: start;
+    position: sticky;
+    top: 1.5rem;
+    padding-top: 1.5rem;
+    font-size: 0.66rem;
+    line-height: 1.7;
+  }
+  .career-outline nav {
+    display: grid;
+    gap: 0.65rem;
+  }
+  .career-outline p {
+    margin-top: 1.8rem;
+    opacity: 0.8;
+  }
+  .career-body {
+    min-width: 0;
+    font-size: 0.82rem;
+    line-height: 1.8;
+  }
+  .career-body section {
+    padding: 1.5rem 0 1.8rem;
+    border-bottom: 1px solid var(--career-rule);
+  }
+  .career-body section:last-child {
+    border: 0;
+  }
+  .career-body h2 {
+    color: var(--career-accent);
+    font-size: 1.16rem;
+    margin: 0 0 1rem;
+    scroll-margin-top: 1.5rem;
+  }
+  .career-body :global(h3) {
+    font-weight: normal;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin: 1.75rem 0 0.25rem;
+  }
+  .career-body :global(h2 + h3) {
+    margin-top: 0;
+  }
+  .career-body :global(p) {
+    margin: 0.5rem 0;
+  }
+  .career-body :global(.career-meta) {
+    color: var(--career-muted);
+    font-size: 0.7rem;
+    margin: 0.2rem 0 0.7rem;
+  }
+  .career-body :global(.career-muted) {
+    color: var(--career-muted);
+  }
+  .career-body :global(ul) {
+    padding-left: 1.1rem;
+    margin: 0.6rem 0;
+  }
+  .career-body :global(li) {
+    margin: 0.45rem 0;
+    padding-left: 0.2rem;
+  }
+  .career-body :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
+  }
+  .career-body :global(.career-link) {
+    font-size: 0.73rem;
+  }
+  .career-end {
+    border-top: 1px solid var(--career-rule);
+    padding-top: 1.3rem;
+    display: flex;
+    gap: 1.3rem;
+    justify-content: space-between;
+    font-size: 0.72rem;
+  }
+  .career-document a:focus-visible {
+    outline: 2px solid var(--wow-link);
+    outline-offset: 5px;
+  }
+  @media (max-width: 760px) {
+    .career-document {
+      padding: 1rem 1rem 2rem;
+    }
+    .career-layout {
+      display: block;
+    }
+    .career-outline {
+      position: static;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--wow-border);
+    }
+    .career-outline nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+    }
+    .career-outline p {
+      margin-top: 0.8rem;
+    }
+    .career-outline br {
+      display: none;
+    }
+    .career-outline time {
+      margin-left: 0.5em;
+    }
+    .career-toolbar {
+      align-items: start;
+      flex-wrap: wrap;
+      font-size: 0.68rem;
+    }
+    .career-identity {
+      padding: 1.4rem 0;
+    }
+    .career-headline {
+      font-size: 0.85rem;
+    }
+    .career-body {
+      font-size: 0.78rem;
+    }
+    .career-end {
+      flex-wrap: wrap;
+    }
+  }
+  @media (max-width: 520px) {
+    .career-pdf-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: 100%;
+    }
+    .career-pdf-link {
+      padding: 0.7rem 0.5rem;
+      font-size: 0.75rem;
+    }
+  }
+  @media print {
+    :global(html),
+    :global(body) {
+      background: white !important;
+      color: black !important;
+      font-size: 11pt;
+    }
+    :global(body > header),
+    :global(body > footer),
+    .career-toolbar,
+    .career-outline,
+    .career-end {
+      display: none !important;
+    }
+    .career-document {
+      --career-accent: #284b70;
+      --career-rule: #c1cdda;
+      --career-muted: #4f5965;
+      padding: 0;
+      margin: 0;
+      max-width: none;
+    }
+    .career-layout {
+      display: block;
+      border: 0;
+    }
+    .career-body {
+      font-size: 10pt;
+      line-height: 1.5;
+    }
+    .career-body section {
+      padding: 12pt 0;
+    }
+    .career-body :global(h3),
+    .career-body h2 {
+      break-after: avoid;
+    }
+    .career-body :global(li) {
+      break-inside: avoid;
+    }
+    .career-body :global(.career-page-break) {
+      break-before: page;
+    }
+    .career-identity {
+      padding: 0 0 14pt;
+    }
+    .career-identity h1 {
+      font-size: 27pt;
+    }
+    .career-document :global(a) {
+      color: var(--career-accent) !important;
+    }
+    .career-review {
+      background: white;
+      color: black;
+    }
+  }
+</style>

@@ -3,6 +3,8 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { join, extname } from 'node:path'
 import { createHash } from 'node:crypto'
 import inventory from '../docs/url-inventory.json'
+import resume from '../src/data/career/resume/document.json'
+import cv from '../src/data/career/cv/document.json'
 import { canonicalPath } from '../src/lib/urls'
 
 const output = 'dist'
@@ -40,14 +42,24 @@ describe('URL migration contract', () => {
     expect(canonicalPath('/posts/magma-paper.html')).toBe('/posts/magma-paper')
     expect(canonicalPath('/posts/magma-paper/')).toBe('/posts/magma-paper')
   })
-  it('preserves every pre-migration public file, directly or through one redirect, with identical bytes', () => {
+  it('preserves historical file bytes except the explicitly updated career documents', () => {
+    // The historical inventory remains immutable; career aliases serve the approved current PDF.
+    const updatedDocuments = new Map([
+      ['/bones/resume-CadeBrown.pdf', resume],
+      ['/bones/cv-CadeBrown.pdf', cv],
+    ])
     for (const asset of inventory.publicFiles) {
       const target = redirects.get(asset.current) ?? asset.current
       expect(redirects.has(target), `chain from ${asset.current}`).toBe(false)
       const file = targetFile(target)
       expect(file, asset.current).toBeTruthy()
+      const updated = updatedDocuments.get(asset.current)
+      if (updated) {
+        expect(updated.mode).toBe('public')
+        expect(target).toBe(`/${updated.kind}.pdf`)
+      }
       expect(createHash('sha256').update(readFileSync(file!)).digest('hex'), asset.current).toBe(
-        asset.sha256
+        updated?.pdfSha256 ?? asset.sha256
       )
     }
   })

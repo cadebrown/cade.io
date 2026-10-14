@@ -113,6 +113,9 @@ chart evaluator have been replaced. Site-specific rendering behavior lives in
 
 ## Validation
 
+For the resume/CV content pipeline and private local previews, see
+[career documents](docs/career-documents.md).
+
 ```sh
 # Install browsers used by the repository's browser checks, once per machine.
 npx playwright install chromium webkit

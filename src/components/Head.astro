@@ -16,12 +16,13 @@ type Props = {
   blurb: string
   image?: ImageMetadata | string
   kind?: 'website' | 'article'
+  noindex?: boolean
 }
 
 // generate canonical URL for this page
 const canon = new URL(canonicalPath(Astro.url.pathname), Astro.site)
 
-const { title, blurb, image, kind = 'website' } = Astro.props
+const { title, blurb, image, kind = 'website', noindex } = Astro.props
 
 // add in the site's title to the page's title
 const title_full = `${title} | ${SITE_NAME}`
@@ -75,6 +76,7 @@ const image_url = imageUrl(image, Astro.site!)
 <title>{title_full}</title>
 <meta name='title' content={title_full} />
 <meta name='description' content={blurb} />
+{noindex && <meta name='robots' content='noindex, nofollow, noarchive' />}
 <link rel='canonical' href={canon} />
 
 <!-- Page Metadata: Open Graph / Facebook-->

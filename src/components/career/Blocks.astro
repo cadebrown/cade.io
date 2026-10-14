@@ -1,0 +1,43 @@
+---
+import type { CareerBlock } from '../../lib/career-documents'
+import Inline from './Inline.astro'
+type Props = { blocks: CareerBlock[] }
+const groups: { type: 'bullets' | 'block'; blocks: CareerBlock[] }[] = []
+for (const block of Astro.props.blocks) {
+  if (block.type === 'bullet' && groups.at(-1)?.type === 'bullets')
+    groups.at(-1)!.blocks.push(block)
+  else groups.push({ type: block.type === 'bullet' ? 'bullets' : 'block', blocks: [block] })
+}
+---
+
+{
+  groups.map((group) =>
+    group.type === 'bullets' ? (
+      <ul>
+        {group.blocks.map((block) => (
+          <li>{block.text}</li>
+        ))}
+      </ul>
+    ) : (
+      group.blocks.map((block) =>
+        block.type === 'page_break' ? (
+          <div class='career-page-break' aria-hidden='true' />
+        ) : block.type === 'role' ? (
+          <h3>
+            <Inline block={block} />
+          </h3>
+        ) : block.type === 'meta' ? (
+          <p class='career-meta'>{block.text}</p>
+        ) : block.url ? (
+          <p class='career-link'>
+            <Inline block={block} />
+          </p>
+        ) : (
+          <p>
+            <Inline block={block} />
+          </p>
+        )
+      )
+    )
+  )
+}

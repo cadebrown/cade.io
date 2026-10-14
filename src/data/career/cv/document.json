@@ -1,0 +1,270 @@
+{
+  "blocks": [
+    {
+      "text": "Cade Brown",
+      "type": "name"
+    },
+    {
+      "text": "Agentic performance optimization | Compilers & DSLs | GPU numerical libraries",
+      "type": "headline"
+    },
+    {
+      "text": "brown.cade@gmail.com",
+      "type": "contact",
+      "url": "mailto:brown.cade@gmail.com"
+    },
+    {
+      "text": "linkedin.com/in/cade-brown",
+      "type": "contact",
+      "url": "https://www.linkedin.com/in/cade-brown/"
+    },
+    {
+      "text": "github.com/cadebrown",
+      "type": "contact",
+      "url": "https://github.com/cadebrown"
+    },
+    {
+      "text": "cade.io",
+      "type": "contact",
+      "url": "https://cade.io/"
+    },
+    {
+      "text": "Summary",
+      "type": "heading"
+    },
+    {
+      "text": "Senior engineer working on CUDA math libraries, compiler integration, and agent-driven kernel development, with research in numerical computing and scientific machine learning.",
+      "type": "paragraph"
+    },
+    {
+      "text": "Technical Focus",
+      "type": "heading"
+    },
+    {
+      "text": "CUDA, C++, Python, GPU performance engineering, numerical software, compiler and IR development, JIT/LTO, MLIR, LLVM, SIMT programming, NEON, SVE, scientific computing",
+      "type": "paragraph"
+    },
+    {
+      "text": "Experience",
+      "type": "heading"
+    },
+    {
+      "text": "Senior CUDA Math Libraries Engineer | NVIDIA",
+      "type": "role"
+    },
+    {
+      "text": "March 2025–Present | Ann Arbor, MI (Remote)",
+      "type": "meta"
+    },
+    {
+      "text": "Developed a framework for AI-agent-driven CUDA kernel generation, profiling, optimization, modification, and autotuning.",
+      "type": "bullet"
+    },
+    {
+      "text": "Developed modular, agent-friendly domain-specific languages for algebraic code transformations and code reuse.",
+      "type": "bullet"
+    },
+    {
+      "text": "Developed CUDA Tile integration and generalized autotuning with SIMT interoperability, cuTile Python, NVCC, LTO IR, and compiler technologies.",
+      "type": "bullet"
+    },
+    {
+      "text": "Built developer productivity tooling including harnesses, CLIs, reusable setups, sandboxing, onboarding guides, and GPU CI monitoring and triage.",
+      "type": "bullet"
+    },
+    {
+      "text": "Studied GPU I/O topologies, algorithmic changes, and simulated performance to inform hardware/software co-design.",
+      "type": "bullet"
+    },
+    {
+      "text": "CUDA Math Library Engineer | NVIDIA",
+      "type": "role"
+    },
+    {
+      "text": "August 2023–March 2025 | Ann Arbor, MI (Remote)",
+      "type": "meta"
+    },
+    {
+      "text": "Optimized CUDA math-library and cuFFT performance through memory-bandwidth work, asynchronous I/O strategies, and code generation.",
+      "type": "bullet"
+    },
+    {
+      "text": "Used JIT LTO to generate optimized kernels at runtime for particular user problems while reducing required precompiled kernels.",
+      "type": "bullet"
+    },
+    {
+      "text": "Optimized NVPL CPU math libraries on Grace CPUs with NEON and SVE vectorization.",
+      "type": "bullet"
+    },
+    {
+      "type": "page_break"
+    },
+    {
+      "text": "Research Assistant (HPC) | Innovative Computing Laboratory, University of Tennessee, Knoxville",
+      "type": "role"
+    },
+    {
+      "text": "August 2019–May 2023 | Knoxville, TN",
+      "type": "meta"
+    },
+    {
+      "text": "Developed GPU compute kernels for MAGMA and SLATE for scientific and machine-learning applications on supercomputers.",
+      "type": "bullet"
+    },
+    {
+      "text": "Optimized MAGMA BLAS for AMD GPUs; related work appears in a coauthored IEEE HPEC 2020 paper.",
+      "type": "bullet"
+    },
+    {
+      "text": "Designed SABATH, a platform for reproducible scientific machine-learning applications following FAIR principles; related work appears in a coauthored IEEE HPEC 2022 paper.",
+      "type": "bullet"
+    },
+    {
+      "text": "Software Architect | InterGauge",
+      "type": "role"
+    },
+    {
+      "text": "August 2022–April 2023 | Knoxville, TN",
+      "type": "meta"
+    },
+    {
+      "text": "Provided technical leadership for an education-technology startup focused on interactive educational AI assistants and classroom focus metrics.",
+      "type": "bullet"
+    },
+    {
+      "text": "Machine Learning Intern | NVIDIA",
+      "type": "role"
+    },
+    {
+      "text": "May 2022–September 2022 | Remote",
+      "type": "meta"
+    },
+    {
+      "text": "Researched hardware acceleration for neural-network training and inference through DSLs, intermediate representations, kernel generation, and polyhedral GPU compilation.",
+      "type": "bullet"
+    },
+    {
+      "text": "Trained and evaluated models for code generation and optimization-pass selection.",
+      "type": "bullet"
+    },
+    {
+      "text": "Additional Experience",
+      "type": "heading"
+    },
+    {
+      "text": "Research Assistant (HCI) | University of Tennessee, Knoxville",
+      "type": "role"
+    },
+    {
+      "text": "August 2021–January 2022 | Knoxville, TN",
+      "type": "meta"
+    },
+    {
+      "text": "Developed Avocat, a terminal tool that interprets error output and suggests shell-command solutions using generative text models and semantic vector search.",
+      "type": "bullet"
+    },
+    {
+      "text": "Machine Learning Consultant | Qardian Labs",
+      "type": "role"
+    },
+    {
+      "text": "January 2020–April 2020 | Knoxville, TN",
+      "type": "meta"
+    },
+    {
+      "text": "Trained and validated a model for heart-disease identification and anomaly detection, with a web interface for risk assessment and further-investigation decisions.",
+      "type": "bullet"
+    },
+    {
+      "type": "page_break"
+    },
+    {
+      "text": "Research Intern (HPC) | Oak Ridge National Laboratory",
+      "type": "role"
+    },
+    {
+      "text": "May 2017–August 2018 | Knoxville, TN",
+      "type": "meta"
+    },
+    {
+      "text": "Contributed with Thomas Hill to SimpleSummit, a portable NVIDIA Jetson cluster used to explain distributed computing near Summit at ORNL.",
+      "type": "bullet"
+    },
+    {
+      "text": "Developed FractalExplorer, a distributed GPU-accelerated interactive visualization for Mandelbrot and other fractals on SimpleSummit.",
+      "type": "bullet"
+    },
+    {
+      "text": "Software Consultant | Agilaire LLC",
+      "type": "role"
+    },
+    {
+      "text": "Designed and implemented pilog, a hardware/software air-quality data logger with sensor collection, time-series storage, visualization, and programmatic access.",
+      "type": "bullet"
+    },
+    {
+      "text": "Education",
+      "type": "heading"
+    },
+    {
+      "text": "Bachelor's degree, Computer Science | University of Tennessee, Knoxville",
+      "type": "role"
+    },
+    {
+      "text": "2019–2023",
+      "type": "meta"
+    },
+    {
+      "text": "Publications",
+      "type": "heading"
+    },
+    {
+      "text": "Piotr Luszczek and Cade Brown. Surrogate ML/AI Model Benchmarking for FAIR Principles’ Conformance. IEEE HPEC, 2022.",
+      "type": "link",
+      "url": "https://doi.org/10.1109/HPEC55821.2022.9926401"
+    },
+    {
+      "text": "Cade Brown, Ahmad Abdelfattah, Stanimire Tomov, and Jack Dongarra. Design, Optimization, and Benchmarking of Dense Linear Algebra Algorithms on AMD GPUs. IEEE HPEC, 2020.",
+      "type": "link",
+      "url": "https://doi.org/10.1109/HPEC43674.2020.9286214"
+    },
+    {
+      "text": "Research",
+      "type": "heading"
+    },
+    {
+      "text": "Cade Brown. OEIS A267263, 2016.",
+      "type": "link",
+      "url": "https://oeis.org/A267263"
+    },
+    {
+      "text": "SMCEFR satellite-data contribution with Piotr Luszczek: a 1024 × 1024 RGB subset derived from Sentinel-3 OLCI EFR data; Cade Brown is identified as corresponding author.",
+      "type": "link",
+      "url": "https://smc-datachallenge.ornl.gov/ch6-satellite-datasets/"
+    },
+    {
+      "text": "Selected Projects",
+      "type": "heading"
+    },
+    {
+      "text": "mycc: public C-subset compiler and reimplementation using Bison, Flex, and LLVM, with an optional ORC JIT path.",
+      "type": "link",
+      "url": "https://github.com/cadebrown/mycc"
+    },
+    {
+      "text": "kscript: Dynamic language implemented in C, with arrays, linear algebra, FFTs, and a WASM REPL.",
+      "type": "link",
+      "url": "https://github.com/cadebrown/kscript"
+    },
+    {
+      "text": "CARVE: a collaborative RISC-V emulator and visualizer for the web, developed with Gregory Croisdale under Stephen Marz.",
+      "type": "link",
+      "url": "https://github.com/cadebrown/CARVE"
+    }
+  ],
+  "kind": "cv",
+  "mode": "public",
+  "pdfSha256": "f97e16a3a21a70c0a5b27547b0225e3d5e835bd3c3bb6823350a3d94620b6651",
+  "schemaVersion": 1,
+  "updated": "2026-10-14"
+}

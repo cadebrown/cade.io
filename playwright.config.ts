@@ -26,6 +26,7 @@ export default defineConfig({
         'layouts.spec.ts',
         'explorer.spec.ts',
         'release.spec.ts',
+        'career.spec.ts',
       ],
       use: { ...devices['Desktop Safari'], viewport: { width: 1440, height: 1000 } },
     },

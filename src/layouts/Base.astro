@@ -10,14 +10,14 @@ import Dated from '@components/Dated.astro'
 import Authors from '@components/Authors.astro'
 type Props = LayoutProps
 
-const { kind, dated, title, blurb, image, authors, reading } =
+const { kind, dated, title, blurb, image, authors, reading, noindex } =
   'frontmatter' in Astro.props ? Astro.props.frontmatter : Astro.props
 ---
 
 <!doctype html>
 <html lang='en' data-theme='blackboard'>
   <head>
-    <Head kind={kind} title={title} blurb={blurb} image={image} />
+    <Head kind={kind} title={title} blurb={blurb} image={image} noindex={noindex} />
   </head>
   <body>
     <Header />

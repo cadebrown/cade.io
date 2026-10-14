@@ -1,0 +1,145 @@
+{
+  "blocks": [
+    {
+      "text": "Cade Brown",
+      "type": "name"
+    },
+    {
+      "text": "Agentic performance optimization | Compilers & DSLs | GPU numerical libraries",
+      "type": "headline"
+    },
+    {
+      "text": "brown.cade@gmail.com",
+      "type": "contact",
+      "url": "mailto:brown.cade@gmail.com"
+    },
+    {
+      "text": "linkedin.com/in/cade-brown",
+      "type": "contact",
+      "url": "https://www.linkedin.com/in/cade-brown/"
+    },
+    {
+      "text": "github.com/cadebrown",
+      "type": "contact",
+      "url": "https://github.com/cadebrown"
+    },
+    {
+      "text": "cade.io",
+      "type": "contact",
+      "url": "https://cade.io/"
+    },
+    {
+      "text": "Selected Experience",
+      "type": "heading"
+    },
+    {
+      "text": "NVIDIA | Senior CUDA Math Libraries Engineer | 2023–Present",
+      "type": "role"
+    },
+    {
+      "text": "Optimize cuFFT performance for Blackwell, Rubin, Feynman, and future GPU architectures.",
+      "type": "bullet"
+    },
+    {
+      "text": "Developed an AI-agent framework for CUDA kernel generation, profiling, and autotuning.",
+      "type": "bullet"
+    },
+    {
+      "text": "Designed AI-agent harnesses and tools (MCPs, CLIs, ...) to accelerate development.",
+      "type": "bullet"
+    },
+    {
+      "text": "Developed CUDA Tile integration and autotuning across SIMT, cuTile Python, NVCC, and LTO IR.",
+      "type": "bullet"
+    },
+    {
+      "text": "Optimized ML inference in PyTorch using internal research techniques.",
+      "type": "bullet"
+    },
+    {
+      "text": "Innovative Computing Laboratory @ UTK | Research Assistant (HPC) | 2019–2023",
+      "type": "role"
+    },
+    {
+      "text": "Developed MAGMA and SLATE GPU kernels; optimized MAGMA BLAS for AMD GPUs.",
+      "type": "bullet"
+    },
+    {
+      "text": "Designed SABATH for reproducible scientific ML following FAIR principles.",
+      "type": "bullet"
+    },
+    {
+      "text": "Qardian Labs | Machine Learning Consultant | 2020",
+      "type": "role"
+    },
+    {
+      "text": "Trained and evaluated an ML model for heart-disease identification and anomaly detection, with a web interface for risk assessment.",
+      "type": "bullet"
+    },
+    {
+      "text": "Oak Ridge National Laboratory | Research Intern (HPC) | 2017–2018",
+      "type": "role"
+    },
+    {
+      "text": "Built FractalExplorer, a distributed GPU fractal visualizer for the SimpleSummit Jetson cluster.",
+      "type": "bullet"
+    },
+    {
+      "text": "Selected Publications",
+      "type": "heading"
+    },
+    {
+      "text": "Brown et al. Design, Optimization, and Benchmarking of Dense Linear Algebra Algorithms on AMD GPUs. IEEE HPEC, 2020.",
+      "type": "link",
+      "url": "https://doi.org/10.1109/HPEC43674.2020.9286214"
+    },
+    {
+      "text": "Luszczek & Brown. Surrogate ML/AI Model Benchmarking for FAIR Principles’ Conformance. IEEE HPEC, 2022.",
+      "type": "link",
+      "url": "https://doi.org/10.1109/HPEC55821.2022.9926401"
+    },
+    {
+      "text": "Selected Projects",
+      "type": "heading"
+    },
+    {
+      "text": "mycc: C-subset compiler using Bison, Flex, and LLVM, with an optional ORC JIT path.",
+      "type": "link",
+      "url": "https://github.com/cadebrown/mycc"
+    },
+    {
+      "text": "kscript: Dynamic language implemented in C, with arrays, linear algebra, FFTs, and a WASM REPL.",
+      "type": "link",
+      "url": "https://github.com/cadebrown/kscript"
+    },
+    {
+      "text": "Skills",
+      "type": "heading"
+    },
+    {
+      "text": "Languages: C/C++, CUDA, Python, Rust, TypeScript.",
+      "type": "paragraph"
+    },
+    {
+      "text": "Machine Learning: PyTorch, JAX, Triton, cuTile Python, LLVM/MLIR, JIT/LTO.",
+      "type": "paragraph"
+    },
+    {
+      "text": "Agentic Engineering: Claude, Codex, Cursor, OpenCode, Pi, MCPs, harnesses, CLIs.",
+      "type": "paragraph"
+    },
+    {
+      "text": "Education",
+      "type": "heading"
+    },
+    {
+      "text": "Bachelor's degree, Computer Science | University of Tennessee, Knoxville | 2023",
+      "type": "role"
+    }
+  ],
+  "kind": "resume",
+  "mode": "public",
+  "pdfSha256": "980a8078058babcd98ab482341f7dfbcf75a5a72aa50a769b3360c8e85534c1b",
+  "schemaVersion": 1,
+  "updated": "2026-10-14"
+}

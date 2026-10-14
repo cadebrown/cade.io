@@ -1,4 +1,5 @@
 import sharedAssets from './src/integrations/shared-assets'
+import careerDocuments from './src/integrations/career-documents'
 import { SITE_CANON } from './src/site'
 import { defineConfig } from 'astro/config'
 import svelte from '@astrojs/svelte'
@@ -61,6 +62,7 @@ export default defineConfig({
   integrations: [
     svelte(),
     sitemap({ filter: (page) => new URL(page).pathname !== '/test' }),
+    careerDocuments(),
     sharedAssets(),
     expressiveCode(),
     staticDiagrams(),

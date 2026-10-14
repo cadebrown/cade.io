@@ -4,6 +4,8 @@
   "version": "0.0.2",
   "scripts": {
     "dev": "astro dev",
+    "career:preview": "node scripts/dev-career.mjs",
+    "career:import": "node scripts/import-career.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
